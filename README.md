@@ -1,5 +1,7 @@
 # FightMe
 
+A messaging Application with a built in game component.
+
 ## Authors
 
 Bryant Hernandez
@@ -18,3 +20,8 @@ Sean Minami
 
 Taiga O'Donnell
 
+# Sprint 1 Goals:
+
+- Create a basic backend that stores messages and retrieves stored messages
+- Create a basic front end that displays messages and can be used to send messages
+- Authenticate different users
