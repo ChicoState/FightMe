@@ -1,13 +1,13 @@
-package com.backend.fightmebackend;
+package com.backend.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FightmebackendApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FightmebackendApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }
