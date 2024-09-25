@@ -24,4 +24,4 @@ Taiga O'Donnell
 
 - Create a basic backend that stores messages and retrieves stored messages
 - Create a basic front end that displays messages and can be used to send messages
-- Authenticate different users
+- If possible set up authentication for different users
