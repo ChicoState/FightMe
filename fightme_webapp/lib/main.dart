@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
+        // This is tfluthe theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
         // the application has a purple toolbar. Then, without quitting the app,
@@ -55,7 +55,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _myController = TextEditingController();
   int _counter = 0;
+  String entertext = "";
 
   void _incrementCounter() {
     setState(() {
@@ -65,6 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+  }
+
+  void _changeText() {
+    setState((){
+      entertext = _myController.text;
     });
   }
 
@@ -89,7 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child: ListView(
+          padding: const EdgeInsets.all(8.0),
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -103,7 +112,6 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
               'You have pushed the button this many times:',
@@ -112,6 +120,20 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Text(
+              entertext,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+             TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'enter text',
+                hintText: 'type stuff here',
+              ),
+              controller: _myController,
+             ),
+             ElevatedButton(onPressed: _changeText, 
+             child: const Text('change text'))
           ],
         ),
       ),
