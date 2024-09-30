@@ -24,7 +24,7 @@ class HttpService {
 
     if(res.statusCode == 200) {
       final obj = jsonDecode(res.body);
-      print(obj['user'][0][0]);
+      print(obj['user'][0]['name']);
       List<User> users = new List.empty();
     
       for (int i = 0; i < obj['user'].length; i++) {
