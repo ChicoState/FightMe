@@ -1,7 +1,45 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+import 'package:http/http.dart';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+class User{
+  String? name = "";
+  int? dateCreated = 0;
+  int? gamerScore = 0;
+}
+
+class HttpService {
+  final String springbootURL = "http://localhost:8080/api/users";
+
+  Future<List<User>> getUsers() async {
+    Response res = await get (Uri.parse(springbootURL));
+
+    if(res.statusCode == 200) {
+      final obj = jsonDecode(res.body);
+      print(obj['user'][0][0]);
+      List<User> users = new List.empty();
+    
+      for (int i = 0; i < obj['user'].length; i++) {
+        User user = new User();
+        user.gamerScore = obj['user'][i]['gamerScore'];
+        user.dateCreated = obj['user'][i]['dateCreated'];
+        user.name =  obj['user'][i]['name'];
+        users.add(user);
+      }
+      return users;
+    }
+    else{
+      throw "Unable to retrive user data.";
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
