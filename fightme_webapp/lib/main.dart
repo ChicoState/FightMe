@@ -1,34 +1,54 @@
+import 'dart:convert';
+import 'package:http/http.dart';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
 }
 
+class User{
+  int id = 0;
+  String name = "";
+  String email = "";
+  String password = "";
+  int dateCreated = 0;
+  int gamerScore = 0;
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    password = json['password'];
+    dateCreated = json['dateCreated'];
+    gamerScore = json['gamerScore'];
+  }
+}
+
+class HttpService {
+  final String springbootURL = "http://localhost:8080/api/users";
+
+  Future<List<User>> getUsers() async {
+    Response res = await get (Uri.parse(springbootURL));
+    print(res.body);
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<User> users = body.map((dynamic item) => User.fromJson(item)).toList();
+      return users;
+    }
+    else{
+      throw "Unable to retrive user data.";
+    }
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is tfluthe theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
@@ -83,7 +103,28 @@ class _MyHomePageState extends State<MyHomePage> {
               controller: _myController,
              ),
              ElevatedButton(onPressed: _changeText, 
-             child: const Text('change text'))
+             child: const Text('change text')),
+             const SizedBox(height: 10),
+             SizedBox(
+              height: 200,
+              child:FutureBuilder(future: HttpService().getUsers(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text("${snapshot.data![index].name} - ${snapshot.data![index].email} - ${snapshot.data![index].password}"),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                // By default, show a loading spinner.
+                return const CircularProgressIndicator();
+              }),
+             ),
           ],
         ),
       ),
