@@ -16,6 +16,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.backend.backend.chatroom.Chatroom;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -49,5 +51,8 @@ public class User {
 
     @Column(name = "password")
     private String password;        //Should be hashed later
+
+    // @ManyToMany(mappedBy = "users")
+    // private List<Chatroom> chatrooms;
 
 }

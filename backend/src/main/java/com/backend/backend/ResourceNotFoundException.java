@@ -1,4 +1,4 @@
-package com.backend.backend.user;
+package com.backend.backend;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
