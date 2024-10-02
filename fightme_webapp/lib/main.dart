@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fightme_webapp/flutter/examples/api/lib/material/autocomplete/autocomplete.1.dart';
 import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
@@ -23,11 +24,20 @@ class User{
     dateCreated = json['dateCreated'];
     gamerScore = json['gamerScore'];
   }
+
+  User(String n){
+    id = 0;
+    name = n;
+    email = "test";
+    password = "test";
+    dateCreated = 0;
+    gamerScore = 0;
+  }
 }
 
 class HttpService {
   final String springbootURL = "http://localhost:8080/api/users";
-
+  //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
     Response res = await get (Uri.parse(springbootURL));
     print(res.body);
@@ -39,6 +49,12 @@ class HttpService {
     else{
       throw "Unable to retrive user data.";
     }
+  }
+  //send a basic user with a name to springboot
+  void sendUser(String n) async{
+    User user = new User(n);
+    Response res = await get (Uri.parse(springbootURL));
+
   }
 }
 
@@ -73,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _changeText() {
     setState((){
       entertext = _myController.text;
+      HttpService().sendUser(entertext);
     });
   }
 
@@ -103,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
               controller: _myController,
              ),
              ElevatedButton(onPressed: _changeText, 
-             child: const Text('change text')),
+             child: const Text('change text and send user')),
              const SizedBox(height: 10),
              SizedBox(
               height: 200,
