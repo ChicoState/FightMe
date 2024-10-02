@@ -25,6 +25,17 @@ class User{
     gamerScore = json['gamerScore'];
   }
 
+  Map<String, dynamic> toJson(){
+    return{
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'dateCreated': dateCreated,
+      'gamerScore': gamerScore
+    };
+  }
+
   User(String n){
     id = 0;
     name = n;
@@ -53,8 +64,14 @@ class HttpService {
   //send a basic user with a name to springboot
   void sendUser(String n) async{
     User user = new User(n);
-    Response res = await get (Uri.parse(springbootURL));
-
+    Response res = await post(Uri.parse(springbootURL), body: jsonEncode(user.toJson()));
+    print(res.body);
+    if(res.statusCode == 200) {
+      print("user created successfully.");
+    }
+    else {
+      print("error sending user.");
+    }
   }
 }
 
