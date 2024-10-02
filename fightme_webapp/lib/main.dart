@@ -23,6 +23,17 @@ class User{
     dateCreated = json['dateCreated'];
     gamerScore = json['gamerScore'];
   }
+
+    Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'dateCreated': dateCreated,
+      'gamerScore': gamerScore,
+    };
+  }
 }
 
 class HttpService {
@@ -38,6 +49,17 @@ class HttpService {
     }
     else{
       throw "Unable to retrive user data.";
+    }
+  }
+
+  void postUser(User user) async {
+    Response res = await post(Uri.parse(springbootURL), body: jsonEncode(user.toJson()));
+    print(res.body);
+    if (res.statusCode == 201) {
+      print("User created successfully.");
+    }
+    else{
+      throw "Unable to create user.";
     }
   }
 }
