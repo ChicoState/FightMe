@@ -105,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState((){
       entertext = _myController.text;
       HttpService().sendUser(entertext);
+      _myController.text = "";
     });
   }
 
@@ -119,24 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: const EdgeInsets.all(8.0),
           children: <Widget>[
-            const Text(
-              'the text you entered:',
-            ),
-            Text(
-              entertext,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-             TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'enter text',
-                hintText: 'type stuff here',
-              ),
-              controller: _myController,
-             ),
-             ElevatedButton(onPressed: _changeText, 
-             child: const Text('change text and send user')),
-             const SizedBox(height: 10),
+            const SizedBox(height: 20),
              SizedBox(
               height: 200,
               child:FutureBuilder(future: HttpService().getUsers(),
@@ -146,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        title: Text("${snapshot.data![index].name} - ${snapshot.data![index].email} - ${snapshot.data![index].password}"),
+                        title: Text("User - ${snapshot.data![index].name} - ${snapshot.data![index].email} - ${snapshot.data![index].password}"),
                       );
                     },
                   );
@@ -157,6 +141,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 return const CircularProgressIndicator();
               }),
              ),
+             TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'enter text',
+                hintText: 'type stuff here',
+              ),
+              controller: _myController,
+             ),
+             ElevatedButton(onPressed: _changeText, 
+             child: const Text('change text and send user')),
+             
           ],
         ),
       ),
