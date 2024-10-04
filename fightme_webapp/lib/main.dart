@@ -1,40 +1,12 @@
 import 'dart:convert';
-//import 'package:fightme_webapp/flutter/examples/api/lib/material/autocomplete/autocomplete.1.dart';
 import 'package:http/http.dart';
+
+import 'Models/user.dart';
 
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class User {
-  int id = 0;
-  String name = "";
-  String email = "";
-  String password = "";
-  int dateCreated = 0;
-  int gamerScore = 0;
-
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    password = json['password'];
-    dateCreated = json['dateCreated'];
-    gamerScore = json['gamerScore'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'dateCreated': dateCreated,
-      'gamerScore': gamerScore,
-    };
-  }
 }
 
 class HttpService {
