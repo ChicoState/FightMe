@@ -97,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       entertext = _myController.text;
       HttpService().sendUser(entertext);
+      _myController.text = "";
     });
   }
 
