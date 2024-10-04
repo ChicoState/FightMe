@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fightme_webapp/flutter/examples/api/lib/material/autocomplete/autocomplete.1.dart';
+//import 'package:fightme_webapp/flutter/examples/api/lib/material/autocomplete/autocomplete.1.dart';
 import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
@@ -25,16 +25,14 @@ class User{
     gamerScore = json['gamerScore'];
   }
 
-  Map<String, dynamic> toJson(){
-    return{
+  Map<String, dynamic> toJson() =>{
       'id': id,
       'name': name,
       'email': email,
       'password': password,
       'dateCreated': dateCreated,
       'gamerScore': gamerScore
-    };
-  }
+  };
 
   User(String n){
     id = 0;
@@ -51,7 +49,7 @@ class HttpService {
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
     Response res = await get (Uri.parse(springbootURL));
-    print(res.body);
+    //print(res.body);
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<User> users = body.map((dynamic item) => User.fromJson(item)).toList();
@@ -63,10 +61,10 @@ class HttpService {
   }
   //send a basic user with a name to springboot
   void sendUser(String n) async{
-    User user = new User(n);
-    Response res = await post(Uri.parse(springbootURL), body: jsonEncode(user.toJson()));
+    User user = User(n);
+    Response res = await post(Uri.parse(springbootURL),headers: {"Content-Type": "application/json"}, body: jsonEncode(user.toJson()));
     print(res.body);
-    if(res.statusCode == 200) {
+    if(res.statusCode == 201) {
       print("user created successfully.");
     }
     else {
