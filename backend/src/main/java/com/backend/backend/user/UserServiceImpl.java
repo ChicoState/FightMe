@@ -4,6 +4,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.backend.ResourceNotFoundException;
+
 import lombok.AllArgsConstructor;
 
 @Service

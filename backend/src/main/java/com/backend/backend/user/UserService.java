@@ -8,4 +8,7 @@ public interface UserService {
     UserDto getUserById(Long id);
 
     List<UserDto> getAllUsers();
+
+    //Remove a user *Future
+    //Edit a user *Future
 }
