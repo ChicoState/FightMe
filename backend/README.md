@@ -64,8 +64,8 @@
         }
     ],
     "conversations": []
-}
-
+    }
+    ```
 3. Create a message with the chatroom id you just created with no conversations.
     * Heres an example of the JSON body for the POST request:
     With the URL being: http://localhost:8080/api/messages/1 on POST
