@@ -40,6 +40,6 @@ public class Chatroom {
     )
     private List<User> users;
 
-    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "chatroomId", cascade = CascadeType.ALL)
     private List<Message> conversations;
 }

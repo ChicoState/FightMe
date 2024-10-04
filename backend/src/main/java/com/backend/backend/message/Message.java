@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "Messages")
 public class Message {
 
     @Id
@@ -42,7 +42,6 @@ public class Message {
     @Column(name = "timeStamp")
     private long timeStamp;
 
-    @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private Chatroom chatroom;
+    @Column(name = "chatroomId")
+    private long chatroomId;
 }

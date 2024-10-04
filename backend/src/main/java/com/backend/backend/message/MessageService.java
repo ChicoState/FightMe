@@ -10,5 +10,7 @@ public interface MessageService {
 
     //Edit a message *Future
 
-    List<MessageDto> getMessagesByChatroom(Long chatroomId);
+    MessageDto CreateMessage(MessageDto messageDto);
+    
+    List<MessageDto> getAllMessagesByChatroomId(long chatroomId);
 }
