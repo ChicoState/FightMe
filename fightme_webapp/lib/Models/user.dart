@@ -3,8 +3,7 @@ import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
 
-
-class User{
+class User {
   int id = 0;
   String name = "";
   String email = "";
@@ -21,20 +20,20 @@ class User{
     gamerScore = json['gamerScore'];
   }
 
-  Map<String, dynamic> toJson() =>{
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'dateCreated': dateCreated,
-      'gamerScore': gamerScore
-  };
-  
-  User(String n){
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'dateCreated': dateCreated,
+        'gamerScore': gamerScore
+      };
+
+  User(String n) {
     id = 0;
     name = n;
-    email = "test";
-    password = "test";
+    email = n;
+    password = n;
     dateCreated = 0;
     gamerScore = 0;
   }

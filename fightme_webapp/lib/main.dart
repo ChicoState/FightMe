@@ -26,8 +26,9 @@ class HttpService {
   }
 
   void postUser(User user) async {
-    Response res =
-        await post(Uri.parse(springbootURL), body: jsonEncode(user.toJson()));
+    Response res = await post(Uri.parse(springbootURL),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(user.toJson()));
     print(res.body);
     if (res.statusCode == 201) {
       print("User created successfully.");
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _changeText() {
     setState(() {
       entertext = _myController.text;
-      HttpService().sendUser(entertext);
+      HttpService().postUser(User(entertext));
       _myController.text = "";
     });
   }
