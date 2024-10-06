@@ -53,6 +53,17 @@ class HttpService {
       throw "Unable to retrieve message data for chatroom $chatroomID";
     }
   }
+
+  void postMessage(Message message) async {
+    Response res = await post(Uri.parse(springbootMessageURL),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(message.toJson()));
+    if (res.statusCode == 201) {
+      print("Message posted successfully.");
+    } else {
+      throw "Unable to post message to chatroom ${message.chatroomId}";
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
