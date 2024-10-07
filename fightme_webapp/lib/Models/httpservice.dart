@@ -24,6 +24,17 @@ class HttpService {
     }
   }
 
+  Future<User> getUserByID(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id"));
+    if (res.statusCode == 200) {
+      dynamic body = jsonDecode(res.body);
+      User lookup = User.fromJson(body);
+      return lookup;
+    } else {
+      throw "Unable to retrieve userID: $id";
+    }
+  }
+
   void postUser(User user) async {
     Response res = await post(Uri.parse(springbootUserURL),
         headers: {"Content-Type": "application/json"},
