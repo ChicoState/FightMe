@@ -98,7 +98,14 @@
 3. Run Flutter in command line
    * Use this command to save some time:  _flutter run -d chrome --web-port="60966"_
 
+# Spring 2 Goals For Backend
 
+- Integrate Websockets for real time communication
+- User Authentication (JWT ???)
+- Update/Delete requests for User/Messages/Chatroom
+- Statistics for Games with leaderboard type thing
+    - Maybe create separate file for user stats like UserStats and create leaderboard files (no entity b/c itll use UserStats)
+- Implement Friends Feature (Creating friendRequest class)
 
 
 
