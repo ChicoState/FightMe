@@ -4,7 +4,7 @@ class Message {
   int chatroomId = 0;
   String content = "";
   bool isRead = false;
-  DateTime timeStamp = DateTime(0);
+  int timeStamp = 0;
 
   Message.fromJson(Map<String, dynamic> json) {
     fromId = json['fromId'];
@@ -29,7 +29,7 @@ class Message {
     fromId = from;
     content = text;
     isRead = false;
-    timeStamp = DateTime.now();
+    timeStamp = 0;
     chatroomId = chatId;
   }
 }

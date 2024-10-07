@@ -4,66 +4,11 @@ import 'chat_page.dart';
 import 'Models/chatroom.dart';
 import 'Models/message.dart';
 import 'Models/user.dart';
-
+import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class HttpService {
-  final String springbootUserURL = "http://localhost:8080/api/users/";
-  final String springbootChatroomURL = "http://localhost:8080/api/chatroom/";
-  final String springbootMessageURL = "http://localhost:8080/api/messages/";
-
-  //retrieve a list of users from springboot
-  Future<List<User>> getUsers() async {
-    Response res = await get(Uri.parse(springbootUserURL));
-    print(res.body);
-    if (res.statusCode == 200) {
-      List<dynamic> body = jsonDecode(res.body);
-      List<User> users =
-          body.map((dynamic item) => User.fromJson(item)).toList();
-      return users;
-    } else {
-      throw "Unable to retrive user data.";
-    }
-  }
-
-  void postUser(User user) async {
-    Response res = await post(Uri.parse(springbootUserURL),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(user.toJson()));
-    print(res.body);
-    if (res.statusCode == 201) {
-      print("User created successfully.");
-    } else {
-      throw "Unable to create user.";
-    }
-  }
-
-  Future<List<Message>> getChatroomMessages(int chatroomID) async {
-    Response res = await get(Uri.parse("$springbootMessageURL$chatroomID"));
-    if (res.statusCode == 200) {
-      List<dynamic> body = jsonDecode(res.body);
-      List<Message> messages =
-          body.map((dynamic item) => Message.fromJson(item)).toList();
-      return messages;
-    } else {
-      throw "Unable to retrieve message data for chatroom $chatroomID";
-    }
-  }
-
-  void postMessage(Message message) async {
-    Response res = await post(Uri.parse(springbootMessageURL),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(message.toJson()));
-    if (res.statusCode == 201) {
-      print("Message posted successfully.");
-    } else {
-      throw "Unable to post message to chatroom ${message.chatroomId}";
-    }
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -114,53 +59,29 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.all(8.0),
           children: <Widget>[
             const Text(
-              'the text you entered:',
-            ),
-            Text(
-              entertext,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'enter text',
-                hintText: 'type stuff here',
-              ),
-              controller: _myController,
+              'Select Current User:',
             ),
             ElevatedButton(
-                onPressed: _changeText,
-                child: const Text('change text and send user')),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<ChatPage>(
+                          builder: (context) =>
+                              ChatPage(chatroomID: 1, userID: 1)));
+                },
+                child: const Text('User 1')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<ChatPage>(
+                          builder: (context) =>
+                              const ChatPage(chatroomID: 1, userID: 2)));
+                },
+                child: const Text('User 2')),
             const SizedBox(height: 10),
-            SizedBox(
-              height: 200,
-              child: FutureBuilder(
-                  future: HttpService().getUsers(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(
-                                "${snapshot.data![index].name} - ${snapshot.data![index].email} - ${snapshot.data![index].password}"),
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    // By default, show a loading spinner.
-                    return const CircularProgressIndicator();
-                  }),
-            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _changeText,
-        tooltip: 'Increment',
-        child: const Icon(Icons.edit),
       ),
     );
   }
