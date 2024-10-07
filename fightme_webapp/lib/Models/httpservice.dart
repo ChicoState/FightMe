@@ -8,7 +8,7 @@ import 'message.dart';
 class HttpService {
   final String springbootUserURL = "http://localhost:8080/api/users/";
   final String springbootChatroomURL = "http://localhost:8080/api/chatroom/";
-  final String springbootMessageURL = "http://localhost:8080/api/messages/";
+  final String springbootMessageURL = "http://localhost:8080/api/messages";
 
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
@@ -37,7 +37,7 @@ class HttpService {
   }
 
   Future<List<Message>> getChatroomMessages(int chatroomID) async {
-    Response res = await get(Uri.parse("$springbootMessageURL$chatroomID"));
+    Response res = await get(Uri.parse("${springbootMessageURL}/$chatroomID"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<Message> messages =
@@ -55,6 +55,7 @@ class HttpService {
     if (res.statusCode == 201) {
       print("Message posted successfully.");
     } else {
+      print("Status Code: ${res.statusCode}");
       throw "Unable to post message to chatroom ${message.chatroomId}";
     }
   }

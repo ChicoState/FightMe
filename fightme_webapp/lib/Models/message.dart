@@ -16,11 +16,10 @@ class Message {
   }
 
   Map<String, dynamic> toJson() => {
-        'fromId': fromId,
         'toId': toId,
+        'fromId': fromId,
         'content': content,
-        'isRead': isRead,
-        'timeStamp': timeStamp,
+        'isRead': false,
         'chatroomId': chatroomId
       };
 

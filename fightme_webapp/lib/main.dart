@@ -66,8 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute<ChatPage>(
-                          builder: (context) =>
-                              ChatPage(chatroomID: 1, userID: 1)));
+                          builder: (context) => const ChatPage(
+                              chatroomID: 1, userID: 1, otherID: 2)));
                 },
                 child: const Text('User 1')),
             ElevatedButton(
@@ -75,8 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute<ChatPage>(
-                          builder: (context) =>
-                              const ChatPage(chatroomID: 1, userID: 2)));
+                          builder: (context) => const ChatPage(
+                              chatroomID: 1, userID: 2, otherID: 1)));
                 },
                 child: const Text('User 2')),
             const SizedBox(height: 10),
