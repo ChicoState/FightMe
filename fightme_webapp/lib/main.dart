@@ -62,21 +62,29 @@ class _MyHomePageState extends State<MyHomePage> {
               'Select Current User:',
             ),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  User curUser = await HttpService().getUserByID(1);
+                  User otherUser = await HttpService().getUserByID(2);
                   Navigator.push(
                       context,
                       MaterialPageRoute<ChatPage>(
-                          builder: (context) => const ChatPage(
-                              chatroomID: 1, userID: 1, otherID: 2)));
+                          builder: (context) => ChatPage(
+                              chatroomID: 1,
+                              currentUser: curUser,
+                              otherUser: otherUser)));
                 },
                 child: const Text('User 1')),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  User curUser = await HttpService().getUserByID(2);
+                  User otherUser = await HttpService().getUserByID(1);
                   Navigator.push(
                       context,
                       MaterialPageRoute<ChatPage>(
-                          builder: (context) => const ChatPage(
-                              chatroomID: 1, userID: 2, otherID: 1)));
+                          builder: (context) => ChatPage(
+                              chatroomID: 1,
+                              currentUser: curUser,
+                              otherUser: otherUser)));
                 },
                 child: const Text('User 2')),
             const SizedBox(height: 10),
