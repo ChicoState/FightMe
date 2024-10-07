@@ -59,7 +59,7 @@ class HttpService {
     }
   }
 
-  void postMessage(Message message) async {
+  Future<void> postMessage(Message message) async {
     Response res = await post(Uri.parse(springbootMessageURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(message.toJson()));
