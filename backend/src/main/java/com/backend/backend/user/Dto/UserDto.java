@@ -1,6 +1,8 @@
-package com.backend.backend.user;
+package com.backend.backend.user.Dto;
 
 import java.util.List;
+
+import com.backend.backend.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -6,9 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.UserDto;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,4 +45,9 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     
+    @PutMapping("{id}")
+    public ResponseEntity<UserDto> updateGamerScore(@PathVariable("id") Long id, @RequestBody GamerScoreDto GamerScoreDto) {
+        UserDto updatedUser = userService.updateGamerScore(id, GamerScoreDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
 }

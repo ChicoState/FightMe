@@ -16,8 +16,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-import com.backend.backend.chatroom.Chatroom;
-
 @Getter
 @Setter
 @NoArgsConstructor

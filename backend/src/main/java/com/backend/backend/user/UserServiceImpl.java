@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.backend.backend.ResourceNotFoundException;
+import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.UserDto;
 
 import lombok.AllArgsConstructor;
 
@@ -35,5 +37,14 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map((user) -> UserMapper.mapToUserDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDto updateGamerScore(Long id, GamerScoreDto gamerScore) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        user.setGamerScore(gamerScore.getGamerScore());
+        User savedUser = userRepository.save(user);
+        return UserMapper.mapToUserDto(savedUser);
     }
 }

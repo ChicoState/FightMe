@@ -1,5 +1,7 @@
 package com.backend.backend.user;
 
+import com.backend.backend.user.Dto.UserDto;
+
 public class UserMapper {
     public static UserDto mapToUserDto(User user) {
         return new UserDto(
