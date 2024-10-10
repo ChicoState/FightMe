@@ -11,6 +11,8 @@ import com.backend.backend.user.Dto.GamerScoreDto;
 import com.backend.backend.user.Dto.UserDto;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,5 +51,11 @@ public class UserController {
     public ResponseEntity<UserDto> updateGamerScore(@PathVariable("id") Long id, @RequestBody GamerScoreDto GamerScoreDto) {
         UserDto updatedUser = userService.updateGamerScore(id, GamerScoreDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User Deleted");
     }
 }

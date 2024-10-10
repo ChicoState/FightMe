@@ -14,6 +14,8 @@ public interface UserService {
 
     UserDto updateGamerScore(Long id, GamerScoreDto gamerScore);
 
+    void deleteUser(Long id);
+
     //Remove a user *Future
     //Edit a user *Future
 }
