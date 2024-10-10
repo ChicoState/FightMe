@@ -20,7 +20,7 @@ public class UserDto {
     private String name;
     private long dateCreated;
     private int gamerScore;
-    private List<User> friends;
+    private List<Long> friends; //changed to list long
     private String email;
     private String password;
     
