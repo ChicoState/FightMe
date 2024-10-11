@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,14 +36,6 @@ public class User {
     @Column(name = "gamerScore")
     private int gamerScore;
 
-    // @ManyToMany
-    // @JoinTable(
-    //     name = "user_friends", // Name of the join table
-    //     joinColumns = @JoinColumn(name = "user_id"), // Current entity's column
-    //     inverseJoinColumns = @JoinColumn(name = "friend_id") // Friend entity's column
-    // )
-    // private List<User> friends;
-
     @ElementCollection
     @CollectionTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "friend_id")
@@ -57,7 +47,5 @@ public class User {
     @Column(name = "password")
     private String password;        //Should be hashed later
 
-    // @ManyToMany(mappedBy = "users")
-    // private List<Chatroom> chatrooms;
-
+    
 }
