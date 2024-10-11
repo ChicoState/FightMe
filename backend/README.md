@@ -77,7 +77,7 @@
         "chatroomId": 1
     }
     ```
-4. With this, you can use the GET endpoints to see the data you just created. If you want to get all, usually its withoutt the _/1_ at the end of the url. But if you want something more specific, you can add the id at the end.
+4. With this, you can use the GET endpoints to see the data you just created. If you want to get all, usually its without the _/1_ at the end of the url. But if you want something more specific, you can add the id at the end.
     * Heres an example of the GET request:
     With the URL being: http://localhost:8080/api/users/1 on GET
     ```
@@ -91,6 +91,29 @@
         "password": "password"
     }
     ```
+5. Currently you can only update (PUT) your GamerScore and your friends.
+    * Heres an example of updating your gamerscore for user 1 to 100:
+      With URL being: http://localhost:8080/api/users/1 on PUT
+      ```
+       {
+           "gamerScore": 100
+       }
+       ```
+   * Heres an exmaple of adding User2 for User1:
+     With the URL being: http://localhost:8080/api/users/1/friends on PUT
+     ```
+     {
+       "friendId": 3
+     }
+     ```
+6. We only have functionality of deleting friends for now. The url follows api/users/{id of user you want to change}/friends.
+    * Heres an example of deleting friend 3 as User 1:
+      With the URL being: http://localhost:8080/api/users/1/friends on DELETE
+    ```
+     {
+       "friendId": 3
+     }
+     ```
 ## To Get this working with Flutter
 
 1. Open PostgresSQL 
