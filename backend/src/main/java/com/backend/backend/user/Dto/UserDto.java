@@ -1,6 +1,8 @@
-package com.backend.backend.user;
+package com.backend.backend.user.Dto;
 
 import java.util.List;
+
+import com.backend.backend.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +20,7 @@ public class UserDto {
     private String name;
     private long dateCreated;
     private int gamerScore;
-    private List<User> friends;
+    private List<Long> friends; //changed to list long
     private String email;
     private String password;
     
