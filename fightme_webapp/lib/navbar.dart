@@ -16,7 +16,7 @@ class _BottomNavigationBarExampleState extends State<navbar> {
     //make call to page like this: home();
     MyApp(),
     home(),
-    MyApp(),
+    home(),
   ];
 
   void _onItemTapped(int index) {
