@@ -34,12 +34,10 @@ public class FriendRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "from_user_id", nullable = false)
+    @Column(name = "from_user_id", nullable = false)
     private Long fromUserID;
 
-    @ManyToOne
-    @JoinColumn(name = "to_user_id", nullable = false)
+    @Column(name = "to_user_id", nullable = false)
     private Long toUserID;
 
     @Column(name = "status", nullable = false)
