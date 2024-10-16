@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.StatsDto;
 import com.backend.backend.user.Dto.UserDto;
 
 import lombok.AllArgsConstructor;
@@ -53,6 +54,23 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
         user.setGamerScore(gamerScore.getGamerScore());
+        User savedUser = userRepository.save(user);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
+    public UserDto updateStats(Long id, StatsDto stats) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        if(user.getAttackScore() == null && user.getDefenseScore() == null && user.getMagicScore() == null){
+            user.setAttackScore(0);
+            user.setDefenseScore(0);
+            user.setMagicScore(0);
+            userRepository.save(user);
+        }
+        user.setAttackScore(stats.getAttackScore());
+        user.setDefenseScore(stats.getDefenseScore());
+        user.setMagicScore(stats.getMagicScore());
         User savedUser = userRepository.save(user);
         return UserMapper.mapToUserDto(savedUser);
     }
