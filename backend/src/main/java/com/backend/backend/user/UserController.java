@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.StatsDto;
 import com.backend.backend.user.Dto.UserDto;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -48,9 +49,15 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     
-    @PutMapping("{id}")
+    @PutMapping("{id}/gamerScore")
     public ResponseEntity<UserDto> updateGamerScore(@PathVariable("id") Long id, @RequestBody GamerScoreDto GamerScoreDto) {
         UserDto updatedUser = userService.updateGamerScore(id, GamerScoreDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}/stats")
+    public ResponseEntity<UserDto> updateStats(@PathVariable("id") Long id, @RequestBody StatsDto statsDto) {
+        UserDto updatedUser = userService.updateStats(id, statsDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

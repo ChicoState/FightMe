@@ -34,7 +34,16 @@ public class User {
     private long dateCreated;
 
     @Column(name = "gamerScore")
-    private int gamerScore;
+    private Integer gamerScore;
+
+    @Column(name = "attackScore")
+    private Integer attackScore;
+
+    @Column(name = "defenseScore")
+    private Integer defenseScore;
+
+    @Column(name = "magicScore")
+    private Integer magicScore;
 
     @ElementCollection
     @CollectionTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id"))

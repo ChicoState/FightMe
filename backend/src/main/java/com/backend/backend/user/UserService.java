@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.StatsDto;
 import com.backend.backend.user.Dto.UserDto;
 
 public interface UserService {
@@ -14,6 +15,8 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     UserDto updateGamerScore(Long id, GamerScoreDto gamerScore);
+
+    UserDto updateStats(Long id, StatsDto stats);
 
     void deleteUser(Long id);
 

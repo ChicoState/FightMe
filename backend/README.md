@@ -93,7 +93,7 @@
         ```
 5. Currently you can only update (PUT) your GamerScore and your friends.
     * Heres an example of updating your gamerscore for user 1 to 100:
-      With URL being: http://localhost:8080/api/users/1 on PUT
+      With URL being: http://localhost:8080/api/users/1/gamerScore on PUT
       ```
        {
            "gamerScore": 100
@@ -135,6 +135,17 @@
         ```
     * After accepting, you can do a get on either user and see that they are now friends!
     * If rejected, then neither of the users will have each other on the friends list :(
+9. If you want to level up or level down your attributes, you can do so with the following endpoints:
+    * Heres an example of leveling up your stats for id 1: 
+    With the URL being: http://localhost:8080/api/users/1/stats on PUT
+        ```
+        {
+            "attackScore": 10,
+            "defenseScore": 2,
+            "magicScore": 31
+        }
+        ```
+    * BTW be sure to update your stats to 0 if you have an existing user with no stats. Like when you try to getUserById(1) and you didnt update stats, stats will be null in the database. So to alleviate this, you can just update your stats to 0.
 ## To Get this working with Flutter
 
 1. Open PostgresSQL 
