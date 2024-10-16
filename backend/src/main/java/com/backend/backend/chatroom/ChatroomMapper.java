@@ -7,8 +7,8 @@ import com.backend.backend.message.Message;
 import com.backend.backend.message.MessageDto;
 import com.backend.backend.message.MessageMapper;
 import com.backend.backend.user.User;
-import com.backend.backend.user.UserDto;
 import com.backend.backend.user.UserMapper;
+import com.backend.backend.user.Dto.UserDto;
 
 public class ChatroomMapper {
     public static ChatroomDto mapToChatroomDto(Chatroom chatroom) {

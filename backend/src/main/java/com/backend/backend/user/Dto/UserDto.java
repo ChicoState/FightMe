@@ -1,4 +1,4 @@
-package com.backend.backend.user;
+package com.backend.backend.user.Dto;
 
 import java.util.List;
 
@@ -18,7 +18,10 @@ public class UserDto {
     private String name;
     private long dateCreated;
     private int gamerScore;
-    private List<User> friends;
+    private int attackScore;
+    private int defenseScore;
+    private int magicScore;
+    private List<Long> friends; //changed to list long
     private String email;
     private String password;
     

@@ -7,13 +7,17 @@ import 'Widgets/fightButton.dart';
 
 class ChatPage extends StatefulWidget {
   final int chatroomID;
+  final int currentUID;
+  final int otherUID;
   final User currentUser;
   final User otherUser;
   const ChatPage(
       {super.key,
       required this.chatroomID,
       required this.currentUser,
-      required this.otherUser});
+      required this.currentUID,
+      required this.otherUser,
+      required this.otherUID});
 
   @override
   State<ChatPage> createState() => ChatPageState();
@@ -37,7 +41,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("User ${widget.currentUser.id}"),
+        title: Text("User ${widget.currentUID}"),
       ),
       body: Center(
         child: Column(
@@ -47,9 +51,9 @@ class ChatPageState extends State<ChatPage> {
               controller: textEditControl,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), labelText: "Message"),
-              onSubmitted: (value) {
-                HttpService().postMessage(Message(widget.otherUser.id,
-                    widget.currentUser.id, value, widget.chatroomID));
+              onSubmitted: (value) async {
+                await HttpService().postMessage(Message(widget.otherUID,
+                    widget.currentUID, value, widget.chatroomID));
                 HttpService()
                     .getChatroomMessages(widget.chatroomID)
                     .then((onValue) {
@@ -57,7 +61,6 @@ class ChatPageState extends State<ChatPage> {
                     messages = onValue;
                   });
                 });
-
                 textEditControl.clear();
               },
             ),
