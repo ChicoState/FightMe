@@ -12,6 +12,7 @@ class User {
   int gamerScore = 0;
   int attackScore = 0;
   int defenseScore = 0;
+  int magicScore = 0;
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -22,6 +23,7 @@ class User {
     gamerScore = json['gamerScore'];
     attackScore = json['attackScore'];
     defenseScore = json['defenseScore'];
+    magicScore = json['magicScore'];
   }
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +35,7 @@ class User {
         'gamerScore': gamerScore,
         'attackScore' : attackScore,
         'defenseScore' : defenseScore,
+        'magicScore' : magicScore,
       };
 
   User(String n) {
@@ -44,5 +47,6 @@ class User {
     gamerScore = 0;
     attackScore = 0;
     defenseScore = 0;
+    magicScore = 0;
   }
 }
