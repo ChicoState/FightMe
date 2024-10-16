@@ -159,7 +159,7 @@
 - User Authentication (JWT ???)
 - Update/Delete requests for User/Messages/Chatroom
 - ~~Be able to update gamerscore~~
-- Add attack, defense, magic attributes to user
+- ~~Add attack, defense, magic attributes to user~~
 - Update read reciepts
 - ~~Implement Friends Feature (Creating friendRequest class)~~
 
