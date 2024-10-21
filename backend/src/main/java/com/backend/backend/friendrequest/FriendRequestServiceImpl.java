@@ -23,7 +23,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
 
     @Override
-    public FriendRequestDto sendFriendRequest(Long fromUserID, Long toUserID) { //in the future add implementation for checking dupes
+    public FriendRequestDto sendFriendRequest(Long fromUserID, Long toUserID) {//in the future add implementation for checking dupes
         User fromUser = userRepository.findById(fromUserID)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + fromUserID));
         User toUser = userRepository.findById(toUserID)
@@ -52,6 +52,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         FriendRequest friendRequest = friendRequestRepository.findById(requestID)
         .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found" + requestID));
         friendRequest.setStatus(FriendRequest.Status.ACCEPTED);
+        List<FriendRequest> friendRequestViceVersa = friendRequestRepository.findByFromUserID(friendRequest.getToUserID());
+        if(friendRequestViceVersa.size() != 0) {
+            friendRequestViceVersa.get(0).setStatus(FriendRequest.Status.ACCEPTED);
+            friendRequestRepository.save(friendRequestViceVersa.get(0));
+        }
         friendRequestRepository.save(friendRequest);
         userService.addFriend(friendRequest.getFromUserID(), new FriendDto(friendRequest.getToUserID()));
         return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
@@ -62,6 +67,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         FriendRequest friendRequest = friendRequestRepository.findById(requestID)
         .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found" + requestID));
         friendRequest.setStatus(FriendRequest.Status.REJECTED);
+        List<FriendRequest> friendRequestViceVersa = friendRequestRepository.findByFromUserID(friendRequest.getToUserID());
+        if(friendRequestViceVersa.size() != 0) {
+            friendRequestViceVersa.get(0).setStatus(FriendRequest.Status.REJECTED);
+            friendRequestRepository.save(friendRequestViceVersa.get(0));
+        }
         friendRequestRepository.save(friendRequest);
         return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
     }
