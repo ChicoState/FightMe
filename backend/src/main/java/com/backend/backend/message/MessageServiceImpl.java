@@ -20,7 +20,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDto CreateMessage(MessageDto messageDto) {
-        Chatroom chatroom = chatroomRepository.findById(messageDto.getChatroomId())
+        chatroomRepository.findById(messageDto.getChatroomId())
         .orElseThrow(() -> new ResourceNotFoundException("Chatroom not found: " + messageDto.getChatroomId()));
 
         Message message = MessageMapper.mapToMessage(messageDto);
@@ -38,4 +38,19 @@ public class MessageServiceImpl implements MessageService {
         return messages.stream().map((message) -> MessageMapper.mapToMessageDto(message)).collect(Collectors.toList());
     }
 
+    @Override
+    public MessageDto getLatestMessageInChatroomId(long chatroomId){
+        Chatroom chatroom = chatroomRepository.findById(chatroomId)
+        .orElseThrow(() -> new ResourceNotFoundException("Chatroom not found: " + chatroomId));
+        Message latestMessage = chatroom.getConversations().get(chatroom.getConversations().size() - 1); //gets the latest message
+        return MessageMapper.mapToMessageDto(latestMessage);
+    }
+
+    @Override
+    public void markLatestMessageAsRead(long chatroomId){
+        MessageDto message = getLatestMessageInChatroomId(chatroomId);      //gets teh latest message
+        message.setIsRead(true);        //sets the read reciept to read
+        Message savedMessage = MessageMapper.mapToMessage(message);
+        messageRepository.save(savedMessage);   //saves it to the repository
+    }
 }
