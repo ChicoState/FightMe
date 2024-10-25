@@ -75,7 +75,7 @@ class HttpService {
 
   //send a friend request to a user
   Future<void> sendFriendRequest(int fromUserID, int toUserID) async {
-    Response res = await post(Uri.parse("$springbootFriendRequestURL$fromUserID"),
+    Response res = await post(Uri.parse(springbootFriendRequestURL),
       headers: {"Content-Type": "application/json"}, 
       body: jsonEncode({"fromUserID": fromUserID, "toUserID": toUserID}));
     if (res.statusCode == 201) {
