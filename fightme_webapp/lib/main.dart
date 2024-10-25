@@ -5,9 +5,12 @@ import 'navbar.dart';
 import 'home.dart';
 import 'Models/chatroom.dart';
 import 'Models/message.dart';
+import 'profile_page.dart';
 import 'Models/user.dart';
 import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
+
+User curUser = User("Yep");
 
 void main() {
   runApp(const MyApp());
@@ -65,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ElevatedButton(
                 onPressed: () async {
-                  User curUser = await HttpService().getUserByID(1);
+                  curUser = await HttpService().getUserByID(1);
                   User otherUser = await HttpService().getUserByID(2);
                   Navigator.push(
                       context,
@@ -81,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text('User 1')),
             ElevatedButton(
                 onPressed: () async {
-                  User curUser = await HttpService().getUserByID(2);
+                  curUser = await HttpService().getUserByID(2);
                   User otherUser = await HttpService().getUserByID(1);
                   Navigator.push(
                       context,

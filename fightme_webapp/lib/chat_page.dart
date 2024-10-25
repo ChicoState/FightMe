@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'Models/httpservice.dart';
 import 'Models/message.dart';
 import 'Models/user.dart';
+import 'profile_page.dart';
 import 'Widgets/fightButton.dart';
 
 class ChatPage extends StatefulWidget {
@@ -46,6 +47,18 @@ class ChatPageState extends State<ChatPage> {
       body: Center(
         child: Column(
           children: [
+            buildFightButton(context, widget.currentUser, widget.otherUser),
+            TextButton(
+              onPressed: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute<ProfilePage>(
+              builder: (context) => ProfilePage(
+                  curUser: widget.currentUser,
+                  userViewed: widget.otherUser)));
+              },
+              child: Text(widget.otherUser.name),
+            ),
             messagesView(),
             TextField(
               controller: textEditControl,
@@ -64,7 +77,6 @@ class ChatPageState extends State<ChatPage> {
                 textEditControl.clear();
               },
             ),
-            buildFightButton(context, widget.currentUser, widget.otherUser),
           ],
         ),
       ),
