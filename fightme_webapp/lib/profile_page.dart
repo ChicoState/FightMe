@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-
 import 'Models/user.dart';
+import 'Widgets/friend_request_button.dart';
 
 class ProfilePage extends StatefulWidget {
   final User userViewed;
-  final int currentUserId;
+  final User curUser;
   // final List<int> currentUserFriends;
   const ProfilePage(
   {super.key,
-  required this.userViewed, required this.currentUserId});
+  required this.userViewed, required this.curUser});
 
   @override
   State<ProfilePage> createState() => ProfilePageState();
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  void _update() {
+    setState(() {
 
-  @override
-  void initState() {
-    super.initState();
+    });
   }
 
   @override
@@ -34,7 +34,7 @@ class ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.userViewed.id == widget.currentUserId ?
+                widget.userViewed.id == widget.curUser.id ?
                 IconButton(
                   onPressed: () {
 
@@ -47,7 +47,7 @@ class ProfilePageState extends State<ProfilePage> {
                   child: Image.network(
                       "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"),
                 ),
-                widget.userViewed.id == widget.currentUserId ?
+                widget.userViewed.id == widget.curUser.id ?
                 IconButton(
                   onPressed: () {
 
@@ -60,13 +60,13 @@ class ProfilePageState extends State<ProfilePage> {
                 .of(context)
                 .textTheme
                 .headlineMedium),
-          if (widget.userViewed.id != widget.currentUserId)...[
-            FilledButton.tonal(
-              onPressed: () {
-
-              },
-              child: const Text("add Friend"),
-            )
+            if (widget.userViewed.id != widget.curUser.id)...[
+              FutureBuilder(future: buildFriendButton(context, _update, widget.userViewed, widget.curUser), builder: (BuildContext context, AsyncSnapshot<Widget> wid) {
+                if (wid.hasData) {
+                  return wid.data!;
+                }
+                return const CircularProgressIndicator();
+              }),
             ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -75,7 +75,7 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     const Text("Attack", style: TextStyle(
                         fontSize: 40)),
-                    Text("${widget.userViewed.gamerScore}", style: Theme
+                    Text("${widget.userViewed.attackScore}", style: Theme
                         .of(context)
                         .textTheme
                         .headlineMedium),
@@ -85,7 +85,7 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     const Text("Defense", style: TextStyle(
                         fontSize: 40)),
-                    Text("${widget.userViewed.gamerScore}", style: Theme
+                    Text("${widget.userViewed.defenseScore}", style: Theme
                         .of(context)
                         .textTheme
                         .headlineMedium),
@@ -95,7 +95,7 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     const Text("Magic", style: TextStyle(
                       fontSize: 40)),
-                    Text("${widget.userViewed.gamerScore}", style: Theme
+                    Text("${widget.userViewed.magicScore}", style: Theme
                         .of(context)
                         .textTheme
                         .headlineMedium),

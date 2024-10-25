@@ -1,6 +1,8 @@
 import 'chat_page.dart';
 import 'main.dart';
 import 'home.dart';
+import 'profile_page.dart';
+import 'Models/user.dart';
 import 'package:flutter/material.dart';
 
 class navbar extends StatefulWidget {
@@ -12,16 +14,17 @@ class navbar extends StatefulWidget {
 
 class _BottomNavigationBarExampleState extends State<navbar> {
   int _selectedIndex = 1;
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     //make call to page like this: home();
     MyApp(),
     home(),
-    home(),
+    ProfilePage(curUser: curUser, userViewed: curUser),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
     });
   }
 
@@ -29,7 +32,6 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Fight Me'),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -45,8 +47,8 @@ class _BottomNavigationBarExampleState extends State<navbar> {
             label: 'home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'chats',
+            icon: Icon(Icons.account_circle_sharp),
+            label: 'profile',
           ),
         ],
         currentIndex: _selectedIndex,

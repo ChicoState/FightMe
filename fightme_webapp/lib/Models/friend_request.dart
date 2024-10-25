@@ -7,6 +7,16 @@ class FriendRequest{
   int toUserID = 0;
   Status status = Status.pending;
 
+  FriendRequest.empty() {
+    id = 0;
+    fromUserID = 0;
+    toUserID = 0;
+    status = Status.pending;
+  }
+
+  bool isEmpty() {
+    return id == 0 && fromUserID == 0 && toUserID == 0 && status == Status.pending;
+  }
 
   FriendRequest.fromJson(Map<String, dynamic> json) {
     id = json['id'];
