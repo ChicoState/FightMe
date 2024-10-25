@@ -31,6 +31,13 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         if (fromUser.getFriends().contains(toUserID) || toUser.getFriends().contains(fromUserID)) {
             throw new ResourceNotFoundException("User already friended with this user");
         }
+
+        List<FriendRequest> existingRejectedRequests = friendRequestRepository
+        .findByFromUserIDAndToUserIDAndStatus(fromUserID, toUserID, FriendRequest.Status.REJECTED);
+        if(!existingRejectedRequests.isEmpty()) {
+            throw new ResourceNotFoundException("You've been rejected before and cant send friend request");
+        }
+
         FriendRequest friendRequest = new FriendRequest();
         friendRequest.setFromUserID(fromUserID);
         friendRequest.setToUserID(toUserID);
