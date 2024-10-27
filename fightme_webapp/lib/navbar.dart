@@ -4,6 +4,7 @@ import 'home.dart';
 import 'profile_page.dart';
 import 'Models/user.dart';
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 
 class navbar extends StatefulWidget {
   const navbar({super.key});
@@ -24,15 +25,13 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
+      appBar: AppBar(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
