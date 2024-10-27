@@ -2,9 +2,7 @@ package com.backend.backend.message;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
-
 import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.chatroom.Chatroom;
 import com.backend.backend.chatroom.ChatroomRepository;
@@ -20,7 +18,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDto CreateMessage(MessageDto messageDto) {
-        Chatroom chatroom = chatroomRepository.findById(messageDto.getChatroomId())
+        chatroomRepository.findById(messageDto.getChatroomId())
         .orElseThrow(() -> new ResourceNotFoundException("Chatroom not found: " + messageDto.getChatroomId()));
 
         Message message = MessageMapper.mapToMessage(messageDto);
