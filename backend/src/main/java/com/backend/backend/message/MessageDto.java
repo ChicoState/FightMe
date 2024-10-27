@@ -1,9 +1,5 @@
 package com.backend.backend.message;
 
-import com.backend.backend.chatroom.Chatroom;
-
-//import com.backend.backend.chatroom.Chatroom;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
