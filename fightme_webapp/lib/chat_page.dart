@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 import 'Models/httpservice.dart';
 import 'Models/message.dart';
 import 'Models/user.dart';
@@ -49,12 +50,12 @@ class ChatPageState extends State<ChatPage> {
             buildFightButton(context, widget.currentUser, widget.otherUser),
             TextButton(
               onPressed: () {
-      Navigator.push(
-          context,
-          MaterialPageRoute<ProfilePage>(
-              builder: (context) => ProfilePage(
-                  curUser: widget.currentUser,
-                  userViewed: widget.otherUser)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<ProfilePage>(
+                        builder: (context) => ProfilePage(
+                            curUser: widget.currentUser,
+                            userViewed: widget.otherUser)));
               },
               child: Text(widget.otherUser.name),
             ),

@@ -7,6 +7,7 @@ import 'Models/message.dart';
 import 'Models/user.dart';
 import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 
 class home extends StatefulWidget {
   const home({super.key});

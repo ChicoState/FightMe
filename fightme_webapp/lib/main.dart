@@ -9,6 +9,7 @@ import 'profile_page.dart';
 import 'Models/user.dart';
 import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
 
 User curUser = User("Yep");
 
