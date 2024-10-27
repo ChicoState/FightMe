@@ -15,7 +15,7 @@
     * Heres an example of one of the GET url endpoints: _http://localhost:8080/api/users/1_
     * For POST, make sure to select body / raw / JSON ~~instead of Text~~.
 
-## To Run the Backend
+## To Run the Backend in VSCode
 
 1. Just click on one of the folders (i just use the BackendApplication.java file)
 2. Click the run button on the top right corner of the file.
@@ -146,6 +146,40 @@
         }
         ```
     * BTW be sure to update your stats to 0 if you have an existing user with no stats. Like when you try to getUserById(1) and you didnt update stats, stats will be null in the database. So to alleviate this, you can just update your stats to 0.
+
+## User Authentication 
+Currently the user authentication is done using a very simple REST API. It is not secure at all and passwords are not hashed. But it is a good start and a okay MVP.
+
+Not everything is finalized yet, can be changed later.
+
+### To Signup
+---
+* Make a POST request to http://localhost:8080/api/signup with the following body:
+    ```
+    {
+        "name": "Him",
+        "email": "him@mail.com",
+        "password": "password"
+    }
+    ```
+    * This will create a new user with the name Him, email him@mail.com, and password password. The rest of the values are going to be their default values except the dateCreated which will be the current time it got created.
+    * If the email already exists, it will return a 400 Bad Request with the message "Email already exists".
+    * If the name is null, it will return a 400 Bad Request with the message "Name cannot be empty".
+    * If the password is null or less than 8 characters long, it will return a 400 Bad Request with the message "Password must be at least 8 characters long".
+    * If everything is okay, it will return a 200 OK with the user's id.
+
+### To Login
+---
+* Make a POST request to http://localhost:8080/api/login with the following body:
+    ```
+    {
+        "email": "him@mail.com",
+        "password": "password"
+    }
+    ```
+    * This will login the user with the email him@mail.com and password password. If the email does not exist, it will return a 400 Bad Request with the message "Email does not exist".
+    * If the password does not match, it will return a 400 Bad Request with the message "Password does not match".
+    * If everything is okay, it will return a 200 OK with the user's id.
 ## To Get this working with Flutter
 
 1. Open PostgresSQL 
@@ -156,7 +190,7 @@
 # Sprint 2 Goals For Backend
 
 
-- User Authentication (JWT ???)
+- ~~User Authentication (JWT ???)~~
 - Update/Delete requests for User/Messages/Chatroom
 - ~~Be able to update gamerscore~~
 - ~~Add attack, defense, magic attributes to user~~
