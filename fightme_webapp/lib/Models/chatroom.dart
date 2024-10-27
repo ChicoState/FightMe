@@ -4,12 +4,12 @@ import 'message.dart';
 
 class Chatroom{
   int id = 0;
-  String name = "";
+  List<User> users = [];
   List<Message> messages = [];
 
   Chatroom.fromJson(Map<String, dynamic> json){
     id = json['id'];
-    name = json['name'];
+    users = json['users'];
     messages = [];
     
     if(json['messages'] != null){
@@ -26,14 +26,14 @@ class Chatroom{
     }
     return{
       'id': id,
-      'name': name,
+      'users': users,
       'messages': messagesToJson,
     };
   }
 
   Chatroom(String n){
     id = 0;
-    name = n;
+    users = [];
     messages = [];
   }
 }
