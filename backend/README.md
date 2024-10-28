@@ -39,8 +39,16 @@
         }
         ```
 2. Create a chatroom with the 2 users you just created with no conversations.
-    * Heres an example of the JSON body for the POST request:
-    With the URL being: http://localhost:8080/api/chatroom/1 on POST
+    * This is the better and improved version of how to create a chatroom with user 1 and 2. You should be returned the same as the previous example.
+    * Be sure to use http://localhost:8080/api/chatroom/create on POST
+        ```
+        {
+            "userIds": [1,2]
+        }
+        ```
+    * ~~Heres an example of the JSON body for the POST request:
+    With the URL being: http://localhost:8080/api/chatroom/1 on POST~~
+    * This is the depricated version
         ```
         {
         "users": [
@@ -66,6 +74,8 @@
         "conversations": []
         }
         ```
+3. If you want to delete a chatroom, you can! It will delete all the messages and conversations in the chatroom. Just be sure to know the chatroom id.
+    * If you want to delete the chatroom with id:1, use http://localhost:8080/api/chatroom/1 on DELETE
 3. Create a message with the chatroom id you just created with no conversations.
     * Heres an example of the JSON body for the POST request:
     With the URL being: http://localhost:8080/api/messages/1 on POST
@@ -135,7 +145,7 @@
         ```
     * After accepting, you can do a get on either user and see that they are now friends!
     * If rejected, then neither of the users will have each other on the friends list :(
-9. If you want to level up or level down your attributes, you can do so with the following endpoints:
+10. If you want to level up or level down your attributes, you can do so with the following endpoints:
     * Heres an example of leveling up your stats for id 1: 
     With the URL being: http://localhost:8080/api/users/1/stats on PUT
         ```
