@@ -1,9 +1,10 @@
-package com.backend.backend.chatroom;
+package com.backend.backend.chatroom.Dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.backend.backend.message.MessageDto;
 import com.backend.backend.user.Dto.UserDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
