@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.backend.backend.chatroom.Dto.ChatroomCreateDto;
 import com.backend.backend.chatroom.Dto.ChatroomDto;
-import com.backend.backend.user.User;
 import com.backend.backend.user.UserService;
 import com.backend.backend.user.Dto.UserDto;
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.chatroom.Dto.ChatroomCreateDto;
 import com.backend.backend.chatroom.Dto.ChatroomDto;
 import com.backend.backend.message.Message;
@@ -12,7 +11,6 @@ import com.backend.backend.message.MessageDto;
 import com.backend.backend.message.MessageMapper;
 import com.backend.backend.user.User;
 import com.backend.backend.user.UserMapper;
-import com.backend.backend.user.UserServiceImpl;
 import com.backend.backend.user.Dto.UserDto;
 
 public class ChatroomMapper {
