@@ -51,6 +51,12 @@ public class ChatroomController {
         return new ResponseEntity<>(chatroomDto, HttpStatus.OK);
     }
 
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<ChatroomDto>> getChatroomsByUserId(@PathVariable("id") Long id) {
+        List<ChatroomDto> chatroomDto = chatroomService.getChatroomsByUserId(id);
+        return new ResponseEntity<>(chatroomDto, HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<ChatroomDto>> getAllChatrooms() {
         List<ChatroomDto> chatrooms = chatroomService.getAllChatrooms();

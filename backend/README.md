@@ -76,6 +76,88 @@
         ```
 3. If you want to delete a chatroom, you can! It will delete all the messages and conversations in the chatroom. Just be sure to know the chatroom id.
     * If you want to delete the chatroom with id:1, use http://localhost:8080/api/chatroom/1 on DELETE
+4. If you want to see all the chatrooms that a user is in, you can use the following endpoint:
+    * If you want to see all the chatrooms that user 1 is in, use http://localhost:8080/api/chatroom/user/1 on GET
+    * You will be returned a list of chatrooms.
+    * Heres an example of the JSON body when you request user 1's chatrooms with them having chatrooms with user 2 and 3:
+        ```
+        [
+            {
+                "id": 3,
+                "users": [
+                    {
+                        "id": 1,
+                        "name": "Him",
+                        "dateCreated": 0,
+                        "gamerScore": 60,
+                        "attackScore": 1000,
+                        "defenseScore": 10,
+                        "magicScore": 5,
+                        "friends": [
+                            2,
+                            4,
+                            3
+                        ],
+                        "email": "him@mail.com",
+                        "password": "password"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Her",
+                        "dateCreated": 0,
+                        "gamerScore": 420,
+                        "attackScore": 5,
+                        "defenseScore": 20,
+                        "magicScore": 1,
+                        "friends": [
+                            1,
+                            3
+                        ],
+                        "email": "her@mail.com",
+                        "password": "abc123"
+                    }
+                ],
+                "conversations": []
+            },
+            {
+                "id": 4,
+                "users": [
+                    {
+                        "id": 1,
+                        "name": "Him",
+                        "dateCreated": 0,
+                        "gamerScore": 60,
+                        "attackScore": 1000,
+                        "defenseScore": 10,
+                        "magicScore": 5,
+                        "friends": [
+                            2,
+                            4,
+                            3
+                        ],
+                        "email": "him@mail.com",
+                        "password": "password"
+                    },
+                    {
+                        "id": 3,
+                        "name": "John",
+                        "dateCreated": 0,
+                        "gamerScore": 999,
+                        "attackScore": 0,
+                        "defenseScore": 0,
+                        "magicScore": 0,
+                        "friends": [
+                            2,
+                            1
+                        ],
+                        "email": "john@mail.com",
+                        "password": "johnspassword"
+                    }
+                ],
+                "conversations": []
+            }
+        ]
+        ```
 3. Create a message with the chatroom id you just created with no conversations.
     * Heres an example of the JSON body for the POST request:
     With the URL being: http://localhost:8080/api/messages/1 on POST
@@ -145,7 +227,7 @@
         ```
     * After accepting, you can do a get on either user and see that they are now friends!
     * If rejected, then neither of the users will have each other on the friends list :(
-10. If you want to level up or level down your attributes, you can do so with the following endpoints:
+11. If you want to level up or level down your attributes, you can do so with the following endpoints:
     * Heres an example of leveling up your stats for id 1: 
     With the URL being: http://localhost:8080/api/users/1/stats on PUT
         ```

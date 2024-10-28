@@ -11,6 +11,7 @@ import com.backend.backend.chatroom.Dto.ChatroomDto;
 import com.backend.backend.message.MessageDto;
 import com.backend.backend.message.MessageMapper;
 import com.backend.backend.user.User;
+import com.backend.backend.user.UserRepository;
 import com.backend.backend.user.Dto.UserDto;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.AllArgsConstructor;
 public class ChatroomServiceImpl implements ChatroomService {
     
     private ChatroomRepository chatroomRepository;
+    private UserRepository userRepository;
 
     @Override
     public ChatroomDto createChatroom(ChatroomDto chatroomDto) {
@@ -49,8 +51,10 @@ public class ChatroomServiceImpl implements ChatroomService {
     }
 
     @Override
-    public List<ChatroomDto> getChatroomsByUser(User user) {
-        List<Chatroom> chatrooms = chatroomRepository.findAll();
+    public List<ChatroomDto> getChatroomsByUserId(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        List<Chatroom> chatrooms = chatroomRepository.findByUsers(user);
         return chatrooms.stream().map((chatroom) -> ChatroomMapper.mapToChatroomDto(chatroom)).collect(Collectors.toList());
     }
 
