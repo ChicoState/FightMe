@@ -7,8 +7,9 @@ import 'pending_requests.dart';
 import 'globals.dart' as globals;
 
 class ChatsMasterPage extends StatefulWidget {
+  final User curUser;
   const ChatsMasterPage(
-      {super.key});
+      {super.key, required this.curUser});
 
   @override
   State<ChatsMasterPage> createState() => ChatsMasterPageState();
@@ -25,7 +26,7 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
     for (var chat in chats) {
       // Best to set this up now so that it can handle group chat functionality instead of rewriting later.
       if (chat.users.length == 2) {
-        if (chat.users.first.id != globals.uid) {
+        if (chat.users.first.id != curUser.id) {
           list.add(_buildItem(chat.users.first, chat));
         }
         else {
@@ -64,9 +65,10 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
   @override
   void initState() {
     super.initState();
-    HttpService().getUserByID(globals.uid).then((result) {
+    /* HttpService().getUserByID(globals.uid).then((result) {
       curUser =  result;
-    });
+    }); */
+    curUser = widget.curUser;
     _list = _buildList();
   }
 

@@ -30,7 +30,7 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
       //make call to page like this: home();
-      const ChatsMasterPage(),
+      ChatsMasterPage(curUser: widget.curUser),
       const home(),
       ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
     ];
