@@ -1,13 +1,17 @@
 import 'chat_page.dart';
+import 'chats_master_page.dart';
 import 'main.dart';
 import 'home.dart';
 import 'profile_page.dart';
 import 'Models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fightme_webapp/Models/httpservice.dart';
 import 'globals.dart' as globals;
 
 class navbar extends StatefulWidget {
-  const navbar({super.key});
+  final User curUser;
+  const navbar({super.key,
+  required this.curUser});
 
   @override
   State<navbar> createState() => _BottomNavigationBarExampleState();
@@ -15,12 +19,6 @@ class navbar extends StatefulWidget {
 
 class _BottomNavigationBarExampleState extends State<navbar> {
   int _selectedIndex = 1;
-  static final List<Widget> _widgetOptions = <Widget>[
-    //make call to page like this: home();
-    MyApp(),
-    home(),
-    ProfilePage(curUser: curUser, userViewed: curUser),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,8 +28,13 @@ class _BottomNavigationBarExampleState extends State<navbar> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetOptions = <Widget>[
+      //make call to page like this: home();
+      const ChatsMasterPage(),
+      const home(),
+      ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
+    ];
     return Scaffold(
-      appBar: AppBar(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

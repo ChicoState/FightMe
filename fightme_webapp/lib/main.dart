@@ -11,9 +11,11 @@ import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
-User curUser = User("Yep");
+User curUser = User("placeholder");
 
-void main() {
+Future<void> main() async{
+  globals.uid = 1;
+  curUser = await HttpService().getUserByID(globals.uid);
   runApp(const MyApp());
 }
 
@@ -44,6 +46,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _myController = TextEditingController();
   String entertext = "";
+
+  @override
+  void initState() {
+  super.initState();
+  }
 
   void _changeText() {
     setState(() {
@@ -102,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: const navbar(),
+      bottomNavigationBar: navbar(curUser: curUser),
     );
   }
 }
