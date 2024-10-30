@@ -9,8 +9,12 @@ class Chatroom{
 
   Chatroom.fromJson(Map<String, dynamic> json){
     id = json['id'];
-    users = json['users'];
+    users = [];
     messages = [];
+
+    for(var userJson in json['users']){
+      users.add(User.fromJson(userJson));
+    }
     
     if(json['messages'] != null){
       for(var messageJson in json['messages']){

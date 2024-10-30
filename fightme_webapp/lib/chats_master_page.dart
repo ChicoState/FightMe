@@ -7,8 +7,8 @@ import 'pending_requests.dart';
 import 'globals.dart' as globals;
 
 class ChatsMasterPage extends StatefulWidget {
-  const ChatsMasterPage(
-      {super.key});
+  final User curUser;
+  const ChatsMasterPage({super.key, required this.curUser});
 
   @override
   State<ChatsMasterPage> createState() => ChatsMasterPageState();
@@ -16,7 +16,7 @@ class ChatsMasterPage extends StatefulWidget {
 
 
 class ChatsMasterPageState extends State<ChatsMasterPage> {
-  late Future<List<Widget>> _list;
+  late Future<List<Widget>> _list = Future.value([]);
   late User curUser;
 
   Future<List<Widget>> _buildList() async {
@@ -64,9 +64,7 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
   @override
   void initState() {
     super.initState();
-    HttpService().getUserByID(globals.uid).then((result) {
-      curUser =  result;
-    });
+    curUser = widget.curUser;
     _list = _buildList();
   }
 
