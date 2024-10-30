@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-
+import 'chatroom.dart';
 import 'user.dart';
 import 'message.dart';
 import 'friend_request.dart';
@@ -58,6 +58,19 @@ class HttpService {
       return messages;
     } else {
       throw "Unable to retrieve message data for chatroom $chatroomID";
+    }
+  }
+
+  Future<List<Chatroom>> getChatroomsByUserId(int userID) async {
+    Response res = await get(Uri.parse("${springbootChatroomURL}user/$userID"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<Chatroom> chatrooms =
+      body.map((dynamic item) => Chatroom.fromJson(item)).toList();
+      return chatrooms;
+    } else {
+      print("Status Code: ${res.statusCode}");
+      throw "Unable to retrieve chatroom data for User $userID";
     }
   }
 
