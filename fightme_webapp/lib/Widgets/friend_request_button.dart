@@ -3,6 +3,8 @@ import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/chat_page.dart';
 import 'package:fightme_webapp/Models/friend_request.dart';
 import 'package:fightme_webapp/Models/user.dart';
+import 'package:fightme_webapp/Models/chatroom.dart';
+
 
 Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User otherUser, User curUser) async {
   HttpService http = HttpService();
@@ -12,6 +14,10 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
   FriendRequest? incoming = myRequests.firstWhere((element) => element.fromUserID == otherUser.id, orElse: () => FriendRequest.empty());
   Widget friends = FilledButton.tonal(
     onPressed: () {
+      late Chatroom chat;
+      http.getChatroomsByUserId(curUser.id).then((result) {
+        chat = result.firstWhere((element) => element.users.firstWhere((user) => user.id == otherUser.id).id != 0);
+      });
       Navigator.push(
           context,
           MaterialPageRoute<ChatPage>(
@@ -56,6 +62,9 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
     margin: const EdgeInsets.all(8.0),
     child: const Text('rejected'),
   );
+
+  // isEmpty is the closest I can get to is null.
+  // The bulk of the case section is based not on accessing when there isn't a friend request.
   if (!incoming.isEmpty() && !outgoing.isEmpty()) {
     if (incoming.status == Status.accepted && outgoing.status == Status.accepted) {
       return friends;
@@ -71,24 +80,26 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
     }
   }
   else if (!outgoing.isEmpty() && incoming.isEmpty()) {
-    if (outgoing.status == Status.accepted) {
-      return friends;
-    }
-    else if (outgoing.status == Status.pending) {
-      return pending;
-    }
-    else {
-      return rejected;
+    switch(outgoing.status) {
+      case Status.accepted:
+        return friends;
+      case Status.pending:
+        return pending;
+      default:
+        return rejected;
     }
   }
   else if (outgoing.isEmpty() && !incoming.isEmpty()) {
-    if (incoming.status == Status.accepted) {
-      return friends;
-    }
-    else if (incoming.status == Status.pending) {
-      return waitingResponse;
+    switch(incoming.status) {
+      case Status.accepted:
+        return friends;
+      case Status.pending:
+        return waitingResponse;
+      default:
     }
   }
+
+
   return FilledButton.tonal(
     onPressed: () {
       http.sendFriendRequest(curUser.id, otherUser.id).then((result){
