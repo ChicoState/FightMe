@@ -12,22 +12,29 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
   List<FriendRequest> otherRequests = await http.getAllFriendRequests(otherUser.id);
   FriendRequest? outgoing = otherRequests.firstWhere((element) => element.fromUserID == curUser.id, orElse: () => FriendRequest.empty());
   FriendRequest? incoming = myRequests.firstWhere((element) => element.fromUserID == otherUser.id, orElse: () => FriendRequest.empty());
+  // TODO: Figure out how to get this value initialized only when accepted conditions are met.
+  late Chatroom chat;
+  http.getChatroomsByUserId(curUser.id).then((result) {
+    chat = result.firstWhere((element) => element.users.firstWhere((user) => user.id == otherUser.id, orElse: () => User("Gibby")).id != 0, orElse: () => Chatroom("Freddy"));
+  });
   Widget friends = FilledButton.tonal(
     onPressed: () {
-      late Chatroom chat;
-      http.getChatroomsByUserId(curUser.id).then((result) {
-        chat = result.firstWhere((element) => element.users.firstWhere((user) => user.id == otherUser.id).id != 0);
-      });
-      Navigator.push(
-          context,
-          MaterialPageRoute<ChatPage>(
-              builder: (context) => ChatPage(
-                chatroomID: 1,
-                currentUser: curUser,
-                currentUID: curUser.id,
-                otherUser: otherUser,
-                otherUID: otherUser.id,
-              )));
+      if (chat.id != 0) {
+        Navigator.push(
+            context,
+            MaterialPageRoute<ChatPage>(
+                builder: (context) =>
+                    ChatPage(
+                      chatroomID: chat.id,
+                      currentUser: curUser,
+                      currentUID: curUser.id,
+                      otherUser: otherUser,
+                      otherUID: otherUser.id,
+                    )));
+      }
+      else {
+        // TODO: Figure out what kind of error handling to do here.
+      }
     },
     child: const Text("chat"),
   );
@@ -37,6 +44,10 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
       FilledButton.tonal(
         onPressed: () {
           http.acceptFriendRequest(incoming.id).then((result){
+            return;
+          });
+          List<int> userIDs = [curUser.id, otherUser.id];
+          http.postChatroom(userIDs).then((result){
             return;
           });
           update();

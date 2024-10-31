@@ -59,7 +59,9 @@ class ChatPageState extends State<ChatPage> {
               },
               child: Text(widget.otherUser.name),
             ),
-            messagesView(),
+            Expanded(
+              child: messagesView(),
+            ),
             TextField(
               controller: textEditControl,
               decoration: const InputDecoration(

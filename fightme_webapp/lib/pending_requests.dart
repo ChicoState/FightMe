@@ -46,7 +46,12 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                           http.acceptFriendRequest(request.id).then((result){
                             return;
                           });
+                          List<int> userIDs = [curUser.id, user.id];
+                          http.postChatroom(userIDs).then((result){
+                            return;
+                          });
                           setState(() {
+                            _list = _buildList();
                           });
                         },
                         child: const Text("accept"),
@@ -57,6 +62,7 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                             return;
                           });
                           setState(() {
+                            _list = _buildList();
                           });
                         },
                         child: const Text("reject"),

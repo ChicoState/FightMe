@@ -74,6 +74,18 @@ class HttpService {
     }
   }
 
+  Future<void> postChatroom(List<int> userIDs) async {
+    Response res = await post(Uri.parse("${springbootChatroomURL}create"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userIds": userIDs}));
+    print(res.body);
+    if (res.statusCode == 201) {
+      print("Chatroom created successfully.");
+    } else {
+      throw "Unable to create chatroom.";
+    }
+  }
+
   Future<void> postMessage(Message message) async {
     Response res = await post(Uri.parse(springbootMessageURL),
         headers: {"Content-Type": "application/json"},
