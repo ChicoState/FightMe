@@ -12,7 +12,7 @@ class Chatroom{
     users = [];
     messages = [];
 
-    for(var userJson in json['user']){
+    for(var userJson in json['users']){
       users.add(User.fromJson(userJson));
     }
 

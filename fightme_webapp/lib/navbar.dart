@@ -10,8 +10,7 @@ import 'globals.dart' as globals;
 
 class navbar extends StatefulWidget {
   final User curUser;
-  const navbar({super.key,
-  required this.curUser});
+  const navbar({super.key, required this.curUser});
 
   @override
   State<navbar> createState() => _BottomNavigationBarExampleState();
