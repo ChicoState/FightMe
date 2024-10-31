@@ -16,8 +16,8 @@ class Chatroom{
       users.add(User.fromJson(userJson));
     }
 
-    if(json['messages'] != null){
-      for(var messageJson in json['messages']){
+    if(json['conversations'] != null){
+      for(var messageJson in json['conversations']){
         messages.add(Message.fromJson(messageJson));
       }
     }
@@ -31,7 +31,7 @@ class Chatroom{
     return{
       'id': id,
       'users': users,
-      'messages': messagesToJson,
+      'conversations': messagesToJson,
     };
   }
 
