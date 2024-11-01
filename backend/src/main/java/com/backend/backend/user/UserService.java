@@ -27,6 +27,7 @@ public interface UserService {
 
     List<Long> getFriends(Long id);
 
+    List<UserDto> getSuggestedFriends(Long id);
     //Remove a user *Future
     //Edit a user *Future
 }
