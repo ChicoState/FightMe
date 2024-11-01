@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
+import 'globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
   final User userViewed;
   final User curUser;
-  // final List<int> currentUserFriends;
   const ProfilePage(
   {super.key,
   required this.userViewed, required this.curUser});
