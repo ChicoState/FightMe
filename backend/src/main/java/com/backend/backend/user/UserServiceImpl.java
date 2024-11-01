@@ -45,6 +45,13 @@ public class UserServiceImpl implements UserService {
         return users.stream().map((user) -> UserMapper.mapToUserDto(user)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Long> getFriends(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        return user.getFriends();
+    }
+
     // END OF ALL GET 
     // ==============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
     // START OF ALL UPDATE

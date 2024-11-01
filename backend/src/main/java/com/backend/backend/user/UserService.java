@@ -25,6 +25,8 @@ public interface UserService {
 
     void deleteFriend(Long id, FriendDto friendId);
 
+    List<Long> getFriends(Long id);
+
     //Remove a user *Future
     //Edit a user *Future
 }
