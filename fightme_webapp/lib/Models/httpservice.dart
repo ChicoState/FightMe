@@ -56,10 +56,15 @@ class HttpService {
   }
 
   Future<int> signupUser(String username, String email, String password) async {
+    Map<String, dynamic> input = {
+      'name': username,
+      'email': email,
+      'password': password,
+    };
     Response res = await post(
       Uri.parse(springbootSignupURL),
       headers: {"Content-Type": "application/json"},
-      body: {"name": username, "email": email, "password": password},
+      body: jsonEncode(input),
     );
     print(res.body);
     if (res.statusCode == 200) {
@@ -72,11 +77,14 @@ class HttpService {
   }
 
   Future<int> loginUser(String email, String password) async {
-    Response res = await post(
-      Uri.parse(springbootLoginURL),
-      headers: {"Content-Type": "application/json"},
-      body: {"email": email, "password": password},
-    );
+    Map<String, dynamic> input = {
+      'email': email,
+      'password': password,
+    };
+    Response res = await post(Uri.parse(springbootLoginURL),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(input) //{"email": email, "password": password},
+        );
     print(res.body);
     if (res.statusCode == 200) {
       print("User credentials verified");

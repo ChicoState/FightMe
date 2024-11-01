@@ -89,86 +89,40 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: const EdgeInsets.all(8.0),
           children: <Widget>[
-            Text(checkLoggedIn),
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                hintText: "Username",
-              ),
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                hintText: "Email",
-              ),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                hintText: "Password",
-              ),
+            const Text(
+              'Select Current User:',
             ),
             ElevatedButton(
                 onPressed: () async {
-                  curUID = await HttpService().loginUser(
-                      _emailController.text, _passwordController.text);
-                  if (curUID >= 0) {
-                    curUser = await HttpService().getUserByID(curUID);
-                    checkLoggedIn = "Logged in as: ${curUser.name}";
-                  } else {
-                    checkLoggedIn = "Email/Password did not match.";
-                  }
+                  curUser = await HttpService().getUserByID(1);
+                  User otherUser = await HttpService().getUserByID(2);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<ChatPage>(
+                          builder: (context) => ChatPage(
+                                chatroomID: 1,
+                                currentUser: curUser,
+                                currentUID: curUser.id,
+                                otherUser: otherUser,
+                                otherUID: otherUser.id,
+                              )));
                 },
-                child: const Text("Login")),
+                child: const Text('User 1')),
             ElevatedButton(
                 onPressed: () async {
-                  curUID = await HttpService().signupUser(
-                      _usernameController.text,
-                      _emailController.text,
-                      _passwordController.text);
-                  if (curUID >= 0) {
-                    curUser = await HttpService().getUserByID(curUID);
-                    checkLoggedIn =
-                        "Account created. Logged in as ${curUser.name}";
-                  } else {
-                    checkLoggedIn = "Could not create account.";
-                  }
+                  curUser = await HttpService().getUserByID(2);
+                  User otherUser = await HttpService().getUserByID(1);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<ChatPage>(
+                          builder: (context) => ChatPage(
+                              chatroomID: 1,
+                              currentUser: curUser,
+                              currentUID: curUser.id,
+                              otherUser: otherUser,
+                              otherUID: otherUser.id)));
                 },
-                child: const Text("Register")),
-            //   const Text(
-            //     'Select Current User:',
-            //   ),
-            //   ElevatedButton(
-            //       onPressed: () async {
-            //         curUser = await HttpService().getUserByID(1);
-            //         User otherUser = await HttpService().getUserByID(2);
-            //         Navigator.push(
-            //             context,
-            //             MaterialPageRoute<ChatPage>(
-            //                 builder: (context) => ChatPage(
-            //                       chatroomID: 1,
-            //                       currentUser: curUser,
-            //                       currentUID: curUser.id,
-            //                       otherUser: otherUser,
-            //                       otherUID: otherUser.id,
-            //                     )));
-            //       },
-            //       child: const Text('User 1')),
-            //   ElevatedButton(
-            //       onPressed: () async {
-            //         curUser = await HttpService().getUserByID(2);
-            //         User otherUser = await HttpService().getUserByID(1);
-            //         Navigator.push(
-            //             context,
-            //             MaterialPageRoute<ChatPage>(
-            //                 builder: (context) => ChatPage(
-            //                     chatroomID: 1,
-            //                     currentUser: curUser,
-            //                     currentUID: curUser.id,
-            //                     otherUser: otherUser,
-            //                     otherUID: otherUser.id)));
-            //       },
-            //       child: const Text('User 2')),
+                child: const Text('User 2')),
             const SizedBox(height: 10),
           ],
         ),

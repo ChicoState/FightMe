@@ -10,3 +10,4 @@ import 'package:flutter/material.dart';
 
 bool loggedIn = false;
 int uid = 0;
+User curUser = User("");
