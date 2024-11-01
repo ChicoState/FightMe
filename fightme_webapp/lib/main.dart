@@ -11,7 +11,12 @@ import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
+<<<<<<< HEAD
 User curUser = User("placeholder");
+=======
+int curUID = -1;
+User curUser = User("Yep");
+>>>>>>> b91c47b (Add login page and httprequest calls for login)
 
 Future<void> main() async{
   globals.uid = 1;
@@ -44,9 +49,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _myController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
+  String checkLoggedIn = "Not Logged In";
   String entertext = "";
 
+<<<<<<< HEAD
   @override
   void initState() {
   super.initState();
@@ -59,6 +68,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _myController.text = "";
     });
   }
+=======
+  // void _changeText() {
+  //   setState(() {
+  //     entertext = _myController.text;
+  //     HttpService().postUser(User(entertext));
+  //     _myController.text = "";
+  //   });
+  // }
+>>>>>>> b91c47b (Add login page and httprequest calls for login)
 
   @override
   Widget build(BuildContext context) {
@@ -71,40 +89,86 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(
           padding: const EdgeInsets.all(8.0),
           children: <Widget>[
-            const Text(
-              'Select Current User:',
+            Text(checkLoggedIn),
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                hintText: "Username",
+              ),
+            ),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                hintText: "Email",
+              ),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                hintText: "Password",
+              ),
             ),
             ElevatedButton(
                 onPressed: () async {
-                  curUser = await HttpService().getUserByID(1);
-                  User otherUser = await HttpService().getUserByID(2);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<ChatPage>(
-                          builder: (context) => ChatPage(
-                                chatroomID: 1,
-                                currentUser: curUser,
-                                currentUID: curUser.id,
-                                otherUser: otherUser,
-                                otherUID: otherUser.id,
-                              )));
+                  curUID = await HttpService().loginUser(
+                      _emailController.text, _passwordController.text);
+                  if (curUID >= 0) {
+                    curUser = await HttpService().getUserByID(curUID);
+                    checkLoggedIn = "Logged in as: ${curUser.name}";
+                  } else {
+                    checkLoggedIn = "Email/Password did not match.";
+                  }
                 },
-                child: const Text('User 1')),
+                child: const Text("Login")),
             ElevatedButton(
                 onPressed: () async {
-                  curUser = await HttpService().getUserByID(2);
-                  User otherUser = await HttpService().getUserByID(1);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<ChatPage>(
-                          builder: (context) => ChatPage(
-                              chatroomID: 1,
-                              currentUser: curUser,
-                              currentUID: curUser.id,
-                              otherUser: otherUser,
-                              otherUID: otherUser.id)));
+                  curUID = await HttpService().signupUser(
+                      _usernameController.text,
+                      _emailController.text,
+                      _passwordController.text);
+                  if (curUID >= 0) {
+                    curUser = await HttpService().getUserByID(curUID);
+                    checkLoggedIn =
+                        "Account created. Logged in as ${curUser.name}";
+                  } else {
+                    checkLoggedIn = "Could not create account.";
+                  }
                 },
-                child: const Text('User 2')),
+                child: const Text("Register")),
+            //   const Text(
+            //     'Select Current User:',
+            //   ),
+            //   ElevatedButton(
+            //       onPressed: () async {
+            //         curUser = await HttpService().getUserByID(1);
+            //         User otherUser = await HttpService().getUserByID(2);
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute<ChatPage>(
+            //                 builder: (context) => ChatPage(
+            //                       chatroomID: 1,
+            //                       currentUser: curUser,
+            //                       currentUID: curUser.id,
+            //                       otherUser: otherUser,
+            //                       otherUID: otherUser.id,
+            //                     )));
+            //       },
+            //       child: const Text('User 1')),
+            //   ElevatedButton(
+            //       onPressed: () async {
+            //         curUser = await HttpService().getUserByID(2);
+            //         User otherUser = await HttpService().getUserByID(1);
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute<ChatPage>(
+            //                 builder: (context) => ChatPage(
+            //                     chatroomID: 1,
+            //                     currentUser: curUser,
+            //                     currentUID: curUser.id,
+            //                     otherUser: otherUser,
+            //                     otherUID: otherUser.id)));
+            //       },
+            //       child: const Text('User 2')),
             const SizedBox(height: 10),
           ],
         ),

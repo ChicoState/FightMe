@@ -10,7 +10,10 @@ class HttpService {
   final String springbootUserURL = "http://localhost:8080/api/users/";
   final String springbootChatroomURL = "http://localhost:8080/api/chatroom/";
   final String springbootMessageURL = "http://localhost:8080/api/messages";
-  final String springbootFriendRequestURL = "http://localhost:8080/api/friendrequests";
+  final String springbootFriendRequestURL =
+      "http://localhost:8080/api/friendrequests";
+  final String springbootLoginURL = "http://localhost:8080/api/login";
+  final String springbootSignupURL = "http://localhost:8080/api/signup";
 
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
@@ -52,6 +55,38 @@ class HttpService {
     }
   }
 
+  Future<int> signupUser(String username, String email, String password) async {
+    Response res = await post(
+      Uri.parse(springbootSignupURL),
+      headers: {"Content-Type": "application/json"},
+      body: {"name": username, "email": email, "password": password},
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      print("User registered.");
+      return int.parse(res.body);
+    } else {
+      print("Failed to register user.");
+      return -1;
+    }
+  }
+
+  Future<int> loginUser(String email, String password) async {
+    Response res = await post(
+      Uri.parse(springbootLoginURL),
+      headers: {"Content-Type": "application/json"},
+      body: {"email": email, "password": password},
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      print("User credentials verified");
+      return int.parse(res.body);
+    } else {
+      print("User verification failed");
+      return -1;
+    }
+  }
+
   void postUser(User user) async {
     Response res = await post(Uri.parse(springbootUserURL),
         headers: {"Content-Type": "application/json"},
@@ -81,7 +116,7 @@ class HttpService {
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<Chatroom> chatrooms =
-      body.map((dynamic item) => Chatroom.fromJson(item)).toList();
+          body.map((dynamic item) => Chatroom.fromJson(item)).toList();
       return chatrooms;
     } else {
       print("Status Code: ${res.statusCode}");
@@ -116,8 +151,8 @@ class HttpService {
   //send a friend request to a user
   Future<void> sendFriendRequest(int fromUserID, int toUserID) async {
     Response res = await post(Uri.parse(springbootFriendRequestURL),
-      headers: {"Content-Type": "application/json"}, 
-      body: jsonEncode({"fromUserID": fromUserID, "toUserID": toUserID}));
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"fromUserID": fromUserID, "toUserID": toUserID}));
     if (res.statusCode == 201) {
       print("Friend request sent successfully.");
     } else {
@@ -164,7 +199,8 @@ class HttpService {
 
   //Get suggested list of users to add as friends
   Future<List<User>> getSuggestedFriends(int userID) async {
-    Response res = await get(Uri.parse("$springbootUserURL$userID/suggestedFriends"));
+    Response res =
+        await get(Uri.parse("$springbootUserURL$userID/suggestedFriends"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<User> suggestedFriends =
@@ -174,12 +210,11 @@ class HttpService {
       throw "Unable to retrieve suggested friends for user $userID";
     }
   }
-  
+
   //Update the user's stats
   Future<void> updateUserStats(int userID, Map<String, int> stats) async {
     Response res = await put(Uri.parse("$springbootUserURL$userID/stats"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(stats));
+        headers: {"Content-Type": "application/json"}, body: jsonEncode(stats));
     if (res.statusCode == 200) {
       print("Stats updated successfully.");
     } else {
@@ -197,4 +232,4 @@ class HttpService {
       throw "Unable to update user gamer score.";
     }
   }
-} 
+}
