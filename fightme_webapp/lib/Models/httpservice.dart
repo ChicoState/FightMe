@@ -146,4 +146,17 @@ class HttpService {
       throw "Unable to reject friend request.";
     }
   }
+
+  //Get suggested list of users to add as friends
+  Future<List<User>> getSuggestedFriends(int userID) async {
+    Response res = await get(Uri.parse("$springbootUserURL$userID/suggestedFriends"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<User> suggestedFriends =
+          body.map((dynamic item) => User.fromJson(item)).toList();
+      return suggestedFriends;
+    } else {
+      throw "Unable to retrieve suggested friends for user $userID";
+    }
+  }
 }
