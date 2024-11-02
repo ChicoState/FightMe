@@ -146,4 +146,22 @@ class HttpService {
       throw "Unable to reject friend request.";
     }
   }
+
+
+  // update stats for a user
+  Future<void> updateUserStats(int userId, int attackScore, int defenseScore, int magicScore) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userId/stats"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "attackScore": attackScore,
+        "defenseScore": defenseScore,
+        "magicScore": magicScore,
+      }),
+    );
+    if (res.statusCode == 200) {
+      print("User stats updated successfully.");
+    } else {
+      throw "Unable to update stats for user ID: $userId";
+    }
+  }
 }
