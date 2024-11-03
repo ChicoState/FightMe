@@ -1,3 +1,4 @@
+import 'package:fightme_webapp/fight_game_page.dart';
 import 'package:fightme_webapp/searchbar.dart';
 
 import 'chat_page.dart';
@@ -32,8 +33,8 @@ class _BottomNavigationBarExampleState extends State<navbar> {
     final List<Widget> _widgetOptions = <Widget>[
       //make call to page like this: home();
       ChatsMasterPage(curUser: widget.curUser),
-      const home(),
-      // Searchbar(),
+      // const home(),
+      FightGamePage(),
       ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
     ];
     return Scaffold(
@@ -46,9 +47,13 @@ class _BottomNavigationBarExampleState extends State<navbar> {
             icon: Icon(Icons.chat),
             label: 'chats',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.home),
+          //   label: 'home',
+          // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'home',
+            icon: Icon(Icons.gamepad),
+            label: 'fight',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle_sharp),
