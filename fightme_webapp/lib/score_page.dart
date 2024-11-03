@@ -1,32 +1,27 @@
 import 'package:flutter/material.dart';
+import 'Models/httpservice.dart';
 
 class ScorePage extends StatefulWidget {
+  final int userId;
 
   const ScorePage(
-    {super.key}
+    {super.key, required this.userId}
   );
   @override
   State<ScorePage> createState() => ScorePageState();
 }
+
 
 class ScorePageState extends State<ScorePage> {
   int attackScore = 0;
   int defenseScore = 0;
   int magicScore = 0;
 
-  void incrementScore(String scoreType) {
-    setState(() {
-      if (scoreType == "attack"){ 
-        attackScore += 1;
-      }
-      else if (scoreType == "defense"){
-         defenseScore += 1;
-      }
-      else if (scoreType == "magic"){
-        magicScore += 1;
-      }
-    });
+
+  void updateScores() async {
+    await HttpService().updateUserStats(widget.userId, attackScore, defenseScore, magicScore);
   }
+
 
  @override
   Widget build(BuildContext context) {
@@ -36,33 +31,47 @@ class ScorePageState extends State<ScorePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Score Displays at the Top
+
           Column(
             children: [
-              Text('Attack Score: $attackScore', style: const TextStyle(fontSize: 20)),
+              Text('Attack Score: $attackScore'),
               const SizedBox(height: 10),
-              Text('Defense Score: $defenseScore', style: const TextStyle(fontSize: 20)),
+              Text('Defense Score: $defenseScore'),
               const SizedBox(height: 10),
-              Text('Magic Score: $magicScore', style: const TextStyle(fontSize: 20)),
+              Text('Magic Score: $magicScore'),
             ],
           ),
           
-          // Score Increment Buttons at the Bottom
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => incrementScore("attack"),
+                  onPressed: () {
+                    setState(() {
+                      attackScore += 1;
+                    });
+                    updateScores();
+                  },
                   child: const Text('Increase Attack'),
                 ),
                 ElevatedButton(
-                  onPressed: () => incrementScore("defense"),
+                  onPressed: () {
+                    setState(() {
+                      defenseScore += 1;
+                    });
+                    updateScores();
+                  },
                   child: const Text('Increase Defense'),
                 ),
                 ElevatedButton(
-                  onPressed: () => incrementScore("magic"),
+                  onPressed: () {
+                    setState(() {
+                      magicScore += 1;
+                    });
+                    updateScores();
+                  },
                   child: const Text('Increase Magic'),
                 ),
               ],
