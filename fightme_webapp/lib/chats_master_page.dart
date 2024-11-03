@@ -1,3 +1,4 @@
+import 'package:fightme_webapp/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'Models/chatroom.dart';
 import 'chat_page.dart';
@@ -19,6 +20,8 @@ class ChatsMasterPage extends StatefulWidget {
 class ChatsMasterPageState extends State<ChatsMasterPage> {
   late Future<List<Widget>> _list = Future.value([]);
   late User curUser;
+  late List<User> suggestedFriends = [];
+
 
   Future<List<Widget>> _buildList() async {
     List<Widget> list = List.empty(growable: true);
@@ -67,13 +70,26 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
     super.initState();
     curUser = widget.curUser;
     _list = _buildList();
+    HttpService().getSuggestedFriends(globals.uid).then((value) {
+      setState(() {
+        suggestedFriends = value;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chats"),
+        title: const Text("Chats", style: TextStyle(fontSize: 30)),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchDelegate(suggestedFriends, curUser));
+            },
+            icon: const Icon(Icons.search, size: 40),
+          ),
+        ],
       ),
       body: Center(
         child: Column(

@@ -78,4 +78,16 @@ public class UserController {
         userService.deleteFriend(id, friendDto);
         return ResponseEntity.ok("Friend Deleted");
     }
+
+    @GetMapping("{id}/friends")
+    public ResponseEntity<List<Long>> getFriends(@PathVariable("id") Long id) {
+        List<Long> friends = userService.getFriends(id);
+        return new ResponseEntity<>(friends, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/suggestedFriends")
+    public ResponseEntity<List<UserDto>> getSuggestedFriends(@PathVariable("id") Long id) {
+        List<UserDto> suggestedFriends = userService.getSuggestedFriends(id);
+        return new ResponseEntity<>(suggestedFriends, HttpStatus.OK);
+    }
 }

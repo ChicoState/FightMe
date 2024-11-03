@@ -1,4 +1,5 @@
 package com.backend.backend.user;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,28 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map((user) -> UserMapper.mapToUserDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getFriends(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        return user.getFriends();
+    }
+
+    @Override
+    public List<UserDto> getSuggestedFriends(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        List<User> myFriends = user.getFriends().stream().map((friendId) -> userRepository.findById(friendId).orElseThrow(() -> new ResourceNotFoundException("User not found" + friendId))).collect(Collectors.toList());
+        List<User> everyUser = userRepository.findAll();
+        List<UserDto> suggestedFriends = new ArrayList<>();
+        for(User userr : everyUser){
+            if(!myFriends.contains(userr) && userr.getId() != id){
+                suggestedFriends.add(UserMapper.mapToUserDto(userr));
+            }
+        }        
+        return suggestedFriends;
     }
 
     // END OF ALL GET 

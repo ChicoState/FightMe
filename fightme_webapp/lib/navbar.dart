@@ -1,3 +1,5 @@
+import 'package:fightme_webapp/searchbar.dart';
+
 import 'chat_page.dart';
 import 'chats_master_page.dart';
 import 'main.dart';
@@ -31,6 +33,7 @@ class _BottomNavigationBarExampleState extends State<navbar> {
       //make call to page like this: home();
       ChatsMasterPage(curUser: widget.curUser),
       const home(),
+      // Searchbar(),
       ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
     ];
     return Scaffold(
