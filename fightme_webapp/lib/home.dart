@@ -1,9 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart';
-import 'chat_page.dart';
-import 'navbar.dart';
-import 'Models/chatroom.dart';
-import 'Models/message.dart';
 import 'Models/user.dart';
 import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
@@ -121,40 +115,6 @@ class _HomeState extends State<home> {
                   });
                 },
                 child: const Text("Logout")),
-            // const Text(
-            //   'Select Current User:',
-            // ),
-            // ElevatedButton(
-            //     onPressed: () async {
-            //       User curUser = await HttpService().getUserByID(1);
-            //       User otherUser = await HttpService().getUserByID(2);
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute<ChatPage>(
-            //               builder: (context) => ChatPage(
-            //                     chatroomID: 1,
-            //                     currentUser: curUser,
-            //                     currentUID: curUser.id,
-            //                     otherUser: otherUser,
-            //                     otherUID: otherUser.id,
-            //                   )));
-            //     },
-            //     child: const Text('User 1')),
-            // ElevatedButton(
-            //     onPressed: () async {
-            //       User curUser = await HttpService().getUserByID(2);
-            //       User otherUser = await HttpService().getUserByID(1);
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute<ChatPage>(
-            //               builder: (context) => ChatPage(
-            //                   chatroomID: 1,
-            //                   currentUser: curUser,
-            //                   currentUID: curUser.id,
-            //                   otherUser: otherUser,
-            //                   otherUID: otherUser.id)));
-            //     },
-            //     child: const Text('User 2')),
             const SizedBox(height: 10),
           ],
         ),
