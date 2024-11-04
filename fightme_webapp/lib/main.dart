@@ -13,7 +13,7 @@ import 'globals.dart' as globals;
 
 User curUser = User("placeholder");
 
-Future<void> main() async{
+Future<void> main() async {
   globals.uid = 1;
   curUser = await HttpService().getUserByID(globals.uid);
   runApp(const MyApp());
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-  super.initState();
+    super.initState();
   }
 
   void _changeText() {

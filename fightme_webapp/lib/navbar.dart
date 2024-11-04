@@ -20,7 +20,7 @@ class navbar extends StatefulWidget {
 }
 
 class _BottomNavigationBarExampleState extends State<navbar> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -32,25 +32,27 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
       //make call to page like this: home();
-      ChatsMasterPage(curUser: widget.curUser),
+      const home(),
+      ChatsMasterPage(curUser: globals.curUser),
       // const home(),
       FightGamePage(),
-      ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
+      ProfilePage(curUser: globals.curUser, userViewed: globals.curUser),
     ];
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'login',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'chats',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.home),
-          //   label: 'home',
-          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.gamepad),
             label: 'fight',
