@@ -46,7 +46,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("User ${widget.currentUID}"),
+        title: Text(widget.otherUser.name),
       ),
       body: Center(
         child: Column(
@@ -102,7 +102,7 @@ class ChatPageState extends State<ChatPage> {
         return Column(children: <Widget>[
           ListTile(
             title: Text(messages[index].content),
-            subtitle: Text("User ${messages[index].fromId}"),
+            subtitle: Text(messages[index].fromId == widget.currentUser.id ? widget.currentUser.name : widget.otherUser.name),
           )
         ]);
       });
