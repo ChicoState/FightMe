@@ -23,7 +23,6 @@ Widget buildFightButton(BuildContext context, User user1, User user2) {
             builder: (BuildContext context) =>
                 AlertDialog(
                   title: const Text('Fight!'),
-
                   content: SizedBox(
                     height: 100,
                     child: Column(
