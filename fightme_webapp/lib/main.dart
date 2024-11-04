@@ -11,16 +11,11 @@ import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
-<<<<<<< HEAD
 User curUser = User("placeholder");
-=======
-int curUID = -1;
-User curUser = User("Yep");
->>>>>>> b91c47b (Add login page and httprequest calls for login)
 
-Future<void> main() async{
+Future<void> main() async {
   globals.uid = 1;
-  curUser = await HttpService().getUserByID(globals.uid);
+  //curUser = await HttpService().getUserByID(globals.uid);
   runApp(const MyApp());
 }
 
@@ -49,16 +44,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _usernameController = TextEditingController();
-  String checkLoggedIn = "Not Logged In";
+  final _myController = TextEditingController();
   String entertext = "";
 
-<<<<<<< HEAD
   @override
   void initState() {
-  super.initState();
+    super.initState();
   }
 
   void _changeText() {
@@ -68,15 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _myController.text = "";
     });
   }
-=======
-  // void _changeText() {
-  //   setState(() {
-  //     entertext = _myController.text;
-  //     HttpService().postUser(User(entertext));
-  //     _myController.text = "";
-  //   });
-  // }
->>>>>>> b91c47b (Add login page and httprequest calls for login)
 
   @override
   Widget build(BuildContext context) {
