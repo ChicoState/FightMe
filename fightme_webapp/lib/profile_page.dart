@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
+import 'Models/httpservice.dart';
 import 'globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
@@ -15,11 +16,40 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  late Future<List<User>> _friends;
+
   void _update() {
     setState(() {
 
     });
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _friends = HttpService().getFriends(widget.userViewed.id);
+  }
+
+  friendsListView(list) => ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return Column(children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.account_circle_sharp),
+            onTap: () =>
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<ProfilePage>(
+                        builder: (context) => ProfilePage(
+                            curUser: widget.curUser,
+                            userViewed: list[index]))),
+            title: Text(list[index].name),
+          )
+        ]);
+      }
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +79,27 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 widget.userViewed.id == widget.curUser.id ?
                 IconButton(
-                  onPressed: () {
-
-                  },
+                  onPressed: () =>
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            AlertDialog(
+                              title: const Text('Are you sure you want to log out?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    globals.uid == 0;
+                                    // Navigator.pushNamedAndRemoveUntil(context, "/newRouteName", (r) => false);
+                                  },
+                                  child: const Text('logout'),
+                                ),
+                              ],
+                            ),
+                      ),
                   icon: const Icon(Icons.logout),
                 ): const SizedBox.shrink(),
               ],
@@ -115,20 +163,34 @@ class ProfilePageState extends State<ProfilePage> {
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.symmetric(horizontal:  30.0),
                       decoration: BoxDecoration(border: Border.all()),
-                      child: listView(friendsList),
+                      child:FutureBuilder(future: _friends, builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data!.isEmpty) {
+                            return const Text(
+                                "No friends. Go make some!");
+                          }
+                          else {
+                            return friendsListView(snapshot.data!);
+                          }
+                        }
+                        else {
+                          return const CircularProgressIndicator();
+                        }
+                      }),
                     ),
                   ],
                 ),
                 Column(
                   children: [
-                    const Text("Friends"),
+                    const Text("Placeholder"),
                     Container(
                       height: MediaQuery.of(context).size.height / 2,
                       width: MediaQuery.of(context).size.width / 2 - 60.0,
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.symmetric(horizontal:  30.0),
                       decoration: BoxDecoration(border: Border.all()),
-                      child: listView(friendsList),
+                      child: const Text("What would you like to see here?", style: TextStyle(
+                          fontSize: 40, )),
                     ),
                   ],
                 ),
@@ -140,16 +202,3 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-listView(list) => ListView.builder(
-    scrollDirection: Axis.vertical,
-    shrinkWrap: true,
-    itemCount: list.length,
-    itemBuilder: (context, index) {
-      return Column(children: <Widget>[
-        ListTile(
-          title: Text(list[index]),
-        )
-      ]);
-    }
-);
