@@ -1,3 +1,4 @@
+import 'package:fightme_webapp/gamerscore_shop.dart';
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
@@ -56,7 +57,23 @@ class ProfilePageState extends State<ProfilePage> {
     List<String> friendsList = List<String>.filled(5, widget.userViewed.name);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("Fight Me"),
+        actions: [
+          if (widget.userViewed.id == widget.curUser.id) ...[
+            Text("${widget.userViewed.gamerScore}", style: const TextStyle(fontSize: 20),),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<GamerscoreShop>(
+                      builder: (context) => GamerscoreShop(curUser: widget.userViewed)),
+                );
+              },
+              icon: const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+            ),
+          ],
+        ],
       ),
       body: Center(
         child: Column(
