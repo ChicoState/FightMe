@@ -22,7 +22,7 @@ class HttpService {
           body.map((dynamic item) => User.fromJson(item)).toList();
       return users;
     } else {
-      throw "Unable to retrive user data.";
+      throw "Unable to retrieve user data.";
     }
   }
 
@@ -34,6 +34,21 @@ class HttpService {
       return lookup;
     } else {
       throw "Unable to retrieve userID: $id";
+    }
+  }
+
+  Future<List<User>> getFriends(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id/friends"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<int> ids = List.from(body);
+      List<User> friends = List.empty(growable: true);
+      for (var id in ids) {
+        friends.add(await getUserByID(id));
+      }
+      return friends;
+    } else {
+      throw "Unable to retrieve user data.";
     }
   }
 
