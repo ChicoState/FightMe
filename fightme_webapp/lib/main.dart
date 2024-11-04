@@ -15,7 +15,7 @@ User curUser = User("placeholder");
 
 Future<void> main() async {
   globals.uid = 1;
-  //curUser = await HttpService().getUserByID(globals.uid);
+  curUser = await HttpService().getUserByID(globals.uid);
   runApp(const MyApp());
 }
 

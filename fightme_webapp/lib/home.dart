@@ -33,6 +33,15 @@ class _HomeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
+    if (globals.loggedIn) {
+      setState(() {
+        checkLoggedIn = "Logged in as: ${globals.curUser.name}";
+      });
+    } else {
+      setState(() {
+        checkLoggedIn = "Not Logged In";
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -65,12 +74,18 @@ class _HomeState extends State<home> {
                 onPressed: () async {
                   globals.uid = await HttpService().loginUser(
                       _emailController.text, _passwordController.text);
-                  if (globals.uid >= 0) {
+                  if (globals.uid > 0) {
                     globals.curUser =
                         await HttpService().getUserByID(globals.uid);
-                    checkLoggedIn = "Logged in as: ${globals.curUser.name}";
+                    globals.loggedIn = true;
+                    setState(() {
+                      checkLoggedIn = "Logged in as: ${globals.curUser.name}";
+                    });
                   } else {
-                    checkLoggedIn = "Email/Password did not match.";
+                    globals.loggedIn = false;
+                    setState(() {
+                      checkLoggedIn = "Email/Password did not match.";
+                    });
                   }
                 },
                 child: const Text("Login")),
@@ -83,13 +98,29 @@ class _HomeState extends State<home> {
                   if (globals.uid >= 0) {
                     globals.curUser =
                         await HttpService().getUserByID(globals.uid);
-                    checkLoggedIn =
-                        "Account created. Logged in as ${globals.curUser.name}";
+                    globals.loggedIn = true;
+                    setState(() {
+                      checkLoggedIn =
+                          "Account created. Logged in as ${globals.curUser.name}";
+                    });
                   } else {
-                    checkLoggedIn = "Could not create account.";
+                    globals.loggedIn = false;
+                    setState(() {
+                      checkLoggedIn = "Could not create account.";
+                    });
                   }
                 },
                 child: const Text("Register")),
+            ElevatedButton(
+                onPressed: () {
+                  globals.loggedIn = false;
+                  globals.uid = 0;
+                  globals.curUser = User("");
+                  setState(() {
+                    checkLoggedIn = "Not Logged In";
+                  });
+                },
+                child: const Text("Logout")),
             // const Text(
             //   'Select Current User:',
             // ),
