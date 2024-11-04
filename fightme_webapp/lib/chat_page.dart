@@ -5,6 +5,8 @@ import 'Models/message.dart';
 import 'Models/user.dart';
 import 'profile_page.dart';
 import 'Widgets/fightButton.dart';
+import 'dart:math';
+
 
 class ChatPage extends StatefulWidget {
   final int chatroomID;
@@ -38,6 +40,8 @@ class ChatPageState extends State<ChatPage> {
     });
   }
 
+  late int randomNumber;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +73,11 @@ class ChatPageState extends State<ChatPage> {
               onSubmitted: (value) async {
                 await HttpService().postMessage(Message(widget.otherUID,
                     widget.currentUID, value, widget.chatroomID));
+                randomNumber = Random().nextInt(100);
+                if(randomNumber < 50) {
+                  print("I recieved $randomNumber, increase");
+                  await HttpService().updateUserGamerScore(widget.currentUID, widget.currentUser.gamerScore + 1);
+                }
                 HttpService()
                     .getChatroomMessages(widget.chatroomID)
                     .then((onValue) {

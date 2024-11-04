@@ -171,4 +171,15 @@ class HttpService {
       throw "Unable to update user stats.";
     }
   }
+
+  Future<void> updateUserGamerScore(int userID, int gamerScore) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/gamerScore"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"gamerScore": gamerScore}));
+    if (res.statusCode == 200) {
+      print("Gamer score updated successfully.");
+    } else {
+      throw "Unable to update user gamer score.";
+    }
+  }
 } 
