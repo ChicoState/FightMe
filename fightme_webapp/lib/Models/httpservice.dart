@@ -174,4 +174,16 @@ class HttpService {
       throw "Unable to retrieve suggested friends for user $userID";
     }
   }
-}
+  
+  //Update the user's stats
+  Future<void> updateUserStats(int userID, Map<String, int> stats) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/stats"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(stats));
+    if (res.statusCode == 200) {
+      print("Stats updated successfully.");
+    } else {
+      throw "Unable to update user stats.";
+    }
+  }
+} 
