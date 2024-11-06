@@ -1,9 +1,11 @@
 import 'package:fightme_webapp/gamerscore_shop.dart';
+import 'package:fightme_webapp/home.dart';
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
 import 'Models/httpservice.dart';
 import 'globals.dart' as globals;
+import 'Models/auth_clear.dart';
 
 class ProfilePage extends StatefulWidget {
   final User userViewed;
@@ -108,9 +110,14 @@ class ProfilePageState extends State<ProfilePage> {
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
-                                  onPressed: () {
-                                    globals.uid == 0;
-                                    // Navigator.pushNamedAndRemoveUntil(context, "/newRouteName", (r) => false);
+                                  onPressed: () async {
+                                    await clearUserData();
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute<Home>(
+                                          builder: (context) => Home()),
+                                      (route) => false,
+                                    );
                                   },
                                   child: const Text('logout'),
                                 ),

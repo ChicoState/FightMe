@@ -1,5 +1,7 @@
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/game/FightGame.dart';
+import 'package:fightme_webapp/globals.dart';
+import 'package:fightme_webapp/navbar.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
