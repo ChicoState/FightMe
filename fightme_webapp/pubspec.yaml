@@ -39,6 +39,7 @@ dependencies:
   http: ^1.2.2
   ffi: ^2.1.3
   flame: ^1.21.0
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:
