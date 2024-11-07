@@ -1,10 +1,20 @@
-# Backend Setup Guide for New Install 
 
-## First and foremost, you need to have Java, SpringBoot, PostgreSQL, and Postman installed on your computer.
+
+# Backend/API Guide
+
+## Table of Contents
+1. [Backend Setup](#to-get-everything-setup)
+2. [User API](#user-endpoints)
+3. [Chatroom API](#chatroom-endpoints)
+4. [Message API](#message-endpoints)
+5. [Friend Request API](#friend-request-endpoints)
+6. [Authentication API](#authentication-endpoints)
+
+## To Get Everything Setup
 
 1. Clone this repository to your computer.
 2. With VScode, under the extensions tab, install SpringBoot Extension Pack and Java Extension Pack.
-3. Install PostgreSQL 15.8 or higher. 
+3. Install [PostgreSQL](https://www.postgresql.org/download/) 15.8 or higher. 
     * For ease of use, I recommend keeping the username to postgres and setting the password to abc123.
     * Keep the port to 5432.
     * Keep cluseter local 
@@ -12,8 +22,8 @@
     * For later on, If you want to view the database, go to Servers / PostgreSQL / Databases / UserDB / Schemas / Public / Tables and you should see all your tables. From there, you can right click on one of your tables and click **View/Delete Data** then **All Rows** and then you should see your stuff. You can also refresh as well but you can find that.
 4. Install [Postman](https://www.postman.com/downloads/)
     * You can use Postman to test your API endpoints.
-    * Heres an example of one of the GET url endpoints: _http://localhost:8080/api/users/1_
-    * For POST, make sure to select body / raw / JSON ~~instead of Text~~.
+    * For POST, make sure to select body / raw / JSON ~~instead of Text~~. No need for name: "Joel" for now.
+    ![Picture cred](https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fassets.apidog.com%2Fblog%2F2024%2F03%2Fimage-61.png)
 
 ## To Run the Backend in VSCode
 
@@ -23,7 +33,267 @@
     * Like so _2024-10-04T00:43:04.697-07:00  INFO 59413 --- [backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2024-10-04T00:43:04.710-07:00  INFO 59413 --- [backend] [  restartedMain] com.backend.backend.BackendApplication   : Started BackendApplication in 4.986 seconds (process running for 5.612)_
 
-## Setting up the Database using Postman (Do in order) (Im not sure if this will work)
+- Alternatively you can use CLI to start it up but its simpler to just click some buttons but you'd have to do something along the lines of (could work, could not as well. I don't know just use the other method)
+  ```
+		mvn spring-boot:run
+  ```
+
+# API Documentation
+
+The RESTful APIs are designed to feed information to and from the frontend to the backend. Very simple APIs.
+
+## User Endpoints
+The User contains information such as username, gmail, password, but also includes gamerscore, stats, and friends.
+1. [Get Endpoints](#get-endpoints)
+2. [Post Endpoints](#post-endpoints)
+3. [Put Endpoints](#put-endpoints)
+4. [Delete Endpoints](#delete-endpoints)
+---
+### Get Endpoints
+#### Getting User Information by their UserID
+- http://localhost:8080/api/users/{userID}
+- Your response should be a 200 OK with a JSON similar to this
+```
+	{
+			"id": 1,
+            "name": "Him",
+            "dateCreated": 0,
+            "gamerScore": 9000,
+            "attackScore": 1,
+            "defenseScore": 2,
+            "magicScore": 3,
+            "friends": [
+	            1,
+	            2,
+	            3
+			],
+            "email": "him@mail.com",
+            "password": "password"
+    }
+```
+#### Getting All Users in the Database
+- http://localhost:8080/api/users
+- Your response should be a 200 OK with a JSON similar to this
+```
+	[
+		{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            3,
+		            4,
+		            5
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+	]
+```
+#### Getting a User's Friends List
+- http://localhost:8080/api/users/{userID}/friends
+- Your response should be a 200 OK with a JSON similar to 
+```
+	[
+		1,
+		2,
+		3
+	]
+```
+#### Getting a User's Suggested Friends
+- http://localhost:8080/api/users/{userID}/suggestedFriends
+- Your response should be a 200 OK with a JSON similar to 
+```
+	[
+		{
+				"id": 4,
+	            "name": "Jimmy",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [],
+	            "email": "fdas@mail.com",
+	            "password": "fdafdasfdasfdsa"
+	        },
+	        {
+				"id": 5,
+	            "name": "yessir",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            2,
+		            3
+				],
+	            "email": "yessiirrrr@mail.com",
+	            "password": "noossiiirrr"
+	        }
+	]
+```
+---
+### Post Endpoints
+#### Creating a New User
+- http://localhost:8080/api/users
+- Your body should be formatted as such (Could include more information such as stats,friends, etc...)
+```
+	{
+            "name": "Him",
+            "email": "him@mail.com",
+            "password": "password"
+    }
+```
+- Your response should be a 201 CREATED with a JSON similar to 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 0,
+	            "attackScore": 0,
+	            "defenseScore": 0,
+	            "magicScore": 0,
+	            "friends": null,
+	            "email": "him@mail.com",
+	            "password": "password"
+	 }
+```
+---
+### Put Endpoints
+#### Update a User's GamerScore
+- http://localhost:8080/api/users/{userID}/gamerScore
+- Your body should include the newly updated gamerScore you want to update with
+```
+	{
+		"gamerScore": 100
+	}
+```
+- Your response should be a 200 OK with a JSON similar to 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 0,
+	            "defenseScore": 0,
+	            "magicScore": 0,
+	            "friends": null,
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+#### Update a User's Stats
+- http://localhost:8080/api/users/{userID}/stats
+- Your body should include each of the stats; attackScore, magicScore, defenseScore
+```
+	{
+         "attackScore": 10,
+         "defenseScore": 10,
+         "magicScore": 10
+	}
+```
+- Your response should be a 200 OK with a JSON of 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 10,
+	            "defenseScore": 10,
+	            "magicScore": 10,
+	            "friends": null,
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+#### Update a User's Friends
+- http://localhost:8080/api/users/{userID}/friends
+- Your body should include the friendID as so
+```
+	{
+		"friendId": 2
+	}
+```
+- Your response should be a 200 OK with a JSON 
+```
+	{
+                "id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 10,
+	            "defenseScore": 10,
+	            "magicScore": 10,
+	            "friends": [
+		            2
+	            ],
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+---
+### Delete Endpoints 
+#### Delete a User 
+- http://localhost:8080/api/users/{userID}
+- Your response should be a 200 OK with a body of a string returning 
+```
+	User Deleted
+```
+### Delete a User's Friend
+- http://localhost:8080/api/users/{userID}/friends
+- Your response should be a 200 OK with a body of a string returning 
+```
+	Friend Deleted
+```
+---
+## Chatroom Endpoints
+## Message Endpoints
+## Friend Request Endpoints
+## Authentication Endpoints
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 1. Create 2 new Users
     * Heres an example of the JSON body for the POST request:
