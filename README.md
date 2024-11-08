@@ -53,6 +53,7 @@ Taiga O'Donnell
     - Maybe like a dungeon MMO type game where you clear stages of a dungeon and beat a boss for the final stats.
     - WebSockets
 - CI with Unit Testing
+- HAVE A LISTENER SO THE UI MATCHES THE BACKEND WITHOUT HAVING TO REFRESH TO SEE THINGS UPDATED
 
 # Programs Used
 - Flutter
