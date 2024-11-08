@@ -559,6 +559,10 @@ Not everything is finalized yet, can be changed later.
 - Update read reciepts
 - ~~Implement Friends Feature (Creating friendRequest class)~~
 
+# Sprint 3 Goals for Backend
+
+- Game Entity to store game information
+- Websockets for the game? 
 
 # Long Term Goals
 
