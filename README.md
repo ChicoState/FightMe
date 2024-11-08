@@ -52,6 +52,7 @@ Taiga O'Donnell
 - Make the training game to train up stats.
     - Maybe like a dungeon MMO type game where you clear stages of a dungeon and beat a boss for the final stats.
     - WebSockets
+- CI with Unit Testing
 
 # Programs Used
 - Flutter
