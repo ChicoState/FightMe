@@ -26,7 +26,7 @@ Taiga O'Donnell
 - Create a basic front end that displays messages and can be used to send messages
 - If possible set up authentication for different users
 
-# Spring 2 Goals: 
+# Sprint 2 Goals: 
 
 - More interactions with user scores
     - Multiple user gamerscores, attack scores, and defense scores
@@ -39,6 +39,19 @@ Taiga O'Donnell
     - login signup 
 - Friend request / Find other people
 - Update backend to handle read messages
+
+# Sprint 3 Goals: 
+
+- Main Fight game implementation with game logic (rock-paper-scissors type)
+    - Use the profile pictures to display each user.
+- UI themes that are customizable and can be bought from the shop
+    - Light/Dark theme, anime?, colorful themes.
+- Profile pictures that are preset and can be bought from the shop (maybe earned as well)
+- Display some interesting stats in the profile page
+    - Display hours played on a game, etc ...
+- Make the training game to train up stats.
+    - Maybe like a dungeon MMO type game where you clear stages of a dungeon and beat a boss for the final stats.
+    - WebSockets
 
 # Programs Used
 - Flutter
