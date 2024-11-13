@@ -1,10 +1,63 @@
-# Backend Setup Guide for New Install 
 
-## First and foremost, you need to have Java, SpringBoot, PostgreSQL, and Postman installed on your computer.
+
+
+# Backend/API Guide
+
+## Table of Contents
+-   [Backend Setup](#to-get-everything-setup)
+-   [Run the Backend in VSCode](#to-run-the-backend-in-vscode)
+-   [Run With Flutter](#to-get-this-working-with-flutter)
+-   [User API](#user-endpoints)
+    -   [Get User Endpoints](#get-user-endpoints)
+        -   [Get User by ID](#getting-user-information-by-their-user-id)
+        -   [Get All Users](#getting-all-users-in-the-database)
+        -   [Get User's Friends](#getting-a-users-friends-list)
+        -   [Get Suggested Friends](#getting-a-users-suggested-friends)
+    -   [Post User Endpoints](#post-user-endpoints)
+        -   [Create New User](#creating-a-new-user)
+    -   [Put User Endpoints](#put-user-endpoints)
+        -   [Update GamerScore](#update-a-users-gamerscore)
+        -   [Update Stats](#update-a-users-stats)
+        -   [Update Friends](#update-a-users-friends)
+    -   [Delete User Endpoints](#delete-user-endpoints)
+        -   [Delete User](#delete-a-user)
+        -   [Delete Friend](#delete-a-users-friend)
+-   [Chatroom API](#chatroom-endpoints)
+    -   [Get Chatroom Endpoints](#get-chatroom-endpoints)
+        -   [Get Chatroom by ID](#getting-a-chatroom-by-the-chatroom-id)
+        -   [Get User's Chatrooms](#getting-all-chatrooms-of-a-user)
+        -   [Get All Chatrooms](#getting-all-chatrooms)
+    -   [Post Chatroom Endpoints](#post-chatroom-endpoints)
+        -   [Create Chatroom](#create-a-chatroom-with-user-ids)
+    -   [Delete Chatroom Endpoints](#delete-chatroom-endpoints)
+        -   [Delete Chatroom](#delete-a-chatroom-with-chatroom-id)
+-   [Message API](#message-endpoints)
+    -   [Get Message Endpoints](#get-message-endpoints)
+        -   [Get Chatroom Messages](#get-all-messages-using-chatroom-id)
+    -   [Post Message Endpoints](#post-message-endpoints)
+        -   [Create Message](#post-message-endpoints)
+-   [Friend Request API](#friend-request-endpoints)
+    -   [Get Friend Request Endpoints](#get-friend-request-endpoints)
+        -   [Get User's Friend Requests](#get-all-friend-requests-for-a-user)
+    -   [Post Friend Request Endpoints](#post-friend-request-endpoints)
+        -   [Send Friend Request](#send-a-friend-request-to-a-user)
+    -   [Put Friend Request Endpoints](#put-friend-request-endpoints)
+        -   [Accept Friend Request](#accept-a-friend-request)
+        -   [Reject Friend Request](#reject-a-friend-request)
+-   [Authentication API](#authentication-endpoints)
+    -   [Post Authentication Endpoints](#post-authentication-endpoints)
+        -   [Signup](#signup)
+        -   [Login](#login)
+-   [Sprint Goals](#sprint-2-goals-for-backend)
+    -   [Sprint 2 Goals](#sprint-2-goals-for-backend)
+    -   [Sprint 3 Goals](#sprint-3-goals-for-backend)
+    -   [Long Term Goals](#long-term-goals)
+
+## To Get Everything Setup
 
 1. Clone this repository to your computer.
 2. With VScode, under the extensions tab, install SpringBoot Extension Pack and Java Extension Pack.
-3. Install PostgreSQL 15.8 or higher. 
+3. Install [PostgreSQL](https://www.postgresql.org/download/) 15.8 or higher. 
     * For ease of use, I recommend keeping the username to postgres and setting the password to abc123.
     * Keep the port to 5432.
     * Keep cluseter local 
@@ -12,8 +65,8 @@
     * For later on, If you want to view the database, go to Servers / PostgreSQL / Databases / UserDB / Schemas / Public / Tables and you should see all your tables. From there, you can right click on one of your tables and click **View/Delete Data** then **All Rows** and then you should see your stuff. You can also refresh as well but you can find that.
 4. Install [Postman](https://www.postman.com/downloads/)
     * You can use Postman to test your API endpoints.
-    * Heres an example of one of the GET url endpoints: _http://localhost:8080/api/users/1_
-    * For POST, make sure to select body / raw / JSON ~~instead of Text~~.
+    * For POST, make sure to select body / raw / JSON ~~instead of Text~~. No need for name: "Joel" for now.
+    ![Picture cred](https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fassets.apidog.com%2Fblog%2F2024%2F03%2Fimage-61.png)
 
 ## To Run the Backend in VSCode
 
@@ -23,261 +76,787 @@
     * Like so _2024-10-04T00:43:04.697-07:00  INFO 59413 --- [backend] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2024-10-04T00:43:04.710-07:00  INFO 59413 --- [backend] [  restartedMain] com.backend.backend.BackendApplication   : Started BackendApplication in 4.986 seconds (process running for 5.612)_
 
-## Setting up the Database using Postman (Do in order) (Im not sure if this will work)
+- Alternatively you can use CLI to start it up but its simpler to just click some buttons but you'd have to do something along the lines of (could work, could not as well. I don't know just use the other method)
+  ```
+		mvn spring-boot:run
+  ```
+## To Get this working with Flutter
 
-1. Create 2 new Users
-    * Heres an example of the JSON body for the POST request:
-    With the URL being: http://localhost:8080/api/users on POST
-        ```
-        {
-            "name": "Him",
-            "dateCreated": 0,
-            "gamerScore": 9000,
-            "friends": [],
-            "email": "him@mail.com",
-            "password": "password"
-        }
-        ```
-2. Create a chatroom with the 2 users you just created with no conversations.
-    * This is the better and improved version of how to create a chatroom with user 1 and 2. You should be returned the same as the previous example.
-    * Be sure to use http://localhost:8080/api/chatroom/create on POST
-        ```
-        {
-            "userIds": [1,2]
-        }
-        ```
-    * ~~Heres an example of the JSON body for the POST request:
-    With the URL being: http://localhost:8080/api/chatroom/1 on POST~~
-    * This is the depricated version
-        ```
-        {
-        "users": [
-            {
-                "id": 1,
-                "name": "Him",
-                "dateCreated": 0,
-                "gamerScore": 9000,
-                "friends": [],
-                "email": "him@mail.com",
-                "password": "password"
-            },
-            {
-                "id": 2,
-                "name": "Her",
-                "dateCreated": 0,
-                "gamerScore": 420,
-                "friends": [],
-                "email": "her@mail.com",
-                "password": "abc123"
-            }
-        ],
-        "conversations": []
-        }
-        ```
-3. If you want to delete a chatroom, you can! It will delete all the messages and conversations in the chatroom. Just be sure to know the chatroom id.
-    * If you want to delete the chatroom with id:1, use http://localhost:8080/api/chatroom/1 on DELETE
-4. If you want to see all the chatrooms that a user is in, you can use the following endpoint:
-    * If you want to see all the chatrooms that user 1 is in, use http://localhost:8080/api/chatroom/user/1 on GET
-    * You will be returned a list of chatrooms.
-    * Heres an example of the JSON body when you request user 1's chatrooms with them having chatrooms with user 2 and 3:
-        ```
-        [
-            {
-                "id": 3,
-                "users": [
-                    {
-                        "id": 1,
-                        "name": "Him",
-                        "dateCreated": 0,
-                        "gamerScore": 60,
-                        "attackScore": 1000,
-                        "defenseScore": 10,
-                        "magicScore": 5,
-                        "friends": [
-                            2,
-                            4,
-                            3
-                        ],
-                        "email": "him@mail.com",
-                        "password": "password"
-                    },
-                    {
-                        "id": 2,
-                        "name": "Her",
-                        "dateCreated": 0,
-                        "gamerScore": 420,
-                        "attackScore": 5,
-                        "defenseScore": 20,
-                        "magicScore": 1,
-                        "friends": [
-                            1,
-                            3
-                        ],
-                        "email": "her@mail.com",
-                        "password": "abc123"
-                    }
-                ],
-                "conversations": []
-            },
-            {
-                "id": 4,
-                "users": [
-                    {
-                        "id": 1,
-                        "name": "Him",
-                        "dateCreated": 0,
-                        "gamerScore": 60,
-                        "attackScore": 1000,
-                        "defenseScore": 10,
-                        "magicScore": 5,
-                        "friends": [
-                            2,
-                            4,
-                            3
-                        ],
-                        "email": "him@mail.com",
-                        "password": "password"
-                    },
-                    {
-                        "id": 3,
-                        "name": "John",
-                        "dateCreated": 0,
-                        "gamerScore": 999,
-                        "attackScore": 0,
-                        "defenseScore": 0,
-                        "magicScore": 0,
-                        "friends": [
-                            2,
-                            1
-                        ],
-                        "email": "john@mail.com",
-                        "password": "johnspassword"
-                    }
-                ],
-                "conversations": []
-            }
-        ]
-        ```
-3. Create a message with the chatroom id you just created with no conversations.
-    * Heres an example of the JSON body for the POST request:
-    With the URL being: http://localhost:8080/api/messages/1 on POST
-        ```
-        {
-            "toId": 1,
-            "fromId": 2,
-            "content": "Second message to Chatroom 1",
-            "chatroomId": 1
-        }
-        ```
-4. With this, you can use the GET endpoints to see the data you just created. If you want to get all, usually its without the _/1_ at the end of the url. But if you want something more specific, you can add the id at the end.
-    * Heres an example of the GET request:
-    With the URL being: http://localhost:8080/api/users/1 on GET
-        ```
-        {
-            "id": 1,
-            "name": "Him",
-            "dateCreated": 0,
-            "gamerScore": 9000,
-            "friends": [],
-            "email": "him@mail.com",
-            "password": "password"
-        }
-        ```
-5. Currently you can only update (PUT) your GamerScore and your friends.
-    * Heres an example of updating your gamerscore for user 1 to 100:
-      With URL being: http://localhost:8080/api/users/1/gamerScore on PUT
-      ```
-       {
-           "gamerScore": 100
-       }
-       ```
-   * Heres an exmaple of adding User2 for User1 (*Update: wont need with frriend request):
-     With the URL being: http://localhost:8080/api/users/1/friends on PUT
-     ```
-     {
-       "friendId": 3
-     }
-     ```
-6. We only have functionality of deleting friends for now. The url follows api/users/{id of user you want to change}/friends.
-    * Heres an example of deleting friend 3 as User 1:
-      With the URL being: http://localhost:8080/api/users/1/friends on DELETE
-        ```
-         {
-           "friendId": 3
-         }
-         ```
-7. If you want to add a friend, first send a friend request! To do so, get the user's id and your id! IT WILL 404 if you're already friends with each other or if they cant find the users.
-    * Heres how to send a friend request to User 2 from User 1: 
-    With the URL being: http://localhost:8080/api/friendrequests on POST
-        ```
-        {
-            "fromUserID": 2,
-            "toUserID": 1
-        }
-        ```
-8. Now if you want to accept/reject this friend request, get the friend request id! 
-    * Heres how to accept/reject friend request id 1: 
-    With the URL being http://localhost:8080/api/friendrequests/accept on PUT
-    Or 
-    With the URL being http://localhost:8080/api/friendrequests/reject on PUT
-        ```
-        {
-            "id": 1
-        }
-        ```
-    * After accepting, you can do a get on either user and see that they are now friends!
-    * If rejected, then neither of the users will have each other on the friends list :(
-11. If you want to level up or level down your attributes, you can do so with the following endpoints:
-    * Heres an example of leveling up your stats for id 1: 
-    With the URL being: http://localhost:8080/api/users/1/stats on PUT
-        ```
-        {
-            "attackScore": 10,
-            "defenseScore": 2,
-            "magicScore": 31
-        }
-        ```
-    * BTW be sure to update your stats to 0 if you have an existing user with no stats. Like when you try to getUserById(1) and you didnt update stats, stats will be null in the database. So to alleviate this, you can just update your stats to 0.
+1. Open PostgresSQL and login to the database
+2. Run the Spring Boot Application
+3. Run Flutter in command line
+   * Use this command to save some time:  _flutter run -d chrome --web-port="60966"_
 
-## User Authentication 
-Currently the user authentication is done using a very simple REST API. It is not secure at all and passwords are not hashed. But it is a good start and a okay MVP.
+# API Documentation
 
-Not everything is finalized yet, can be changed later.
+The RESTful APIs are designed to feed information to and from the frontend to the backend. Very simple APIs.
 
-### To Signup
+## User Endpoints
+The User contains information such as username, gmail, password, but also includes gamerscore, stats, and friends.
+1. [Get Endpoints](#get-user-endpoints)
+2. [Post Endpoints](#post-user-endpoints)
+3. [Put Endpoints](#put-user-endpoints)
+4. [Delete Endpoints](#delete-user-endpoints)
 ---
-* Make a POST request to http://localhost:8080/api/signup with the following body:
-    ```
+### Get User Endpoints
+#### Getting User Information by their User ID
+- http://localhost:8080/api/users/{userID}
+- Your response should be a 200 OK with a JSON similar to this
+```
+	{
+			"id": 1,
+            "name": "Him",
+            "dateCreated": 0,
+            "gamerScore": 9000,
+            "attackScore": 1,
+            "defenseScore": 2,
+            "magicScore": 3,
+            "friends": [
+	            1,
+	            2,
+	            3
+			],
+            "email": "him@mail.com",
+            "password": "password"
+    }
+```
+#### Getting All Users in the Database
+- http://localhost:8080/api/users
+- Your response should be a 200 OK with a JSON similar to this
+```
+	[
+		{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            3,
+		            4,
+		            5
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+	]
+```
+#### Getting a User's Friends List
+- http://localhost:8080/api/users/{userID}/friends
+- Your response should be a 200 OK with a JSON similar to 
+```
+	[
+		1,
+		2,
+		3
+	]
+```
+#### Getting a User's Suggested Friends
+- http://localhost:8080/api/users/{userID}/suggestedFriends
+- Your response should be a 200 OK with a JSON similar to 
+```
+	[
+		{
+				"id": 4,
+	            "name": "Jimmy",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [],
+	            "email": "fdas@mail.com",
+	            "password": "fdafdasfdasfdsa"
+	        },
+	        {
+				"id": 5,
+	            "name": "yessir",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            2,
+		            3
+				],
+	            "email": "yessiirrrr@mail.com",
+	            "password": "noossiiirrr"
+	        }
+	]
+```
+---
+### Post User Endpoints
+#### Creating a New User
+- http://localhost:8080/api/users
+- Your body should be formatted as such (Could include more information such as stats,friends, etc...)
+```
+	{
+            "name": "Him",
+            "email": "him@mail.com",
+            "password": "password"
+    }
+```
+- Your response should be a 201 CREATED with a JSON similar to 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 0,
+	            "attackScore": 0,
+	            "defenseScore": 0,
+	            "magicScore": 0,
+	            "friends": null,
+	            "email": "him@mail.com",
+	            "password": "password"
+	 }
+```
+---
+### Put User Endpoints
+#### Update a User's GamerScore
+- http://localhost:8080/api/users/{userID}/gamerScore
+- Your body should include the newly updated gamerScore you want to update with
+```
+	{
+		"gamerScore": 100
+	}
+```
+- Your response should be a 200 OK with a JSON similar to 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 0,
+	            "defenseScore": 0,
+	            "magicScore": 0,
+	            "friends": null,
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+#### Update a User's Stats
+- http://localhost:8080/api/users/{userID}/stats
+- Your body should include each of the stats; attackScore, magicScore, defenseScore
+```
+	{
+         "attackScore": 10,
+         "defenseScore": 10,
+         "magicScore": 10
+	}
+```
+- Your response should be a 200 OK with a JSON of 
+```
+	{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 10,
+	            "defenseScore": 10,
+	            "magicScore": 10,
+	            "friends": null,
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+#### Update a User's Friends
+- http://localhost:8080/api/users/{userID}/friends
+- Your body should include the friendID as so
+```
+	{
+		"friendId": 2
+	}
+```
+- Your response should be a 200 OK with a JSON 
+```
+	{
+                "id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 100,
+	            "attackScore": 10,
+	            "defenseScore": 10,
+	            "magicScore": 10,
+	            "friends": [
+		            2
+	            ],
+	            "email": "him@mail.com",
+                "password": "password"
+	}
+```
+---
+### Delete User Endpoints 
+#### Delete a User 
+- http://localhost:8080/api/users/{userID}
+- Your response should be a 200 OK with a body of a string returning 
+```
+	User Deleted
+```
+### Delete a User's Friend
+- http://localhost:8080/api/users/{userID}/friends
+- Your response should be a 200 OK with a body of a string returning 
+```
+	Friend Deleted
+```
+---
+## Chatroom Endpoints
+Chatroom contains information on the Users in the chatroom and the messages contained in them. 
+1. [Get Endpoints](#get-chatroom-endpoints)
+2. [Post Endpoints](#post-chatroom-endpoints)
+3. [Delete Endpoints](#delete-chatroom-endpoints)
+---
+### Get Chatroom Endpoints
+#### Getting a Chatroom by the Chatroom ID
+- http://localhost:8080/api/chatroom/{chatroomID}
+- Your response should be a 200 OK with a JSON 
+```
+	{
+		"id": 1,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            3,
+		            4,
+		            5
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": [
+			{
+				"id": 1,
+				"toId": 2,
+				"fromId": 1,
+				"content": "Hello",
+				"timeStamp": 1232153,
+				"chatroomId": 1
+			},
+			{
+				"id": 2,
+				"toId": 1,
+				"fromId": 2,
+				"content": "Hello",
+				"timeStamp": 1232154,
+				"chatroomId": 1
+			}
+		]
+	}
+```
+---
+#### Getting All Chatrooms of a User
+- http://localhost:8080/api/chatroom/user/{userID}
+- Your response should be a 200 OK with a JSON 
+```
+	[
+		{
+		"id": 1,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            3,
+		            4,
+		            5
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": [
+			{
+				"id": 1,
+				"toId": 2,
+				"fromId": 1,
+				"content": "Hello",
+				"timeStamp": 1232153,
+				"chatroomId": 1
+			},
+			{
+				"id": 2,
+				"toId": 1,
+				"fromId": 2,
+				"content": "Hello",
+				"timeStamp": 1232154,
+				"chatroomId": 1
+			}
+		]
+	}, 
+	{
+		"id": 2,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 3,
+	            "name": "yo",
+	            "dateCreated": 0,
+	            "gamerScore": 0,
+	            "attackScore": 10,
+	            "defenseScore": 42,
+	            "magicScore": 33,
+	            "friends": [
+		            1
+				],
+	            "email": "yo@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": [
+			{
+				"id": 3,
+				"toId": 3,
+				"fromId": 1,
+				"content": "Hello",
+				"timeStamp": 1232153,
+				"chatroomId": 2
+			},
+			{
+				"id": 4,
+				"toId": 1,
+				"fromId": 3,
+				"content": "Hello",
+				"timeStamp": 1232154,
+				"chatroomId": 2
+			}
+		]
+	}
+]
+```
+---
+#### Getting All Chatrooms
+- http://localhost:8080/api/chatroom
+- Your response should be a 200 OK with JSON 
+```
+	[
+		{
+		"id": 1,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            3,
+		            4,
+		            5
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": [
+			{
+				"id": 1,
+				"toId": 2,
+				"fromId": 1,
+				"content": "Hello",
+				"timeStamp": 1232153,
+				"chatroomId": 1
+			},
+			{
+				"id": 2,
+				"toId": 1,
+				"fromId": 2,
+				"content": "Hello",
+				"timeStamp": 1232154,
+				"chatroomId": 1
+			}
+		]
+	}, 
+	{
+		"id": 2,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1,
+		            2,
+		            3
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 3,
+	            "name": "yo",
+	            "dateCreated": 0,
+	            "gamerScore": 0,
+	            "attackScore": 10,
+	            "defenseScore": 42,
+	            "magicScore": 33,
+	            "friends": [
+		            1
+				],
+	            "email": "yo@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": [
+			{
+				"id": 3,
+				"toId": 3,
+				"fromId": 1,
+				"content": "Hello",
+				"timeStamp": 1232153,
+				"chatroomId": 2
+			},
+			{
+				"id": 4,
+				"toId": 1,
+				"fromId": 3,
+				"content": "Hello",
+				"timeStamp": 1232154,
+				"chatroomId": 2
+			}
+		]
+	}
+]
+```
+---
+### Post Chatroom Endpoints
+#### Create a Chatroom with User IDs
+- http://localhost:8080/api/chatroom/create
+- Your body should include a list of User IDs
+```
+	[1,2]
+```
+- Your response should be a 201 CREATED with a JSON returning 
+```
+	{
+		"id": 1,
+		"users": [
+			{
+				"id": 1,
+	            "name": "Him",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            2,
+		            3,
+		            4
+				],
+	            "email": "him@mail.com",
+	            "password": "password"
+	        },
+	        {
+				"id": 2,
+	            "name": "Her",
+	            "dateCreated": 0,
+	            "gamerScore": 9000,
+	            "attackScore": 1,
+	            "defenseScore": 2,
+	            "magicScore": 3,
+	            "friends": [
+		            1
+				],
+	            "email": "her@mail.com",
+	            "password": "password"
+	        }
+		],
+		"conversations": []
+	}
+```
+--- 
+### Delete Chatroom Endpoints
+#### Delete a Chatroom with Chatroom ID
+- http://localhost:8080/api/chatroom/{chatroomID}
+- Your response should be a 200 OK if deleted
+---
+## Message Endpoints
+The Message contains information about the user you're sending the message to and the user who sent the message, the content of the message, if the message is read, timestamp of the message, and what chatroom it belongs to.
+1. [Get Endpoints](#get-message-endpoints)
+2. [Post Endpoints](#post-message-endpoints)
+
+---
+### Get Message Endpoints
+#### Get All Messages using Chatroom ID
+- http://localhost:8080/api/messages/{chatroomID}
+- Your response should be a 200 OK with a JSON containing a list of Messages
+```
+[
+	{
+		"id": 1,
+		"toId": 2,
+		"fromId": 1,
+		"content": "Hello",
+		"timeStamp": 1232153,
+		"chatroomId": 1
+	},
+	{
+		"id": 2,
+		"toId": 1,
+		"fromId": 2,
+		"content": "Hello",
+		"timeStamp": 1232154,
+		"chatroomId": 1
+	}
+]
+```
+---
+### Post Message Endpoints
+- http://localhost:8080/api/messages
+- Your body should include the userID who is sending and recieving the message, the content of the message, a boolean of if it is read or not, timestamp, and a chatroomID in which the message belongs to
+```
+{
+	"toId": 1,
+	"fromId": 2,
+	"content": "Yo",
+	"isRead": false,
+	"timeStamp": 0,
+	"chatroomId": 1
+}
+```
+- Your response should be a 201 CREATED with a JSON containing the same message
+ ```
+{
+	"toId": 1,
+	"fromId": 2,
+	"content": "Yo",
+	"isRead": false,
+	"timeStamp": 0,
+	"chatroomId": 1
+}
+```
+---
+## Friend Request Endpoints
+The Friend Request contains information about information on whether it is either pending, accepted, or rejected under the variable status, the user id of the requester and the requestee.
+1. [Get Endpoints](#get-friend-request-endpoints)
+2. [Post Endpoints](#post-friend-request-endpoints)
+3. [Put Endpoints](#put-friend-request-endpoints)
+---
+### Get Friend Request Endpoints
+#### Get All Friend Requests for a User
+- http://localhost:8080/api/friendRequests/{userID}
+- Your response should be a 200 OK with a JSON 
+```
+	[
+		{
+			"id": 1,
+			"fromUserID": 1,
+			"toUserID": 2,
+			"Status": "PENDING"
+		},
+		{
+			"id": 2,
+			"fromUserID": 1,
+			"toUserID": 3,
+			"Status": "ACCEPTED"
+		},
+		{
+			"id": 3,
+			"fromUserID": 1,
+			"toUserID": 4,
+			"Status": "REJECTED"
+		}
+	]
+```
+---
+### Post Friend Request Endpoints
+#### Send a Friend Request to a User
+- http://localhost:8080/api/friendRequests
+- Your body should include the user ID of who to send it to and who it is from at the very least
+```
+	{
+		"fromUserID": 1,
+		"toUserID": 2
+	}
+```
+- Your response should be a 201 CREATED with a JSON
+```
+	{
+		"id": 1,
+		"fromUserID": 1,
+		"toUserID": 2,
+		"Status": "PENDING"
+	}
+```
+---
+### Put Friend Request Endpoints
+#### Accept a Friend Request
+- http://localhost:8080/api/friendRequests/accept
+- Your body should include the Friend Request ID 
+```
+	{
+		"id": 1
+	}
+```
+- Your response should be a 200 OK with a JSON 
+```
+	{
+		"id": 1,
+		"fromUserID": 1,
+		"toUserID": 2,
+		"Status": "ACCEPTED"
+	}
+```
+---
+#### Reject a Friend Request
+- http://localhost:8080/api/friendRequests/reject
+- Your body should include the Friend Request ID 
+```
+	{
+		"id": 1
+	}
+```
+- Your response should be a 200 OK with a JSON 
+```
+	{
+		"id": 1,
+		"fromUserID": 1,
+		"toUserID": 2,
+		"Status": "REJECTED"
+	}
+```
+---
+## Authentication Endpoints
+The authentication provides http responses to signup and login. The signup creates a new user while the login checks user credentials. 
+1. [Post Endpoints](#post-authentication-endpoints)
+	- [Signup](#signup) 
+	- [Login](#login) 
+---
+### Post Authentication Endpoints
+#### Signup 
+- http://localhost:8080/api/signup
+- Your body should include the username, email, and password
+```
     {
         "name": "Him",
         "email": "him@mail.com",
         "password": "password"
     }
-    ```
-    * This will create a new user with the name Him, email him@mail.com, and password password. The rest of the values are going to be their default values except the dateCreated which will be the current time it got created.
-    * If the email already exists, it will return a 400 Bad Request with the message "Email already exists".
-    * If the name is null, it will return a 400 Bad Request with the message "Name cannot be empty".
-    * If the password is null or less than 8 characters long, it will return a 400 Bad Request with the message "Password must be at least 8 characters long".
-    * If everything is okay, it will return a 200 OK with the user's id.
-
-### To Login
+```
+- The response should be a 201 CREATED with a JSON containing the _userID_
+```
+	1
+```
 ---
-* Make a POST request to http://localhost:8080/api/login with the following body:
-    ```
+#### Login 
+- http://localhost:8080/api/login
+- Your body should include the email, and password
+```
     {
         "email": "him@mail.com",
         "password": "password"
     }
-    ```
-    * This will login the user with the email him@mail.com and password password. If the email does not exist, it will return a 400 Bad Request with the message "Email does not exist".
-    * If the password does not match, it will return a 400 Bad Request with the message "Password does not match".
-    * If everything is okay, it will return a 200 OK with the user's id.
-## To Get this working with Flutter
-
-1. Open PostgresSQL 
-2. Run the Spring Boot Application
-3. Run Flutter in command line
-   * Use this command to save some time:  _flutter run -d chrome --web-port="60966"_
+```
+- The response should be a 200 OK with a JSON containing the _userID_
+```
+	1
+```
+---
+- If the email already exists, it will return a 400 Bad Request with the message "Email already exists".
+- If the name is null, it will return a 400 Bad Request with the message "Name cannot be empty".
+- If the password is null or less than 8 characters long, it will return a 400 Bad Request with the message "Password must be at least 8 characters long".
 
 # Sprint 2 Goals For Backend
 
@@ -289,20 +868,23 @@ Not everything is finalized yet, can be changed later.
 - Update read reciepts
 - ~~Implement Friends Feature (Creating friendRequest class)~~
 
+# Sprint 3 Goals for Backend
+
+- Game Entity to store game information
+- Websockets for the game? 
+- CI/CD with good unit testing
 
 # Long Term Goals
 
 - Add websockets for real time communications
 - Be able to send and recieve pictures
     - Store images somehow for chatrooms
-- CI/CD with good unit testing
 - Containerize using docker and docker compose
+___
+___
 
 
 
 
 
-
-
-
-Written and Setup by Taiga. 
+<center>Written and Setup by Taiga. 
