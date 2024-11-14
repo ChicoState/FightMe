@@ -21,7 +21,7 @@ Widget buildFightButton(BuildContext context, User user1, User user2) {
   List<Color> colors = [Colors.red, Colors.orangeAccent, Colors.amberAccent, Colors.yellowAccent[100]!, Colors.lightGreenAccent[400]!/*Why in God's name would this be Color? ?*/];
   int turn = 1;
   int user1hp = 5;
-  int user2hp = 3;
+  int user2hp = 2;
   return FloatingActionButton(
       onPressed: () =>
           showDialog<String>(
@@ -65,12 +65,8 @@ Widget buildFightButton(BuildContext context, User user1, User user2) {
                               ),
                               Row(
                                   children: [
-                                    const Text("HP"),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
                                     for (int i = 1;i <= 5;i++)
-                                      i <= user2hp ? Expanded(
+                                      i > 5 - user2hp ? Expanded(
                                         child: Container(
                                             height: 15.0,
                                             decoration: BoxDecoration(
@@ -84,6 +80,10 @@ Widget buildFightButton(BuildContext context, User user1, User user2) {
                                           height: 15.0,
                                         ),
                                       ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    const Text("HP"),
                                   ]
                               ),
                               const SizedBox(
@@ -112,8 +112,16 @@ Widget buildFightButton(BuildContext context, User user1, User user2) {
                                     ),
                                   ]
                               ),
+                              const Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(Icons.account_circle_sharp),
+                              ),
                               const SizedBox(
-                                height: 71,
+                                height: 23,
+                              ),
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Icon(Icons.account_circle_sharp),
                               ),
                               Row(
                                   children: [
