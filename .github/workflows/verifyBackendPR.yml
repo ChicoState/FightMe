@@ -27,15 +27,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: clear project
-      run: mvn clean
-
-    - name: compile the project
-      run: mvn compile
-
-    - name: run test case
-      run: mvn test
-
     - name: Build with Maven
-      run: mvn clean install package
+      run: mvn clean verify
+ 
+    - name: Test Report
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+          name: Backend
+          path: backend/src/test/java/com/backend/backend/
 
