@@ -13,6 +13,7 @@ class User {
   int attackScore = 0;
   int defenseScore = 0;
   int magicScore = 0;
+  int pfp = 0;
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -48,5 +49,6 @@ class User {
     attackScore = 0;
     defenseScore = 0;
     magicScore = 0;
+    pfp = 0;
   }
 }

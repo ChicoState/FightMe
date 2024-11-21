@@ -1,5 +1,5 @@
 import 'package:fightme_webapp/chats_master_page.dart';
-import 'package:fightme_webapp/fight_game_page.dart';
+import 'package:fightme_webapp/training_area_page.dart';
 import 'package:fightme_webapp/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
@@ -33,7 +33,7 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
       ChatsMasterPage(curUser: widget.curUser),
-      const FightGamePage(),
+      TrainingAreaPage(curUser: widget.curUser),
       ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
     ];
 
