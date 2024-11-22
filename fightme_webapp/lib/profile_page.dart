@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
 import 'Models/httpservice.dart';
+import 'Cosmetics/profile_pictures.dart';
 import 'globals.dart' as globals;
 import 'Models/auth_clear.dart';
 
@@ -11,8 +12,8 @@ class ProfilePage extends StatefulWidget {
   final User userViewed;
   final User curUser;
   const ProfilePage(
-  {super.key,
-  required this.userViewed, required this.curUser});
+      {super.key,
+        required this.userViewed, required this.curUser});
 
   @override
   State<ProfilePage> createState() => ProfilePageState();
@@ -40,7 +41,10 @@ class ProfilePageState extends State<ProfilePage> {
       itemBuilder: (context, index) {
         return Column(children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.account_circle_sharp),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(60.0),
+              child: Image.asset(profilePictures[list[index].pfp], fit: BoxFit.cover, width: 60, height: 60),
+            ),
             onTap: () =>
                 Navigator.push(
                     context,
@@ -59,11 +63,14 @@ class ProfilePageState extends State<ProfilePage> {
     List<String> friendsList = List<String>.filled(5, widget.userViewed.name);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
         centerTitle: true,
-        title: const Text("Fight Me"),
+        title: const Text("Profile"),
         actions: [
           if (widget.userViewed.id == widget.curUser.id) ...[
-            Text("${widget.userViewed.gamerScore}", style: const TextStyle(fontSize: 20),),
             IconButton(
               onPressed: () {
                 Navigator.push(
@@ -72,7 +79,12 @@ class ProfilePageState extends State<ProfilePage> {
                       builder: (context) => GamerscoreShop(curUser: widget.userViewed)),
                 );
               },
-              icon: const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+              icon: Row(
+                  children: [
+                    Text("${widget.userViewed.gamerScore}", style: const TextStyle(fontSize: 20),),
+                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                  ]
+              ),
             ),
           ],
         ],
@@ -83,49 +95,82 @@ class ProfilePageState extends State<ProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.userViewed.id == widget.curUser.id ?
-                IconButton(
-                  onPressed: () {
-
-                  },
-                  icon: const Icon(Icons.settings),
-                ): const SizedBox.shrink(),
-                Placeholder(
-                  fallbackHeight: 100,
-                  fallbackWidth: 100,
-                  child: Image.network(
-                      "https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"),
+                const SizedBox(
+                  width: 40.0,
                 ),
-                widget.userViewed.id == widget.curUser.id ?
-                IconButton(
-                  onPressed: () =>
-                      showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            AlertDialog(
-                              title: const Text('Are you sure you want to log out?'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await clearUserData();
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute<Home>(
-                                          builder: (context) => Home()),
-                                      (route) => false,
-                                    );
-                                  },
-                                  child: const Text('logout'),
-                                ),
-                              ],
-                            ),
-                      ),
-                  icon: const Icon(Icons.logout),
-                ): const SizedBox.shrink(),
+                Center(
+                  child: Image.asset(profilePictures[widget.userViewed.pfp], width: 200, height: 200),
+                ),
+                SizedBox(
+                  height: 200,
+                  child: widget.userViewed.id == widget.curUser.id ?
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+
+                          },
+                          icon: const Icon(Icons.settings, size: 40),
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AlertDialog(
+                                      title: const Text('Are you sure you want to log out?'),
+                                      actionsAlignment: MainAxisAlignment.spaceBetween,
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            await clearUserData();
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute<Home>(
+                                                  builder: (context) => Home()),
+                                                  (route) => false,
+                                            );
+                                          },
+                                          child: const Text('logout'),
+                                        ),
+                                      ],
+                                    ),
+                              ),
+                          icon: const Icon(Icons.logout, size: 40),
+                        ),
+                      ]
+                  ) : Align(
+                    alignment: Alignment.topCenter,
+                    child: PopupMenuButton<String>(
+                      initialValue: "",
+                      // Callback that sets the selected popup menu item.
+                      onSelected: (String item) {
+                        setState(() {
+                        });
+                      },
+                      iconSize: 40,
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'Remove',
+                          child: Text('Remove'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Report',
+                          child: Text('Report'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Favorite',
+                          child: Text('Favorite'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
             Text(widget.userViewed.name, style: Theme
@@ -166,7 +211,7 @@ class ProfilePageState extends State<ProfilePage> {
                 Column(
                   children: [
                     const Text("Magic", style: TextStyle(
-                      fontSize: 40)),
+                        fontSize: 40)),
                     Text("${widget.userViewed.magicScore}", style: Theme
                         .of(context)
                         .textTheme
@@ -182,7 +227,7 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     const Text("Friends"),
                     Container(
-                      height: MediaQuery.of(context).size.height / 2,
+                      height: MediaQuery.of(context).size.height / 2.5,
                       width: MediaQuery.of(context).size.width / 2 - 60.0,
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.symmetric(horizontal:  30.0),
@@ -208,13 +253,13 @@ class ProfilePageState extends State<ProfilePage> {
                   children: [
                     const Text("Placeholder"),
                     Container(
-                      height: MediaQuery.of(context).size.height / 2,
+                      height: MediaQuery.of(context).size.height / 2.5,
                       width: MediaQuery.of(context).size.width / 2 - 60.0,
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.symmetric(horizontal:  30.0),
                       decoration: BoxDecoration(border: Border.all()),
                       child: const Text("What would you like to see here?", style: TextStyle(
-                          fontSize: 40, )),
+                        fontSize: 40, )),
                     ),
                   ],
                 ),
