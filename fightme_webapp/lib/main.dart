@@ -7,6 +7,7 @@ import 'Models/user.dart';
 import 'Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+import 'Cosmetics/themes.dart';
 
 User curUser = User("placeholder");
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: themes[3],
         useMaterial3: true,
       ),
       home: globals.loggedIn ? const FightGamePage() : Home(),
