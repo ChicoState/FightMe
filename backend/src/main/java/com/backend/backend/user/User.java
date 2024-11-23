@@ -46,6 +46,22 @@ public class User {
     @Column(name = "magicScore")
     private Integer magicScore;
 
+    @Column(name = "profilePicture")
+    private Long profilePicture;
+
+    @ElementCollection
+    @CollectionTable(name = "user_unlocked_profile_pictures", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "profile_picture_id")
+    private List<Long> unlockedProfilePictures;
+
+    @Column(name = "theme")
+    private Long theme;
+
+    @ElementCollection
+    @CollectionTable(name = "user_unlocked_themes", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "theme_id")
+    private List<Long> unlockedThemes;
+
     @ElementCollection
     @CollectionTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "friend_id")
@@ -57,6 +73,8 @@ public class User {
     @Column(name = "password")
     private String password;        //Should be hashed later
 
+
+    
 
     @PrePersist
     protected void onCreate() {

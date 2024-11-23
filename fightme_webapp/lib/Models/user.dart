@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fightme_webapp/Cosmetics/profile_pictures.dart';
 import 'package:http/http.dart';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ class User {
   int defenseScore = 0;
   int magicScore = 0;
   int pfp = 0;
+  List<int> unlockedpfps = [0];
+  int theme = 0;
+  List<int> unlockedThemes = [0];
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -25,6 +29,10 @@ class User {
     attackScore = json['attackScore'];
     defenseScore = json['defenseScore'];
     magicScore = json['magicScore'];
+    pfp = json['profilePicture'];
+    unlockedpfps = List.from(json['unlockedProfilePictures']);
+    theme = json['theme'];
+    unlockedThemes = List.from(json['unlockedThemes']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -37,6 +45,10 @@ class User {
         'attackScore' : attackScore,
         'defenseScore' : defenseScore,
         'magicScore' : magicScore,
+        'profilePicture' : pfp,
+        'unlockedProfilePictures' : unlockedpfps,
+        'theme' : theme,
+        'unlockedThemes' : unlockedThemes,
       };
 
   User(String n) {
@@ -50,5 +62,8 @@ class User {
     defenseScore = 0;
     magicScore = 0;
     pfp = 0;
+    unlockedpfps = [0];
+    theme = 0;
+    unlockedThemes = [0];
   }
 }
