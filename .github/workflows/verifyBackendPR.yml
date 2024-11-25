@@ -10,7 +10,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - githubActions
   pull_request:
     branches: [ "main" ]
 
@@ -27,13 +29,26 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+
     - name: Build with Maven
-      run: mvn clean verify
+      run: mvn clean package
+      working-directory: ./backend
+    
+    - name: Run Unit Tests
+      run: mvn test
+      working-directory: ./backend
  
     - name: Test Report
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-          name: Backend
-          path: backend/src/test/java/com/backend/backend/
+          name: Test Report
+          path: backend/src/test/java/com/backend/backend/IntegrationTest.java
 
