@@ -140,9 +140,10 @@ jobs:
         -Dspring.datasource.password=$SPRING_DATASOURCE_PASSWORD \
         -Dspring.jpa.hibernate.ddl-auto=create-drop
 
-    - name: Publish Test Results
-      uses: actions/upload-artifact@v4
-      if: always()
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
       with:
-        name: test-results
-        path: backend/target/surefire-reports/
+        report_paths: 'backend/target/surefire-reports/TEST-*.xml'
+        summary: true
+        detailed_summary: true
