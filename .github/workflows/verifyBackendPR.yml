@@ -1,3 +1,74 @@
+# name: Java CI with Maven
+
+# on:
+#   push:
+#     branches:
+#       - main
+#       - githubActions
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       postgres:
+#         image: postgres:latest
+#         env:
+#           POSTGRES_DB: UserDB
+#           POSTGRES_PASSWORD: abc123
+#           POSTGRES_USER: postgres
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#     - uses: actions/checkout@v4
+    
+#     - name: Set up JDK 17
+#       uses: actions/setup-java@v4
+#       with:
+#         java-version: '17'
+#         distribution: 'temurin'
+#         cache: maven
+
+#     - name: Cache Maven packages
+#       uses: actions/cache@v3
+#       with:
+#         path: ~/.m2
+#         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#         restore-keys: ${{ runner.os }}-m2
+
+#     - name: Build and Test with Maven
+#       working-directory: backend
+#       env:
+#         # Spring Boot Database Configuration
+#         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/UserDB
+#         SPRING_DATASOURCE_USERNAME: postgres
+#         SPRING_DATASOURCE_PASSWORD: abc123
+#         SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+#       run: |
+#         mvn clean verify \
+#         -Dspring.datasource.url=$SPRING_DATASOURCE_URL \
+#         -Dspring.datasource.username=$SPRING_DATASOURCE_USERNAME \
+#         -Dspring.datasource.password=$SPRING_DATASOURCE_PASSWORD \
+#         -Dspring.jpa.hibernate.ddl-auto=create-drop
+ 
+#     - name: Publish Test Report
+#       uses: mikepenz/action-junit-report@v4
+#       if: success() || failure()
+#       with:
+#         report_paths: 'backend/target/surefire-reports/TEST-*.xml'
+#         summary: true
+#         detailed_summary: true
+
+
+
 name: Java CI with Maven
 
 on:
@@ -10,6 +81,24 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build with Maven
+      working-directory: backend
+      run: mvn clean compile
+
+  test:
+    needs: build
     runs-on: ubuntu-latest
 
     services:
@@ -37,32 +126,23 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-
-    - name: Build and Test with Maven
+    - name: Run Tests
       working-directory: backend
       env:
-        # Spring Boot Database Configuration
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/UserDB
         SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: abc123
         SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
       run: |
-        mvn clean verify \
+        mvn test \
         -Dspring.datasource.url=$SPRING_DATASOURCE_URL \
         -Dspring.datasource.username=$SPRING_DATASOURCE_USERNAME \
         -Dspring.datasource.password=$SPRING_DATASOURCE_PASSWORD \
         -Dspring.jpa.hibernate.ddl-auto=create-drop
- 
-    - name: Publish Test Report
-      uses: mikepenz/action-junit-report@v4
-      if: success() || failure()
+
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        report_paths: 'backend/target/surefire-reports/TEST-*.xml'
-        summary: true
-        detailed_summary: true
+        name: test-results
+        path: backend/target/surefire-reports/
