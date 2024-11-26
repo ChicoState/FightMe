@@ -1,4 +1,4 @@
-
+[![Java CI with Maven](https://github.com/ChicoState/FightMe/actions/workflows/verifyBackendPR.yml/badge.svg)](https://github.com/ChicoState/FightMe/actions/workflows/verifyBackendPR.yml)
 
 
 # Backend/API Guide
