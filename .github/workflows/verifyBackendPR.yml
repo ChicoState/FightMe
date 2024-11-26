@@ -38,6 +38,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
 
     - name: Build with Maven
+      working-directory: backend
       run: mvn clean install
  
     - name: Test Report
