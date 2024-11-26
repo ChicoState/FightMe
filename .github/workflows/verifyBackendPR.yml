@@ -66,10 +66,3 @@ jobs:
         report_paths: 'backend/target/surefire-reports/TEST-*.xml'
         summary: true
         detailed_summary: true
-
-    - name: Display Test Results
-      if: always()
-      working-directory: backend
-      run: |
-        # Print out detailed test results
-        find target/surefire-reports -name "TEST-*.xml" -print0 | xargs -0 grep -H "testcase"
