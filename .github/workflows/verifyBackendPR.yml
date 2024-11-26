@@ -1,6 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
 name: Java CI with Maven
 
 on:
@@ -15,6 +12,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: UserDB
+          POSTGRES_PASSWORD: abc123
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v4
     
@@ -25,10 +37,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Update Maven Repositories
-      working-directory: backend
-      run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.1:purge-local-repository
-
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -36,14 +44,26 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
 
-    - name: Build with Maven
+    - name: Build and Test with Maven
       working-directory: backend
-      run: mvn clean install -U -e
-      # Added -e flag for more detailed error information
+      env:
+        # Spring Boot Database Configuration
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/UserDB
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: abc123
+        SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      run: |
+        mvn clean verify \
+        -Dspring.datasource.url=$SPRING_DATASOURCE_URL \
+        -Dspring.datasource.username=$SPRING_DATASOURCE_USERNAME \
+        -Dspring.datasource.password=$SPRING_DATASOURCE_PASSWORD \
+        -Dspring.jpa.hibernate.ddl-auto=create-drop
  
-    - name: Test Report
+    - name: Upload Test Reports
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-          name: Test Report
-          path: backend/target/surefire-reports/*
+        name: test-reports
+        path: |
+          backend/target/surefire-reports/
+          backend/target/failsafe-reports/
