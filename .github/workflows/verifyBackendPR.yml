@@ -1,11 +1,6 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
 on:
@@ -18,17 +13,21 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Update Maven Repositories
+      working-directory: backend
+      run: mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.1:purge-local-repository
 
     - name: Cache Maven packages
       uses: actions/cache@v3
@@ -39,12 +38,12 @@ jobs:
 
     - name: Build with Maven
       working-directory: backend
-      run: mvn clean install
+      run: mvn clean install -U -e
+      # Added -e flag for more detailed error information
  
     - name: Test Report
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
           name: Test Report
-          path: backend/src/test/java/com/backend/backend/IntegrationTest.java
-
+          path: backend/target/surefire-reports/*
