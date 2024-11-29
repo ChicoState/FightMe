@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'navbar.dart'; // Assuming this is your main app page after login
 import 'globals.dart' as globals;
+import 'Cosmetics/profile_pictures.dart';
+import 'Cosmetics/themes.dart';
 
 class Home extends StatefulWidget {
   @override

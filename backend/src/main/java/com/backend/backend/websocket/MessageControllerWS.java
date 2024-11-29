@@ -1,6 +1,7 @@
 package com.backend.backend.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,19 +15,16 @@ import com.backend.backend.message.MessageService;
 public class MessageControllerWS {
 
     @Autowired
-    private SimpMessagingTemplate SimpleMessagingTemplate;
+    private SimpMessagingTemplate simpleMessagingTemplate;
     @Autowired
     private MessageService messageService;
-    @Autowired
-    private ChatroomService chatroomService;
 
     @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/chatroom/{chatroomId}")
-    public void sendMessage(MessageDto messageDto) {
-        long chatroomId = messageDto.getChatroomId();
-        String content = messageDto.getContent();
-
-        chatroomService.getChatroomById(chatroomId)
-                .orElseThrow(() -> new RuntimeException("Chatroom not found: " + chatroomId));
+    public void sendMessage(@DestinationVariable Long chatroomId, MessageDto messageDto) {
+        messageDto.setChatroomId(chatroomId);
+        
+        MessageDto savedMessage = messageService.CreateMessage(messageDto);
+        simpleMessagingTemplate.convertAndSend("/topic/chatroom/" + chatroomId, savedMessage);
+    }
 }
 

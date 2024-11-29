@@ -1,7 +1,8 @@
 import 'package:fightme_webapp/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'Models/chatroom.dart';
-import 'chat_page.dart';
+// import 'chat_page.dart';
+import 'chat_page_web_socket.dart';
 import 'Models/user.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'pending_requests.dart';
@@ -103,24 +104,50 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
                 },
                 child: const Text("Pending Requests"),
             ),
-            FutureBuilder(future: _list, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmpty) {
-                  return const Text(
-                      "No chat rooms available. Go and make some friends.");
+            FutureBuilder(
+              future: _list, 
+              builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } 
+                else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
                 }
-                else {
-                  return ListView(
+                else if (snapshot.hasData) {
+                  if (snapshot.data!.isEmpty) {
+                    return const Text("No chat rooms available. Go and make some friends.");
+                  }
+                  else {
+                    return ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: snapshot.data!
-                  );
+                    );
+                  }
+                }
+                else {
+                  return const Text("No data available");
                 }
               }
-              else {
-                return const CircularProgressIndicator();
-              }
-            }),
+            ),
+            // FutureBuilder(future: _list, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+            //   if (snapshot.hasData) {
+            //     if (snapshot.data!.isEmpty) {
+            //       return const Text(
+            //           "No chat rooms available. Go and make some friends.");
+            //     }
+            //     else {
+            //       return ListView(
+            //           scrollDirection: Axis.vertical,
+            //           shrinkWrap: true,
+            //           children: snapshot.data!
+            //       );
+            //     }
+            //   }
+            //   else {
+            //     return const CircularProgressIndicator();
+            //   }
+            // }),
           ],
         ),
       ),
