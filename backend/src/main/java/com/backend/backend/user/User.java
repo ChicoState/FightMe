@@ -10,10 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -50,7 +53,7 @@ public class User {
     private Long profilePicture;
 
     @ElementCollection
-    @CollectionTable(name = "user_unlocked_profile_pictures", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_unlocked_profile_pictures", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "profile_picture_id"}))
     @Column(name = "profile_picture_id")
     private List<Long> unlockedProfilePictures;
 
@@ -58,7 +61,7 @@ public class User {
     private Long theme;
 
     @ElementCollection
-    @CollectionTable(name = "user_unlocked_themes", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_unlocked_themes", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "theme_id"}))
     @Column(name = "theme_id")
     private List<Long> unlockedThemes;
 
@@ -79,6 +82,8 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.dateCreated = System.currentTimeMillis();
+        this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
+        this.unlockedThemes = Arrays.asList(Long.valueOf(0));
     }
 
 }
