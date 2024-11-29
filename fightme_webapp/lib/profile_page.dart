@@ -1,5 +1,6 @@
 import 'package:fightme_webapp/gamerscore_shop.dart';
 import 'package:fightme_webapp/home.dart';
+import 'package:fightme_webapp/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
@@ -109,7 +110,8 @@ class ProfilePageState extends State<ProfilePage> {
                       children: [
                         IconButton(
                           onPressed: () {
-
+                            Navigator.push(context, MaterialPageRoute<SettingsPage>(
+                                builder: (context) => const SettingsPage()));
                           },
                           icon: const Icon(Icons.settings, size: 40),
                         ),

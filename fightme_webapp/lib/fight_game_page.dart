@@ -105,6 +105,11 @@ class FightGamePageState extends State<FightGamePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Fight Game"),
+        backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          centerTitle: true,
         leading: IconButton(
           onPressed: _handleSave,
           icon: const Icon(Icons.save),

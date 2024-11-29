@@ -24,6 +24,11 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Shop"),
+        backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

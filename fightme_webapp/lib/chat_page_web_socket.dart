@@ -151,7 +151,6 @@ class ChatPageState extends State<ChatPage> {
               ),
               onSubmitted: (value) async {
                 _sendMessage(value); // Send message via WebSocket
-                print("Are we here?");
                 randomNumber = Random().nextInt(100);
                 if (randomNumber < 50) {
                   print("I received $randomNumber, increase");
