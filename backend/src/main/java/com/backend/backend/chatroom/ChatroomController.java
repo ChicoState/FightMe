@@ -23,7 +23,8 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/api/chatroom")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:60966")  
+// @CrossOrigin(origins = "http://localhost:60966")  
+@CrossOrigin(origins = "*")
 public class ChatroomController {
     private ChatroomService chatroomService;
     private UserService userService;

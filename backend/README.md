@@ -85,7 +85,8 @@
 1. Open PostgresSQL and login to the database
 2. Run the Spring Boot Application
 3. Run Flutter in command line
-   * Use this command to save some time:  _flutter run -d chrome --web-port="60966"_
+   * Use this if you're not testing mutiple users and want persistance:  _flutter run -d chrome --web-port "60966"_
+   * Use this if you're testing multiple users and no persistance:  _flutter run -d chrome_
 
 # API Documentation
 

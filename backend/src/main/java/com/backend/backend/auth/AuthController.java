@@ -18,7 +18,8 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/api/")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:60966") 
+// @CrossOrigin(origins = "http://localhost:60966") 
+@CrossOrigin(origins = "*")
 public class AuthController {
     private UserRepository userRepository;
     private AuthRepository authRepository;

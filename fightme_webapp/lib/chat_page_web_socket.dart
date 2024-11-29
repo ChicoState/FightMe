@@ -47,7 +47,6 @@ class ChatPageState extends State<ChatPage> {
 
     textEditControl = TextEditingController();
 
-    // Initialize WebSocket connection and STOMP client
     stompClient = StompClient(
       config: StompConfig(
         url: 'ws://localhost:8080/ws',
@@ -85,12 +84,14 @@ class ChatPageState extends State<ChatPage> {
   void _sendMessage(String messageContent) {
     if (messageContent.isNotEmpty) {
       stompClient.send(
-        destination: '/app/chat.sendMessage/${widget.chatroomID}',
+        destination: '/app/chatroom/${widget.chatroomID}/sendMessage',
         body: jsonEncode({
           'chatroomId': widget.chatroomID,
           'content': messageContent,
           'toId': widget.otherUID,
           'fromId': widget.currentUID,
+          'isRead': false,
+          'timeStamp': 0,
         }),
       );
     }
