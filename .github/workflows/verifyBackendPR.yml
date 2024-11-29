@@ -1,0 +1,79 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build with Maven
+      working-directory: backend
+      run: mvn clean compile
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: UserDB
+          POSTGRES_PASSWORD: abc123
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Run Tests
+      working-directory: backend
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/UserDB
+        SPRING_DATASOURCE_USERNAME: postgres
+        SPRING_DATASOURCE_PASSWORD: abc123
+        SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      run: |
+        mvn test \
+        -Dspring.datasource.url=$SPRING_DATASOURCE_URL \
+        -Dspring.datasource.username=$SPRING_DATASOURCE_USERNAME \
+        -Dspring.datasource.password=$SPRING_DATASOURCE_PASSWORD \
+        -Dspring.jpa.hibernate.ddl-auto=create-drop
+
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v4
+      if: success() || failure()
+      with:
+        report_paths: 'backend/target/surefire-reports/TEST-*.xml'
+        summary: true
+        detailed_summary: true
