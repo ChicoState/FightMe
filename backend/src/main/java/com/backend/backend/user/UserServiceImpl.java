@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
+import com.backend.backend.user.Dto.ProfilePictureDto;
 import com.backend.backend.user.Dto.StatsDto;
+import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
 
 import lombok.AllArgsConstructor;
@@ -82,6 +84,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto updateProfilePicture(Long id, ProfilePictureDto profilePicture) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        user.setProfilePicture(profilePicture.getProfilePicture());
+        User savedUser = userRepository.save(user);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
+    public UserDto updateTheme(Long id, ThemeDto theme) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        user.setTheme(theme.getTheme());
+        User savedUser = userRepository.save(user);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
     public UserDto updateStats(Long id, StatsDto stats) {
         User user = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
@@ -108,6 +128,24 @@ public class UserServiceImpl implements UserService {
         friend.getFriends().add(user.getId());
         User savedUser = userRepository.save(user);
         userRepository.save(friend);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
+    public UserDto addProfilePicture(Long id, ProfilePictureDto profilePicture) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        user.getUnlockedProfilePictures().add(profilePicture.getProfilePicture());
+        User savedUser = userRepository.save(user);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
+    public UserDto addTheme(Long id, ThemeDto theme) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        user.getUnlockedThemes().add(theme.getTheme());
+        User savedUser = userRepository.save(user);
         return UserMapper.mapToUserDto(savedUser);
     }
 

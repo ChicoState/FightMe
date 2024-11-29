@@ -241,4 +241,48 @@ class HttpService {
       throw "Unable to update user gamer score.";
     }
   }
+
+  Future<void> updateUserProfilePicture(int userID, int profilePicture) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/profilePicture"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"profilePicture": profilePicture}));
+    if (res.statusCode == 200) {
+      print("Profile picture updated successfully.");
+    } else {
+      throw "Unable to update user profile picture.";
+    }
+  }
+
+  Future<void> addUserProfilePicture(int userID, int profilePicture) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/addProfilePicture"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"profilePicture": profilePicture}));
+    if (res.statusCode == 200) {
+      print("Profile picture added successfully.");
+    } else {
+      throw "Unable to add user profile picture.";
+    }
+  }
+
+  Future<void> updateUserTheme(int userID, int theme) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/theme"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"theme": theme}));
+    if (res.statusCode == 200) {
+      print("Theme updated successfully.");
+    } else {
+      throw "Unable to update user theme.";
+    }
+  }
+
+  Future<void> addUserTheme(int userID, int theme) async {
+    Response res = await put(Uri.parse("$springbootUserURL$userID/addTheme"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"theme": theme}));
+    if (res.statusCode == 200) {
+      print("Theme added successfully.");
+    } else {
+      throw "Unable to add user theme.";
+    }
+  }
 }
