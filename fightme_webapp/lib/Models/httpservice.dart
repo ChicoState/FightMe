@@ -110,6 +110,7 @@ class HttpService {
   Future<List<Message>> getChatroomMessages(int chatroomID) async {
     Response res = await get(Uri.parse("${springbootMessageURL}/$chatroomID"));
     if (res.statusCode == 200) {
+      print("Status Code: ${res.statusCode}");
       List<dynamic> body = jsonDecode(res.body);
       List<Message> messages =
           body.map((dynamic item) => Message.fromJson(item)).toList();

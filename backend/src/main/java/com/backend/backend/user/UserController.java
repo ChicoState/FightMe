@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:60966")  //this changes every time i run flutter
+// @CrossOrigin(origins = "http://localhost:60966")
+@CrossOrigin(origins = "*")  //this changes every time i run flutter
 public class UserController {
     private UserService userService;
 
