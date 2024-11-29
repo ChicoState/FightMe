@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/api/messages")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:60966")
+// @CrossOrigin(origins = "http://localhost:60966")
+@CrossOrigin(origins = "*")
 public class MessageController {
     private MessageService messageService;
 

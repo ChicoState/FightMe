@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/friendrequests")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:60966")
+// @CrossOrigin(origins = "http://localhost:60966")
+@CrossOrigin(origins = "*")
 public class FriendRequestController {
     private FriendRequestService friendRequestService;
 
