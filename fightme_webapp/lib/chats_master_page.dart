@@ -104,50 +104,24 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
                 },
                 child: const Text("Pending Requests"),
             ),
-            FutureBuilder(
-              future: _list, 
-              builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } 
-                else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+            FutureBuilder(future: _list, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data!.isEmpty) {
+                  return const Text(
+                      "No chat rooms available. Go and make some friends.");
                 }
-                else if (snapshot.hasData) {
-                  if (snapshot.data!.isEmpty) {
-                    return const Text("No chat rooms available. Go and make some friends.");
-                  }
-                  else {
-                    return ListView(
+                else {
+                  return ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: snapshot.data!
-                    );
-                  }
-                }
-                else {
-                  return const Text("No data available");
+                  );
                 }
               }
-            ),
-            // FutureBuilder(future: _list, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-            //   if (snapshot.hasData) {
-            //     if (snapshot.data!.isEmpty) {
-            //       return const Text(
-            //           "No chat rooms available. Go and make some friends.");
-            //     }
-            //     else {
-            //       return ListView(
-            //           scrollDirection: Axis.vertical,
-            //           shrinkWrap: true,
-            //           children: snapshot.data!
-            //       );
-            //     }
-            //   }
-            //   else {
-            //     return const CircularProgressIndicator();
-            //   }
-            // }),
+              else {
+                return const CircularProgressIndicator();
+              }
+            }),
           ],
         ),
       ),
