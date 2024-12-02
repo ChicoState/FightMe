@@ -170,6 +170,7 @@ class ChatPageState extends State<ChatPage> {
                       widget.currentUID, widget.currentUser.gamerScore + 1);
                   statsProvider.updateGamerscore(widget.currentUser.gamerScore + 1);
                 }
+                textEditControl.clear();
                 }
               },
             ),
