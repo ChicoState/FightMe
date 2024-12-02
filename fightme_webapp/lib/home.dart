@@ -64,7 +64,8 @@ class _HomeState extends State<Home> {
       _passwordController.text,
     );
 
-    if (globals.uid != null && globals.uid! > 0) {
+    // if (globals.uid != null && globals.uid! > 0) {
+      if(globals.uid > 0) {
       globals.curUser = await HttpService().getUserByID(globals.uid);
       globals.loggedIn = true;
       await _saveUserData(globals.uid);
