@@ -150,16 +150,26 @@ class ChatPageState extends State<ChatPage> {
                 labelText: "Message",
               ),
               onSubmitted: (value) async {
-                _sendMessage(value); // Send message via WebSocket
-                print("Are we here?");
-                randomNumber = Random().nextInt(100);
-                if (randomNumber < 50) {
-                  print("I received $randomNumber, increase");
-                  // Optionally update score (or any other game-related logic)
-                  await HttpService().updateUserGamerScore(
-                      widget.currentUID, widget.currentUser.gamerScore + 1);
+                if (value.length > 255) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 3),
+                        content: Text('You exceeded the character limit.'),
+                      )
+                  );
                 }
-                textEditControl.clear();
+                else {
+                  _sendMessage(value); // Send message via WebSocket
+                  print("Are we here?");
+                  randomNumber = Random().nextInt(100);
+                  if (randomNumber < 50) {
+                    print("I received $randomNumber, increase");
+                    // Optionally update score (or any other game-related logic)
+                    await HttpService().updateUserGamerScore(
+                        widget.currentUID, widget.currentUser.gamerScore + 1);
+                  }
+                  textEditControl.clear();
+                }
               },
             ),
           ],

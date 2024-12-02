@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'profile_page.dart';
+import 'Cosmetics/profile_pictures.dart';
 import 'package:fightme_webapp/Models/user.dart';
+import 'Widgets/fightButton.dart';
 import 'package:fightme_webapp/Models/friend_request.dart';
+import 'package:fightme_webapp/Models/fight_game_session.dart';
 import 'globals.dart' as globals;
 
 class PendingRequestsPage extends StatefulWidget {
@@ -22,7 +25,7 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
     HttpService http = HttpService();
     List<Widget> list = List.empty(growable: true);
     List<FriendRequest> myRequests = await http.getAllFriendRequests(globals.uid);
-    myRequests.removeWhere((element) => element.status != Status.pending);
+    myRequests.removeWhere((element) => element.status == Status.rejected);
     for (var request in myRequests) {
       User user = await http.getUserByID(request.fromUserID);
       list.add(
@@ -36,9 +39,12 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                             userViewed: user)));
               },
               child: ListTile(
-                leading: const Icon(Icons.account_circle_sharp),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(60.0),
+                    child: Image.asset(profilePictures[user.pfp], fit: BoxFit.cover, width: 60, height: 60),
+                  ),
                 title: user.id != 0 ? Text(user.name) : const Text("Group"),
-                trailing: Row(
+                trailing: request.status == Status.pending ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FilledButton.tonal(
@@ -68,7 +74,11 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                         child: const Text("reject"),
                       )
                     ]
-                )
+                ) : ElevatedButton(
+                    onPressed: () =>
+                        buildFightButton(context, FightGameSession(curUser, user)),
+                    child: const Text('Fight!')
+                ),
               )
           )
       );
