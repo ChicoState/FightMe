@@ -5,6 +5,7 @@ enum Move {attack, defense, magic, none}
 
 class FightGameSession {
   int id = 0;
+  int winnerID = 0;
   User user1 = User("");
   int user1hp = 5;
   Move user1move = Move.none;
@@ -15,6 +16,7 @@ class FightGameSession {
 
   FightGameSession(User curUser, otherUser) {
     id = 0;
+    winnerID = 0;
     user1 = curUser;
     user1hp = 5;
     user1move = Move.none;
@@ -26,6 +28,7 @@ class FightGameSession {
 
   FightGameSession.practice(User curUser) {
     id = 0;
+    winnerID = 0;
     user1 = curUser;
     user1hp = 5;
     user1move = Move.none;
