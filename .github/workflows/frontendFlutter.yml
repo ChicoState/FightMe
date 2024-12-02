@@ -25,7 +25,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: cd fightme_webapp
-      - run: flutter pub get
+      - name: Pub Get 
+        working-directory: fightme_webapp
+        run: flutter pub get
       - run: flutter test
+        working-directory: fightme_webapp
       - run: flutter build web
+        working-directory: fightme_webapp
