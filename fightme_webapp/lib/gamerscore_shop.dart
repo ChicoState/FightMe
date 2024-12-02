@@ -1,8 +1,10 @@
 import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'globals.dart' as globals;
 import 'Models/httpservice.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 
 class GamerscoreShop extends StatefulWidget {
   final User curUser;
@@ -21,6 +23,7 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
   };
   @override
   Widget build(BuildContext context) {
+    StatsProvider statsProvider = Provider.of<StatsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Shop"),
@@ -39,13 +42,17 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
       body: Center(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
-                Text("GamerScore: ${widget.curUser.gamerScore}", style: const TextStyle(fontSize: 20),),
-                const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
-              ],
+            Consumer<StatsProvider>(
+                builder: (context, statsProvider, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                    Text("GamerScore: ${statsProvider.gamerscore}", style: const TextStyle(fontSize: 20),),
+                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                  ],
+                );
+              }
             ),
             const SizedBox(
               height: 200,
@@ -61,16 +68,16 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                       width: MediaQuery.of(context).size.width / 3 - 60.0,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(curUser.gamerScore < 1) {
+                          if(statsProvider.gamerscore < 1) {
+                            print("gamerscore is less than 1: ${statsProvider.gamerscore}");
                             return;
                           }
-                          await _httpService.updateUserGamerScore(globals.uid, curUser.gamerScore - 1);
-                          currentStats['attackScore'] = curUser.attackScore + 1;
+                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
+                          currentStats['attackScore'] = statsProvider.attack + 1;
                           await _httpService.updateUserStats(globals.uid,currentStats);
-                          setState(() {
-                            curUser.attackScore = curUser.attackScore + 1;
-                            curUser.gamerScore = curUser.gamerScore - 1;
-                          });
+                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
+                          statsProvider.updateStats(statsProvider.attack + 1, statsProvider.magic, statsProvider.defense);
+                          print("i've updated gamerscore and stats");
                         },
                         child: const Text("Buy Attack"),
                       ),
@@ -85,16 +92,14 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                       width: MediaQuery.of(context).size.width / 3 - 60.0,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(curUser.gamerScore < 1) {
+                          if(statsProvider.gamerscore < 1) {
                             return;
                           }
-                          await _httpService.updateUserGamerScore(globals.uid, curUser.gamerScore - 1);
-                          currentStats['defenseScore'] = curUser.defenseScore + 1;
+                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
+                          currentStats['defenseScore'] = statsProvider.defense + 1;
                           await _httpService.updateUserStats(globals.uid,currentStats);
-                          setState(() {
-                            curUser.defenseScore = curUser.defenseScore + 1;
-                            curUser.gamerScore = curUser.gamerScore - 1;
-                          });
+                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
+                          statsProvider.updateStats(statsProvider.attack, statsProvider.magic, statsProvider.defense + 1);
                         },
                         child: const Text("Buy Defense"),
                       ),
@@ -109,16 +114,14 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                       width: MediaQuery.of(context).size.width / 3 - 60.0,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(curUser.gamerScore < 1) {
+                          if(statsProvider.gamerscore < 1) {
                             return;
                           }
-                          await _httpService.updateUserGamerScore(globals.uid, curUser.gamerScore - 1);
-                          currentStats['magicScore'] = curUser.magicScore + 1;
+                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
+                          currentStats['magicScore'] = statsProvider.magic + 1;
                           await _httpService.updateUserStats(globals.uid,currentStats);
-                          setState(() {
-                            curUser.magicScore = curUser.magicScore + 1;
-                            curUser.gamerScore = curUser.gamerScore - 1;
-                          });
+                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
+                          statsProvider.updateStats(statsProvider.attack, statsProvider.magic + 1, statsProvider.defense);
                         },
                         child: const Text("Buy Magic"),
                       ),
