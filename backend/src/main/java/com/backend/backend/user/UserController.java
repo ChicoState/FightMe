@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
 import com.backend.backend.user.Dto.StatsDto;
+import com.backend.backend.user.Dto.ProfilePictureDto;
+import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -53,6 +55,30 @@ public class UserController {
     @PutMapping("{id}/gamerScore")
     public ResponseEntity<UserDto> updateGamerScore(@PathVariable("id") Long id, @RequestBody GamerScoreDto GamerScoreDto) {
         UserDto updatedUser = userService.updateGamerScore(id, GamerScoreDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}/profilePicture")
+    public ResponseEntity<UserDto> updateProfilePicture(@PathVariable("id") Long id, @RequestBody ProfilePictureDto ProfilePictureDto) {
+        UserDto updatedUser = userService.updateProfilePicture(id, ProfilePictureDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}/addProfilePicture")
+    public ResponseEntity<UserDto> addProfilePicture(@PathVariable("id") Long id, @RequestBody ProfilePictureDto ProfilePictureDto) {
+        UserDto updatedUser = userService.addProfilePicture(id, ProfilePictureDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}/theme")
+    public ResponseEntity<UserDto> updateTheme(@PathVariable("id") Long id, @RequestBody ThemeDto ThemeDto) {
+        UserDto updatedUser = userService.updateTheme(id, ThemeDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("{id}/addTheme")
+    public ResponseEntity<UserDto> addTheme(@PathVariable("id") Long id, @RequestBody ThemeDto ThemeDto) {
+        UserDto updatedUser = userService.addTheme(id, ThemeDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

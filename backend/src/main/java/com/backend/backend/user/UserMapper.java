@@ -12,6 +12,10 @@ public class UserMapper {
             user.getAttackScore(),
             user.getDefenseScore(),
             user.getMagicScore(),
+            user.getProfilePicture(),
+            user.getUnlockedProfilePictures(),
+            user.getTheme(),
+            user.getUnlockedThemes(),
             user.getFriends(), 
             user.getEmail(), 
             user.getPassword()
@@ -27,6 +31,10 @@ public class UserMapper {
             userDto.getAttackScore(),
             userDto.getDefenseScore(),
             userDto.getMagicScore(),
+            userDto.getProfilePicture(),
+            userDto.getUnlockedProfilePictures(),
+            userDto.getTheme(),
+            userDto.getUnlockedThemes(),
             userDto.getFriends(), 
             userDto.getEmail(), 
             userDto.getPassword()

@@ -5,6 +5,8 @@ import java.util.List;
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
 import com.backend.backend.user.Dto.StatsDto;
+import com.backend.backend.user.Dto.ProfilePictureDto;
+import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
 
 public interface UserService {
@@ -15,6 +17,14 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     UserDto updateGamerScore(Long id, GamerScoreDto gamerScore);
+
+    UserDto updateProfilePicture(Long id, ProfilePictureDto profilePicture);
+
+    UserDto addProfilePicture(Long id, ProfilePictureDto profilePicture);
+
+    UserDto updateTheme(Long id, ThemeDto theme);
+
+    UserDto addTheme(Long id, ThemeDto theme);
 
     UserDto updateStats(Long id, StatsDto stats);
 

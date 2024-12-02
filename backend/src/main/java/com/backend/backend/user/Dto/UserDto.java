@@ -21,6 +21,10 @@ public class UserDto {
     private int attackScore;
     private int defenseScore;
     private int magicScore;
+    private Long profilePicture;
+    private List<Long> unlockedProfilePictures;
+    private Long theme;
+    private List<Long> unlockedThemes;
     private List<Long> friends; //changed to list long
     private String email;
     private String password;
