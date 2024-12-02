@@ -83,6 +83,11 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Chats", style: TextStyle(fontSize: 30)),
+        backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {

@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Models/chatroom.dart';
 import 'Models/user.dart';
-import 'package:fightme_webapp/Models/httpservice.dart';
-import 'pending_requests.dart';
-import 'globals.dart' as globals;
 
 class LeaderboardPage extends StatefulWidget {
   final User curUser;
@@ -16,7 +12,7 @@ class LeaderboardPage extends StatefulWidget {
 
 
 class LeaderboardPageState extends State<LeaderboardPage> {
-  late Future<List<Widget>> _list = Future.value([]);
+  late final Future<List<Widget>> _list = Future.value([]);
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
+
 import 'package:fightme_webapp/Cosmetics/profile_pictures.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/Models/fight_game_session.dart';
 
 List<Move> randomMove = [Move.attack, Move.defense, Move.magic];
