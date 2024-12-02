@@ -33,7 +33,7 @@ class FightGameSession {
     user1hp = 5;
     user1move = Move.none;
     user2 = User("Dummy");
-    // TODO: Set Dummy's profile picture to a picture of something like a straw man.
+    user2.pfp = 1;
     user2.attackScore = curUser.attackScore;
     user2.defenseScore = curUser.defenseScore;
     user2.magicScore = curUser.magicScore;
