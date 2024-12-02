@@ -1,0 +1,34 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  Build-and-Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Pub Get 
+        working-directory: fightme_webapp
+        run: flutter pub get
+      - run: flutter test
+        working-directory: fightme_webapp
+      - run: flutter build web
+        working-directory: fightme_webapp
