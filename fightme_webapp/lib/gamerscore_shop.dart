@@ -1,10 +1,15 @@
 import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/main.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'Cosmetics/profile_pictures.dart';
 import 'Cosmetics/themes.dart';
+=======
+import 'package:provider/provider.dart';
+>>>>>>> 9200672da3856aa5d5994341f01807589686aa0f
 import 'globals.dart' as globals;
 import 'Models/httpservice.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 
 class GamerscoreShop extends StatefulWidget {
   final User curUser;
@@ -18,6 +23,7 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
   final HttpService _httpService = HttpService();
   @override
   Widget build(BuildContext context) {
+    StatsProvider statsProvider = Provider.of<StatsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme
@@ -26,17 +32,35 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
             .primary,
         centerTitle: true,
         title: const Text("Shop"),
+<<<<<<< HEAD
+=======
+        backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+>>>>>>> 9200672da3856aa5d5994341f01807589686aa0f
       ),
       body: Center(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
-                Text("GamerScore: ${widget.curUser.gamerScore}", style: const TextStyle(fontSize: 20),),
-                const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
-              ],
+            Consumer<StatsProvider>(
+                builder: (context, statsProvider, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                    Text("GamerScore: ${statsProvider.gamerscore}", style: const TextStyle(fontSize: 20),),
+                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                  ],
+                );
+              }
             ),
             const Align(
               alignment: Alignment.centerLeft,

@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:fightme_webapp/Models/httpservice.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
-import 'globals.dart' as globals;
 import 'Models/message.dart';
 import 'Models/user.dart';
 import 'profile_page.dart';
@@ -99,6 +100,7 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    StatsProvider statsProvider = Provider.of<StatsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -159,16 +161,15 @@ class ChatPageState extends State<ChatPage> {
                   );
                 }
                 else {
-                  _sendMessage(value); // Send message via WebSocket
-                  print("Are we here?");
-                  randomNumber = Random().nextInt(100);
-                  if (randomNumber < 50) {
-                    print("I received $randomNumber, increase");
-                    // Optionally update score (or any other game-related logic)
-                    await HttpService().updateUserGamerScore(
-                        widget.currentUID, widget.currentUser.gamerScore + 1);
-                  }
-                  textEditControl.clear();
+                _sendMessage(value); // Send message via WebSocket
+                randomNumber = Random().nextInt(100);
+                print("I received $randomNumber");
+                if (randomNumber < 50) {
+                  // Optionally update score (or any other game-related logic)
+                  await HttpService().updateUserGamerScore(
+                      widget.currentUID, widget.currentUser.gamerScore + 1);
+                  statsProvider.updateGamerscore(widget.currentUser.gamerScore + 1);
+                }
                 }
               },
             ),

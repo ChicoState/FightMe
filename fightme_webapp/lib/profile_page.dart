@@ -1,11 +1,13 @@
 import 'package:fightme_webapp/gamerscore_shop.dart';
 import 'package:fightme_webapp/home.dart';
+import 'package:fightme_webapp/settings_page.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
 import 'Models/httpservice.dart';
 import 'Cosmetics/profile_pictures.dart';
-import 'globals.dart' as globals;
 import 'Models/auth_clear.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,7 +34,12 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _friends = HttpService().getFriends(widget.userViewed.id);
-  }
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final statsProvider = Provider.of<StatsProvider>(context, listen: false);
+      statsProvider.initializeStats(widget.userViewed);
+    });
+}
 
   friendsListView(list) => ListView.builder(
       scrollDirection: Axis.vertical,
@@ -78,11 +85,15 @@ class ProfilePageState extends State<ProfilePage> {
                       builder: (context) => GamerscoreShop(curUser: widget.curUser)),
                 );
               },
-              icon: Row(
-                  children: [
-                    Text("${widget.userViewed.gamerScore}", style: const TextStyle(fontSize: 20),),
-                    const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
-                  ]
+              icon: Consumer<StatsProvider>(
+                builder: (context, statsProvider, child) {
+                return Row(
+                    children: [
+                      Text("${statsProvider.gamerscore}", style: const TextStyle(fontSize: 20),),
+                      const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                    ]
+                );
+                },
               ),
             ),
           ],
@@ -108,7 +119,8 @@ class ProfilePageState extends State<ProfilePage> {
                       children: [
                         IconButton(
                           onPressed: () {
-
+                            Navigator.push(context, MaterialPageRoute<SettingsPage>(
+                                builder: (context) => const SettingsPage()));
                           },
                           icon: const Icon(Icons.settings, size: 40),
                         ),
@@ -184,40 +196,44 @@ class ProfilePageState extends State<ProfilePage> {
                 return const CircularProgressIndicator();
               }),
             ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
+            Consumer<StatsProvider>(
+                builder: (context, statsProvider, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text("Attack", style: TextStyle(
-                        fontSize: 40)),
-                    Text("${widget.userViewed.attackScore}", style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium),
+                    Column(
+                      children: [
+                        const Text("Attack", style: TextStyle(
+                            fontSize: 40)),
+                        Text("${statsProvider.attack}", style: Theme
+                            .of(context)
+                            .textTheme
+                            .headlineMedium),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text("Defense", style: TextStyle(
+                            fontSize: 40)),
+                        Text("${statsProvider.defense}", style: Theme
+                            .of(context)
+                            .textTheme
+                            .headlineMedium),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text("Magic", style: TextStyle(
+                            fontSize: 40)),
+                        Text("${statsProvider.magic}", style: Theme
+                            .of(context)
+                            .textTheme
+                            .headlineMedium),
+                      ],
+                    ),
                   ],
-                ),
-                Column(
-                  children: [
-                    const Text("Defense", style: TextStyle(
-                        fontSize: 40)),
-                    Text("${widget.userViewed.defenseScore}", style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text("Magic", style: TextStyle(
-                        fontSize: 40)),
-                    Text("${widget.userViewed.magicScore}", style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium),
-                  ],
-                ),
-              ],
+                );
+              }
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

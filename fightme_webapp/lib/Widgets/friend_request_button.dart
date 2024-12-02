@@ -44,6 +44,8 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
       FilledButton.tonal(
         onPressed: () {
           http.acceptFriendRequest(incoming.id).then((result){
+            // final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
+            // friendsProvider.addFriend(otherUser);
             return;
           });
           http.updateUserGamerScore(curUser.id, curUser.gamerScore + 1).then((result){    //this could be an issue because of the curUser id
@@ -60,6 +62,8 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
       FilledButton.tonal(
         onPressed: () {
           http.rejectFriendRequest(incoming.id).then((result){
+            // final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
+            // friendsProvider.removeFriend(otherUser);
             return;
           });
           update();

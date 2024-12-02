@@ -1,11 +1,11 @@
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/Models/user.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'navbar.dart'; // Assuming this is your main app page after login
 import 'globals.dart' as globals;
-import 'Cosmetics/profile_pictures.dart';
-import 'Cosmetics/themes.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -33,7 +33,8 @@ class _HomeState extends State<Home> {
           ),
         );
       }
-    });
+    }
+    );
   }
 
   Future<void> _saveUserData(int userId) async {
@@ -49,6 +50,9 @@ class _HomeState extends State<Home> {
       globals.uid = userId;
       globals.curUser = await HttpService().getUserByID(userId);
       globals.loggedIn = true;
+      final statsProvider = Provider.of<StatsProvider>(context, listen: false);
+      await statsProvider.initializeStats(globals.curUser);
+      // final friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
     } else {
       globals.loggedIn = false;
     }
@@ -60,7 +64,8 @@ class _HomeState extends State<Home> {
       _passwordController.text,
     );
 
-    if (globals.uid != null && globals.uid! > 0) {
+    // if (globals.uid != null && globals.uid! > 0) {
+      if(globals.uid > 0) {
       globals.curUser = await HttpService().getUserByID(globals.uid);
       globals.loggedIn = true;
       await _saveUserData(globals.uid);

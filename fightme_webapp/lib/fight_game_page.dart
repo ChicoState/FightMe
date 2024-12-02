@@ -1,9 +1,9 @@
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/game/FightGame.dart';
-import 'package:fightme_webapp/globals.dart';
-import 'package:fightme_webapp/navbar.dart';
+import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'globals.dart' as globals;
 
 class FightGamePage extends StatefulWidget {
@@ -54,6 +54,9 @@ class FightGamePageState extends State<FightGamePage> {
       'defenseScore': (currentStats['defenseScore'] ?? 0) + (stats['defenseScore'] ?? 0),
     };
 
+    final statsProvider = Provider.of<StatsProvider>(context, listen: false);
+
+
     // Show a dialog with the current stats
     showDialog(
       context: context,
@@ -81,6 +84,7 @@ class FightGamePageState extends State<FightGamePage> {
                 Navigator.of(context).pop();
                 _showSaveConfirmation();
                 HttpService().updateUserStats(globals.uid, combinedStats);
+                statsProvider.updateStats(combinedStats['attackScore']!, combinedStats['magicScore']!, combinedStats['defenseScore']!);
                 print("stats saved ${combinedStats['attackScore']} , ${combinedStats['magicScore']} , ${combinedStats['defenseScore']}");
               },
               child: const Text('Save'),
@@ -105,6 +109,11 @@ class FightGamePageState extends State<FightGamePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Fight Game"),
+        backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          centerTitle: true,
         leading: IconButton(
           onPressed: _handleSave,
           icon: const Icon(Icons.save),

@@ -2,6 +2,7 @@
 
 List<String> profilePictures = [
   "assets/images/dummyKnight.png",
+  "assets/images/knight-grey.png",
   "assets/images/knight-green.png",
   "assets/images/fknight-green.png",
 ];
