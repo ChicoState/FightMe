@@ -42,13 +42,13 @@ class User {
         'password': password,
         'dateCreated': dateCreated,
         'gamerScore': gamerScore,
-        'attackScore' : attackScore,
-        'defenseScore' : defenseScore,
-        'magicScore' : magicScore,
-        'profilePicture' : pfp,
-        'unlockedProfilePictures' : unlockedpfps,
-        'theme' : theme,
-        'unlockedThemes' : unlockedThemes,
+        'attackScore': attackScore,
+        'defenseScore': defenseScore,
+        'magicScore': magicScore,
+        'profilePicture': pfp,
+        'unlockedProfilePictures': unlockedpfps,
+        'theme': theme,
+        'unlockedThemes': unlockedThemes,
       };
 
   User(String n) {
