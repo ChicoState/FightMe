@@ -67,7 +67,6 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> friendsList = List<String>.filled(5, widget.userViewed.name);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme
@@ -83,7 +82,7 @@ class ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute<GamerscoreShop>(
-                      builder: (context) => GamerscoreShop(curUser: widget.userViewed)),
+                      builder: (context) => GamerscoreShop(curUser: widget.curUser)),
                 );
               },
               icon: Consumer<StatsProvider>(

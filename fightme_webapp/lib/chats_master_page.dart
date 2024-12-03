@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'Models/chatroom.dart';
 // import 'chat_page.dart';
 import 'chat_page_web_socket.dart';
+import 'Cosmetics/profile_pictures.dart';
 import 'Models/user.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'pending_requests.dart';
@@ -59,9 +60,14 @@ class ChatsMasterPageState extends State<ChatsMasterPage> {
                   )));
         },
         child: ListTile(
-          leading: const Icon(Icons.account_circle_sharp),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(80.0),
+            child: Image.asset(profilePictures[user.pfp], fit: BoxFit.cover, width: 60, height: 60),
+          ),
           title: user.id != 0 ? Text(user.name) : const Text("Group"),
-          subtitle: room.messages.isEmpty ? const Text("") : Text(room.messages.last.content),
+          subtitle: room.messages.isEmpty ? const Text("") : Text(room.messages.last.content, overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false),
         )
     );
   }

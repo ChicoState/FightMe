@@ -1,6 +1,8 @@
 import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/main.dart';
 import 'package:flutter/material.dart';
+import 'Cosmetics/profile_pictures.dart';
+import 'Cosmetics/themes.dart';
 import 'package:provider/provider.dart';
 import 'globals.dart' as globals;
 import 'Models/httpservice.dart';
@@ -16,28 +18,17 @@ class GamerscoreShop extends StatefulWidget {
 
 class _GamerscoreShopState extends State<GamerscoreShop> {
   final HttpService _httpService = HttpService();
-  Map<String, int> currentStats = {
-    'attackScore': curUser.attackScore,
-    'magicScore': curUser.magicScore,
-    'defenseScore': curUser.defenseScore,
-  };
   @override
   Widget build(BuildContext context) {
     StatsProvider statsProvider = Provider.of<StatsProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Shop"),
         backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .primary,
-          centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
+            .of(context)
+            .colorScheme
+            .primary,
+        centerTitle: true,
+        title: const Text("Shop"),
       ),
       body: Center(
         child: Column(
@@ -54,81 +45,223 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                 );
               }
             ),
-            const SizedBox(
-              height: 200,
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Profile Pictures", style: TextStyle(
+                fontSize: 40)),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Image.asset("assets/images/attack.png", height: 80, width: 80, color: Colors.red),
-                    const SizedBox(height: 10,),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 3 - 60.0,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if(statsProvider.gamerscore < 1) {
-                            print("gamerscore is less than 1: ${statsProvider.gamerscore}");
-                            return;
-                          }
-                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
-                          currentStats['attackScore'] = statsProvider.attack + 1;
-                          await _httpService.updateUserStats(globals.uid,currentStats);
-                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
-                          statsProvider.updateStats(statsProvider.attack + 1, statsProvider.magic, statsProvider.defense);
-                          print("i've updated gamerscore and stats");
-                        },
-                        child: const Text("Buy Attack"),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 3,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1.25,
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 10.0,
+                ),
+                  shrinkWrap: true,
+                itemCount: buyableProfilePictures.length,
+                itemBuilder: (BuildContext context, int index) {
+                  bool bought = widget.curUser.unlockedpfps.firstWhere((element) => element == buyableProfilePictures[index][0], orElse: () => -1) != -1;
+                  return TextButton(
+                    onPressed: () {
+                      if (!bought) {
+                        if (buyableProfilePictures[index][1] > widget.curUser.gamerScore) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(seconds: 3),
+                                content: Text('You do not have enough gamer score for that.'),
+                              )
+                          );
+                        }
+                        else {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                AlertDialog(
+                                  title: const Text(
+                                      'Are you sure you want to buy?'),
+                                  content: Image.asset(
+                                      profilePictures[buyableProfilePictures[index][0]],
+                                      width: 150, height: 150),
+                                  actionsAlignment: MainAxisAlignment.center,
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'No'),
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await _httpService.updateUserGamerScore(globals.uid, widget.curUser.gamerScore - buyableProfilePictures[index][1]);
+                                        await _httpService.addUserProfilePicture(globals.uid, buyableProfilePictures[index][0]);
+                                        setState(() {
+                                          widget.curUser.unlockedpfps.add(buyableProfilePictures[index][0]);
+                                          widget.curUser.gamerScore = widget.curUser.gamerScore - buyableProfilePictures[index][1];
+                                        });
+                                        Navigator.pop(context, 'Yes');
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        }
+                      }
+                    },
+                    child: GridTile(
+                      child: Column(
+                          children: [
+                            Image.asset(profilePictures[buyableProfilePictures[index][0]], width: 200, height: 200),
+                            bought ? const Text("Bought", style: TextStyle(
+                                fontSize: 30)) :
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("${buyableProfilePictures[index][1]}", style: const TextStyle(
+                                      fontSize: 30)),
+                                  const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                                ]
+                            ),
+                          ]
                       ),
                     ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Image.asset("assets/images/defense.png", height: 80, width: 80, color: Colors.green,),
-                    const SizedBox(height: 10,),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 3 - 60.0,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if(statsProvider.gamerscore < 1) {
-                            return;
+                  );
+                }
+            ),
+      ),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Themes", style: TextStyle(
+                  fontSize: 40)),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 3.0,
+              child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1.25,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0,
+                  ),
+                  shrinkWrap: true,
+                  itemCount: buyableThemes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    bool bought = widget.curUser.unlockedThemes.firstWhere((element) => element == buyableThemes[index][0], orElse: () => -1) != -1;
+                    return TextButton(
+                      onPressed: () {
+                        if (!bought) {
+                          if (buyableThemes[index][1] > widget.curUser.gamerScore) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  duration: Duration(seconds: 3),
+                                  content: Text('You do not have enough gamer score for that.'),
+                                )
+                            );
                           }
-                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
-                          currentStats['defenseScore'] = statsProvider.defense + 1;
-                          await _httpService.updateUserStats(globals.uid,currentStats);
-                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
-                          statsProvider.updateStats(statsProvider.attack, statsProvider.magic, statsProvider.defense + 1);
-                        },
-                        child: const Text("Buy Defense"),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Image.asset("assets/images/magic.png", width: 80, height: 80, color: Colors.purple,),
-                    const SizedBox(height: 10,),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 3 - 60.0,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if(statsProvider.gamerscore < 1) {
-                            return;
+                          else {
+                            showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  AlertDialog(
+                                    title: const Text(
+                                        'Are you sure you want to buy?'),
+                                    content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                              height: 45.0,
+                                              decoration: BoxDecoration(
+                                                color: themes[buyableThemes[index][0]].primary,
+                                              )
+                                          ),
+                                          Container(
+                                              height: 90.0,
+                                              decoration: BoxDecoration(
+                                                color: themes[buyableThemes[index][0]].surface,
+                                              ),
+                                              child: Align(
+                                                child: Text(themeNames[buyableThemes[index][0]], style: TextStyle(
+                                                    color: themes[buyableThemes[index][0]].onSurface)),
+                                              )
+                                          ),
+                                          Container(
+                                              height: 45.0,
+                                              decoration: BoxDecoration(
+                                                color: themes[buyableThemes[index][0]].secondary,
+                                              )
+                                          ),
+                                        ]
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.center,
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'No'),
+                                        child: const Text('No'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await _httpService.updateUserGamerScore(globals.uid, widget.curUser.gamerScore - buyableThemes[index][1]);
+                                          await _httpService.addUserTheme(globals.uid, buyableThemes[index][0]);
+                                          setState(() {
+                                            widget.curUser.unlockedThemes.add(buyableThemes[index][0]);
+                                            widget.curUser.gamerScore = widget.curUser.gamerScore - buyableThemes[index][1];
+                                          });
+                                          Navigator.pop(context, 'Yes');
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  ),
+                            );
                           }
-                          await _httpService.updateUserGamerScore(globals.uid, statsProvider.gamerscore - 1);
-                          currentStats['magicScore'] = statsProvider.magic + 1;
-                          await _httpService.updateUserStats(globals.uid,currentStats);
-                          statsProvider.updateGamerscore(statsProvider.gamerscore - 1);
-                          statsProvider.updateStats(statsProvider.attack, statsProvider.magic + 1, statsProvider.defense);
-                        },
-                        child: const Text("Buy Magic"),
+                        }
+                      },
+                      child: GridTile(
+                          child: Column(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: themes[buyableThemes[index][0]].primary,
+                                      )
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: themes[buyableThemes[index][0]].surface,
+                                    ),
+                                    child: Align(
+                                    child: Text(themeNames[buyableThemes[index][0]], style: TextStyle(
+                                        color: themes[buyableThemes[index][0]].onSurface)),
+                                    )
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: themes[buyableThemes[index][0]].secondary,
+                                      )
+                                  ),
+                                ),
+                                bought ? const Text("Bought", style: TextStyle(
+                                    fontSize: 30)) :
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("${buyableProfilePictures[index][1]}", style: const TextStyle(
+                                          fontSize: 30)),
+                                      const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
+                                    ]
+                                ),
+                              ]
+                          )
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    );
+                  }
+              ),
             ),
           ],
       ),

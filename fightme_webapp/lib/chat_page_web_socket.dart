@@ -152,6 +152,15 @@ class ChatPageState extends State<ChatPage> {
                 labelText: "Message",
               ),
               onSubmitted: (value) async {
+                if (value.length > 255) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        duration: Duration(seconds: 3),
+                        content: Text('You exceeded the character limit.'),
+                      )
+                  );
+                }
+                else {
                 _sendMessage(value); // Send message via WebSocket
                 randomNumber = Random().nextInt(100);
                 print("I received $randomNumber");
@@ -162,6 +171,7 @@ class ChatPageState extends State<ChatPage> {
                   statsProvider.updateGamerscore(widget.currentUser.gamerScore + 1);
                 }
                 textEditControl.clear();
+                }
               },
             ),
           ],

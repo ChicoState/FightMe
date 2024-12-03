@@ -15,8 +15,14 @@ List<ColorScheme> themes = [
   const ColorScheme(brightness: Brightness.light, primary: Colors.tealAccent, onPrimary: Colors.black, secondary: Colors.pinkAccent, onSecondary: Colors.black, surface: Colors.deepPurple, onSurface: Colors.black, error: Colors.red, onError: Colors.black),
 ];
 
+// TODO: Match the element in themes.
 List<String> themeNames = [
   "Default",
   "Dark",
   "Vaporwave",
+];
+
+// Structure: [element in themes, price]
+List<List<int>> buyableThemes = [
+  [2, 6000],
 ];
