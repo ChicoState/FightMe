@@ -1,6 +1,7 @@
 import 'package:fightme_webapp/fight_game_page.dart';
 import 'package:fightme_webapp/Providers/settings_provider.dart'; // Import the SettingsProvider
 import 'package:fightme_webapp/Providers/stats_provider.dart';
+import 'package:fightme_webapp/training_area_page.dart';
 import 'home.dart';
 import 'Models/user.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fight Me',
       theme: ThemeData.from(colorScheme: settingsProvider.theme),
-      home: globals.loggedIn ? const FightGamePage() : Home(),
+      home: globals.loggedIn ? TrainingAreaPage(curUser: globals.curUser) : Home(),
     );
   }
 }

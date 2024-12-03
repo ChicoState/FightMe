@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'globals.dart' as globals;
 
 class FightGamePage extends StatefulWidget {
-  const FightGamePage({super.key});
+  final String pfp;
+  const FightGamePage({super.key, required this.pfp});
 
   @override
   State<FightGamePage> createState() => FightGamePageState();
@@ -26,7 +27,7 @@ class FightGamePageState extends State<FightGamePage> {
   @override
   void initState() {
     super.initState();
-    _fightGame = FightGame();
+    _fightGame = FightGame(pfp: widget.pfp);
     _loadUserStats();
   }
 
