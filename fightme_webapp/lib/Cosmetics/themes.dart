@@ -57,4 +57,5 @@ List<String> themeNames = [
 List<List<int>> buyableThemes = [
   [2, 6000],
   [3, 6000],
+  [4, 6000],
 ];
