@@ -36,9 +36,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Fight Me',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: settingsProvider.themeMode, // Use the theme mode from the provider
+      theme: ThemeData.from(colorScheme: settingsProvider.theme),
       home: globals.loggedIn ? const FightGamePage() : Home(),
     );
   }
