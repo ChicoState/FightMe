@@ -872,12 +872,12 @@ The authentication provides http responses to signup and login. The signup creat
 # Sprint 3 Goals for Backend
 
 - Game Entity to store game information
-- Websockets for the game? 
-- CI/CD with good unit testing
+- ~~Websockets?~~
+- ~~CI/CD with good unit testing~~
 
 # Long Term Goals
 
-- Add websockets for real time communications
+- ~~Add websockets for real time communications~~
 - Be able to send and recieve pictures
     - Store images somehow for chatrooms
 - Containerize using docker and docker compose
