@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 // Don't know when secondary comes in.
 
 List<ColorScheme> themes = [
-  ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
+  // ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
+  const ColorScheme.light(),
   const ColorScheme.dark(),
   const ColorScheme(
       brightness: Brightness.light,
@@ -46,7 +47,8 @@ List<ColorScheme> themes = [
 
 // TODO: Match the element in themes.
 List<String> themeNames = [
-  "Default",
+  // "Default",
+  "Light",
   "Dark",
   "Vaporwave",
   "midnight",
