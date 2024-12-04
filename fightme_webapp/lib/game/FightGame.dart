@@ -3,11 +3,11 @@ import 'package:fightme_webapp/game/StatsSpriteComponent.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FightGame extends FlameGame with KeyboardEvents {
+  late final String pfp;
   late final SpriteComponent character;
   Vector2 movement = Vector2.zero();
   final List<StatSpriteComponent> statSprites = []; // Changed to correct type
@@ -18,6 +18,8 @@ class FightGame extends FlameGame with KeyboardEvents {
 
   // Game boundaries
   late final Vector2 gameSize;
+
+  FightGame({required this.pfp});
   
   @override
   Color backgroundColor() => const Color.fromARGB(255, 40, 196, 227);
@@ -28,8 +30,9 @@ class FightGame extends FlameGame with KeyboardEvents {
     
     gameSize = size; // Store game size for boundary checking
     
+    
     character = SpriteComponent()
-      ..sprite = await Sprite.load('ErrorSprite.png')
+      ..sprite = await Sprite.load(pfp)
       ..size = Vector2(100.0, 100.0)
       ..position = size / 2 - Vector2(50.0, 50.0);
     await add(character); // Add await here
