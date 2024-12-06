@@ -46,6 +46,17 @@ List<ColorScheme> themes = [
       error: Color.fromARGB(255, 168, 0, 0),
       onError: Color.fromARGB(255, 255, 255, 255),
       onTertiary: Color.fromARGB(255, 245, 242, 242)),
+  const ColorScheme(
+      brightness: Brightness.light,
+      primary: Color.fromARGB(255, 40, 218, 224),
+      onPrimary: Color.fromARGB(255, 0, 0, 0),
+      secondary: Color.fromARGB(255, 68, 68, 68),
+      onSecondary: Color.fromARGB(255, 0, 0, 0),
+      surface: Color.fromARGB(255, 182, 182, 182),
+      onSurface: Color.fromARGB(255, 218, 19, 135),
+      error: Color.fromARGB(255, 168, 0, 0),
+      onError: Color.fromARGB(255, 255, 255, 255),
+      onTertiary: Color.fromARGB(255, 32, 122, 145)),
 ];
 
 // TODO: Match the element in themes.
@@ -56,6 +67,7 @@ List<String> themeNames = [
   "Vaporwave",
   "midnight",
   "sunrise",
+  "Miku",
 ];
 
 // Structure: [element in themes, price]
