@@ -64,7 +64,8 @@ class _BottomNavigationBarExampleState extends State<navbar> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: Theme.of(context).colorScheme.onTertiary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         onTap: _onItemTapped,
       ),
     );

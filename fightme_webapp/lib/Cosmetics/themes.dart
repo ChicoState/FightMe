@@ -22,7 +22,8 @@ List<ColorScheme> themes = [
       surface: Colors.deepPurple,
       onSurface: Colors.black,
       error: Colors.red,
-      onError: Colors.black),
+      onError: Colors.black,
+      onTertiary: Colors.tealAccent),
   const ColorScheme(
       brightness: Brightness.light,
       primary: Color.fromARGB(255, 136, 74, 172),
@@ -32,7 +33,8 @@ List<ColorScheme> themes = [
       surface: Color.fromARGB(255, 44, 44, 44),
       onSurface: Color.fromARGB(255, 204, 204, 204),
       error: Color.fromARGB(255, 255, 104, 93),
-      onError: Color.fromARGB(255, 105, 43, 53)),
+      onError: Color.fromARGB(255, 105, 43, 53),
+      onTertiary: Color.fromARGB(255, 204, 204, 204)),
   const ColorScheme(
       brightness: Brightness.light,
       primary: Color.fromARGB(255, 228, 94, 32),
@@ -42,7 +44,8 @@ List<ColorScheme> themes = [
       surface: Color.fromARGB(255, 255, 255, 255),
       onSurface: Color.fromARGB(255, 41, 41, 41),
       error: Color.fromARGB(255, 168, 0, 0),
-      onError: Color.fromARGB(255, 255, 255, 255)),
+      onError: Color.fromARGB(255, 255, 255, 255),
+      onTertiary: Color.fromARGB(255, 245, 242, 242)),
 ];
 
 // TODO: Match the element in themes.
