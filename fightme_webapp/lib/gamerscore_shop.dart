@@ -1,5 +1,4 @@
 import 'package:fightme_webapp/Models/user.dart';
-import 'package:fightme_webapp/main.dart';
 import 'package:flutter/material.dart';
 import 'Cosmetics/profile_pictures.dart';
 import 'Cosmetics/themes.dart';
@@ -95,9 +94,10 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                                       onPressed: () async {
                                         await _httpService.updateUserGamerScore(globals.uid, widget.curUser.gamerScore - buyableProfilePictures[index][1]);
                                         await _httpService.addUserProfilePicture(globals.uid, buyableProfilePictures[index][0]);
+                                        statsProvider.updateGamerscore(statsProvider.gamerscore - buyableProfilePictures[index][1]);
+                                        // statsProvider.updateStats(statsProvider.attack, statsProvider.magic + 1, statsProvider.defense);
                                         setState(() {
                                           widget.curUser.unlockedpfps.add(buyableProfilePictures[index][0]);
-                                          widget.curUser.gamerScore = widget.curUser.gamerScore - buyableProfilePictures[index][1];
                                         });
                                         Navigator.pop(context, 'Yes');
                                       },
@@ -204,9 +204,10 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                                         onPressed: () async {
                                           await _httpService.updateUserGamerScore(globals.uid, widget.curUser.gamerScore - buyableThemes[index][1]);
                                           await _httpService.addUserTheme(globals.uid, buyableThemes[index][0]);
+                                          statsProvider.updateGamerscore(statsProvider.gamerscore - buyableThemes[index][1]);
+                                          //statsProvider.updateStats(statsProvider.attack, statsProvider.magic + 1, statsProvider.defense);
                                           setState(() {
                                             widget.curUser.unlockedThemes.add(buyableThemes[index][0]);
-                                            widget.curUser.gamerScore = widget.curUser.gamerScore - buyableThemes[index][1];
                                           });
                                           Navigator.pop(context, 'Yes');
                                         },
