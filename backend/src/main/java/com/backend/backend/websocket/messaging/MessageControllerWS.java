@@ -1,4 +1,4 @@
-package com.backend.backend.websocket;
+package com.backend.backend.websocket.messaging;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

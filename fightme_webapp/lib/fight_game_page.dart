@@ -1,93 +1,130 @@
+// import 'dart:async';
+
+// import 'package:fightme_webapp/Models/httpservice.dart';
+// import 'package:fightme_webapp/game/FightGame.dart';
+// import 'package:fightme_webapp/Providers/stats_provider.dart';
+// import 'package:flame/game.dart';
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:web_socket_channel/web_socket_channel.dart';
+// import 'globals.dart' as globals;
+
+// class FightGamePage extends StatefulWidget {
+//   final String pfp;
+//   final String matchID;
+//   final WebSocketChannel channel;
+//   final Stream broadcastStream;
+
+//   const FightGamePage({
+//     Key? key,
+//     required this.pfp,
+//     required this.matchID,
+//     required this.channel,
+//     required this.broadcastStream,
+//   }) : super(key: key);
+
+//   @override
+//   _FightGamePageState createState() => _FightGamePageState();
+// }
+
+// class _FightGamePageState extends State<FightGamePage> {
+//   late StreamSubscription fightStreamSubscription;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     fightStreamSubscription.cancel();  // Cancel the subscription when leaving the page
+//     widget.channel.sink.close();  // Close the WebSocket connection when done
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text("Fight Game - Match ID: ${widget.matchID}")),
+//       body: GameWidget(game: FightGame(pfp: widget.pfp, matchID: widget.matchID, channel: widget.channel, broadcastStream: widget.broadcastStream)),
+//     );
+//   }
+// }
+
+
+import 'dart:async';
+
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/game/FightGame.dart';
 import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'globals.dart' as globals;
 
 class FightGamePage extends StatefulWidget {
-  const FightGamePage({super.key});
+  final String pfp;
+  final String matchID;
+  final WebSocketChannel channel;
+  final Stream broadcastStream;
+
+  const FightGamePage({
+    Key? key,
+    required this.pfp,
+    required this.matchID,
+    required this.channel,
+    required this.broadcastStream,
+  }) : super(key: key);
 
   @override
-  State<FightGamePage> createState() => FightGamePageState();
+  _FightGamePageState createState() => _FightGamePageState();
 }
 
-class FightGamePageState extends State<FightGamePage> {
-  late final FightGame _fightGame;
-  final HttpService _httpService = HttpService();
-  Map<String, int> currentStats = {
-    'attackScore': 0,
-    'magicScore': 0,
-    'defenseScore': 0,
-  };
-
+class _FightGamePageState extends State<FightGamePage> {
+  late StreamSubscription fightStreamSubscription;
+  late FightGame fightGame;
 
   @override
   void initState() {
     super.initState();
-    _fightGame = FightGame();
-    _loadUserStats();
   }
 
-  Future<void> _loadUserStats() async {
-    try {
-      final user = await _httpService.getUserByID(globals.uid);
-      setState(() {
-        currentStats = {
-          'attackScore': user.attackScore,
-          'magicScore': user.magicScore,
-          'defenseScore': user.defenseScore,
-        };
-      });
-    } catch (e) {
-      print('Error loading user stats: $e');
-    }
+  @override
+  void dispose() {
+    // fightStreamSubscription.cancel();
+    // widget.channel.sink.close();
+    super.dispose();
   }
 
-  void _handleSave() {
-    Map<String, int> stats = _fightGame.saveStats();
-    
-    Map<String, int> combinedStats = {
-      'attackScore': (currentStats['attackScore'] ?? 0) + (stats['attackScore'] ?? 0),
-      'magicScore': (currentStats['magicScore'] ?? 0) + (stats['magicScore'] ?? 0),
-      'defenseScore': (currentStats['defenseScore'] ?? 0) + (stats['defenseScore'] ?? 0),
-    };
+   void _onGameEnd() {
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+  }
 
-    final statsProvider = Provider.of<StatsProvider>(context, listen: false);
-
-
-    // Show a dialog with the current stats
+  void _showGameEndDialog(Map<String, int> stats) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Game Stats'),
+          title: Text('Game Over'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Attack: ${stats['attackScore']}'),
-              Text('Magic: ${stats['magicScore']}'),
-              Text('Defense: ${stats['defenseScore']}'),
+              Text('Your Stats:'),
+              Text('Attack Score: ${stats['attackScore']}'),
+              Text('Magic Score: ${stats['magicScore']}'),
+              Text('Defense Score: ${stats['defenseScore']}'),
             ],
           ),
           actions: [
             TextButton(
+              child: Text('Return to Lobby'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Exit game page
               },
-              child: const Text('Close'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _showSaveConfirmation();
-                HttpService().updateUserStats(globals.uid, combinedStats);
-                statsProvider.updateStats(combinedStats['attackScore']!, combinedStats['magicScore']!, combinedStats['defenseScore']!);
-                print("stats saved ${combinedStats['attackScore']} , ${combinedStats['magicScore']} , ${combinedStats['defenseScore']}");
-              },
-              child: const Text('Save'),
             ),
           ],
         );
@@ -95,33 +132,25 @@ class FightGamePageState extends State<FightGamePage> {
     );
   }
 
-  void _showSaveConfirmation() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Stats saved successfully!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    fightGame = FightGame(
+      pfp: widget.pfp, 
+      matchID: widget.matchID, 
+      channel: widget.channel, 
+      broadcastStream: widget.broadcastStream,
+      onGameEnd: _onGameEnd,
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Fight Game"),
-        backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .primary,
-          centerTitle: true,
-        leading: IconButton(
-          onPressed: _handleSave,
-          icon: const Icon(Icons.save),
-          tooltip: 'Save Stats',
-        ),
-      ),
+      appBar: AppBar(title: Text("Fight Game - Match ID: ${widget.matchID}")),
       body: GameWidget(
-        game: _fightGame,
+        game: fightGame,
+        overlayBuilderMap: {
+          'gameEndDialog': (BuildContext context, FightGame game) {
+            return Container(); // Placeholder, not used directly
+          }
+        },
       ),
     );
   }
