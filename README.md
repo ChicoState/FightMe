@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/ChicoState/FightMe/actions/workflows/verifyBackendPR.yml/badge.svg)](https://github.com/ChicoState/FightMe/actions/workflows/verifyBackendPR.yml)
+[![Dart](https://github.com/ChicoState/FightMe/actions/workflows/frontendFlutter.yml/badge.svg)](https://github.com/ChicoState/FightMe/actions/workflows/frontendFlutter.yml)
 # FightMe
 
 A messaging Application with a built in game component.
