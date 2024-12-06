@@ -31,6 +31,10 @@ public class Matchmaking {
         return null;
     }
 
+    public void endMatch(String matchID) {
+        activeMatches.remove(matchID);
+    }
+
     public String getMatchID(String userID) {
         return activeMatches.get(userID);
     }

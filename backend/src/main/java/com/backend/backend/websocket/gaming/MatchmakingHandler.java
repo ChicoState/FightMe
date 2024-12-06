@@ -36,59 +36,69 @@ public class MatchmakingHandler implements WebSocketHandler {
         String payload = message.getPayload().toString();
         ObjectMapper mapper = new ObjectMapper();
 
+        // Fixed spawn locations for players
+        double player1X = 100.0;
+        double player1Y = 300.0;
+        double player2X = 700.0;
+        double player2Y = 300.0;
+
         if (payload.equals("Find Match")) {
             String matchID = matchmaking.findMatch(userID);
             if (matchID != null) {
                 session.sendMessage(new TextMessage("Match Found: " + matchID));
-                double player1X = 100.0; // Example fixed position
-                double player1Y = 300.0;
-                double player2X = 700.0; // Example fixed position
-                double player2Y = 300.0;
-
-                ObjectNode player1Response = mapper.createObjectNode();
-                player1Response.put("type", "match_start");
-                player1Response.put("x_player1", player1X);
-                player1Response.put("y_player1", player1Y);
-                player1Response.put("x_player2", player2X);
-                player1Response.put("y_player2", player2Y);
-
-                // Create response for the second player
-                ObjectNode player2Response = mapper.createObjectNode();
-                player2Response.put("type", "match_start");
-                player2Response.put("x_player1", player2X);
-                player2Response.put("y_player1", player2Y);
-                player2Response.put("x_player2", player1X);
-                player2Response.put("y_player2", player1Y);
-
 
                 String opponent = matchmaking.getOpponent(userID, matchID);
                 WebSocketSession opponentSession = sessions.get(opponent);
                 if (opponentSession != null && opponentSession.isOpen()) {
-                    opponentSession.sendMessage(new TextMessage("Match Found:" + matchID));
+                    opponentSession.sendMessage(new TextMessage("Match Found: " + matchID));
                 }
+
                 ObjectNode responseNode = mapper.createObjectNode();
                 List<StatSprite> sprites = SpriteGeneration.generateSprites(5);
                 responseNode.put("type", "sprites");
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode spritesJsonNode = objectMapper.valueToTree(sprites);
+                JsonNode spritesJsonNode = mapper.valueToTree(sprites);
                 responseNode.set("sprites", spritesJsonNode);
 
                 session.sendMessage(new TextMessage(mapper.writeValueAsString(responseNode)));
-                session.sendMessage(new TextMessage(mapper.writeValueAsString(player1Response)));
-                System.out.println("Sending sprites");
                 if (opponentSession != null && opponentSession.isOpen()) {
                     opponentSession.sendMessage(new TextMessage(mapper.writeValueAsString(responseNode)));
-                    opponentSession.sendMessage(new TextMessage(mapper.writeValueAsString(player2Response)));
-                    System.out.println("Sending sprites to the other guy");
                 }
-            } else {
+                // Set player number to 1 for player 1 and 2 for player 2
+                ObjectNode setPlayer1Node = mapper.createObjectNode();
+                setPlayer1Node.put("type", "player_number");
+                setPlayer1Node.put("player_number", 1);
+                session.sendMessage(new TextMessage(mapper.writeValueAsString(setPlayer1Node)));
+                ObjectNode setPlayer2Node = mapper.createObjectNode();
+                setPlayer2Node.put("type", "player_number");
+                setPlayer2Node.put("player_number", 2);
+                opponentSession.sendMessage(new TextMessage(mapper.writeValueAsString(setPlayer2Node)));
+
+                // Send position of player 1 to player 2
+                ObjectNode player1PosResponse = mapper.createObjectNode();
+                player1PosResponse.put("type", "spawn_locations");
+                player1PosResponse.put("x_player1", player1X);
+                player1PosResponse.put("y_player1", player1Y);
+                player1PosResponse.put("x_player2", player2X);
+                player1PosResponse.put("y_player2", player2Y);
+                session.sendMessage(new TextMessage(mapper.writeValueAsString(player1PosResponse)));
+
+                if (opponentSession != null && opponentSession.isOpen()) {
+                    ObjectNode player2PosResponse = mapper.createObjectNode();
+                    player2PosResponse.put("type", "spawn_locations");
+                    player2PosResponse.put("x_player2", player2X);
+                    player2PosResponse.put("y_player2", player2Y);
+                    player2PosResponse.put("x_player1", player1X);
+                    player2PosResponse.put("y_player1", player1Y);
+                    opponentSession.sendMessage(new TextMessage(mapper.writeValueAsString(player2PosResponse)));
+                }
+
+            }
+            else {
                 session.sendMessage(new TextMessage("Waiting for Match"));
             }
-        }
-        else{
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            JsonNode jsonNode = objectMapper.readTree(payload);
+        } 
+        else {
+            JsonNode jsonNode = mapper.readTree(payload);
             String messageType = jsonNode.get("type").asText();
             switch (messageType) {
                 case "join":
@@ -98,15 +108,49 @@ public class MatchmakingHandler implements WebSocketHandler {
                         String opponent = matchmaking.getOpponent(userID, matchID);
                         WebSocketSession opponentSession = sessions.get(opponent);
                         if (opponentSession != null && opponentSession.isOpen()) {
-                            ObjectMapper mapper2 = new ObjectMapper();
-                            ObjectNode responseNode = mapper2.createObjectNode();
+                            ObjectNode responseNode = mapper.createObjectNode();
                             responseNode.put("type", "join");
                             responseNode.put("playerPfp", playerPfp);
-                            
-                            opponentSession.sendMessage(new TextMessage(mapper2.writeValueAsString(responseNode)));
+                            opponentSession.sendMessage(new TextMessage(mapper.writeValueAsString(responseNode)));
                         }
                     }
-                break;
+                    break;
+                case "move": 
+                    matchID = matchmaking.getMatchID(userID);
+                    if (matchID != null) {
+                        String opponent = matchmaking.getOpponent(userID, matchID);
+                        WebSocketSession opponentSession = sessions.get(opponent);
+        
+                        if (opponentSession != null && opponentSession.isOpen()) {
+                            opponentSession.sendMessage(new TextMessage(payload));
+                        }
+                    }
+                    break;
+                case "collect":
+                    matchID = matchmaking.getMatchID(userID);
+                    if (matchID != null) {
+                        String opponent = matchmaking.getOpponent(userID, matchID);
+                        WebSocketSession opponentSession = sessions.get(opponent);
+        
+                        if (opponentSession != null && opponentSession.isOpen()) {
+                            opponentSession.sendMessage(new TextMessage(payload));
+                        }
+                    }
+                    break;
+                case "game_end":
+                    System.out.println("Game end message received");
+                    matchID = matchmaking.getMatchID(userID);
+                    if (matchID != null) {
+                        String opponent = matchmaking.getOpponent(userID, matchID);
+                        WebSocketSession opponentSession = sessions.get(opponent);
+        
+                        if (opponentSession != null && opponentSession.isOpen()) {
+                            opponentSession.sendMessage(new TextMessage(payload));
+                            System.out.println("Sending game end message to opponent");
+                        }
+                        matchmaking.endMatch(matchID);
+                    }
+                    break;
             }
         }
     }
@@ -128,5 +172,4 @@ public class MatchmakingHandler implements WebSocketHandler {
     public boolean supportsPartialMessages() {
         return false;
     }
-
 }
