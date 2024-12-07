@@ -17,7 +17,7 @@ public class IntegrationTest {
 
     @Test 
     void SignUpTestUser() throws Exception {
-        String signUpJson = "{\"name\":\"TestUser\", \"email\":\"test@test.com\", \"password\":\"123456\"}";
+        String signUpJson = "{\"id\":1,\"name\":\"TestUser\", \"email\":\"test@test.com\", \"password\":\"123456\"}";
         mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
@@ -35,7 +35,7 @@ public class IntegrationTest {
 
     @Test
     void SignUpTestUser2() throws Exception {
-        String signUpJson = "{\"name\":\"TestUser2\", \"email\":\"test2@test.com\", \"password\":\"123456\"}";
+        String signUpJson = "{\"id\":2,\"name\":\"TestUser2\", \"email\":\"test2@test.com\", \"password\":\"123456\"}";
         mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
@@ -54,7 +54,7 @@ public class IntegrationTest {
 
     @Test
     void SignUpTestUser3() throws Exception {
-        String signUpJson = "{\"name\":\"TestUser3\", \"email\":\"test3@test.com\", \"password\":\"123456\"}";
+        String signUpJson = "{\"id\":3,\"name\":\"TestUser3\", \"email\":\"test3@test.com\", \"password\":\"123456\"}";
         mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
