@@ -18,31 +18,57 @@ public class IntegrationTest {
     @Test 
     void SignUpTestUser() throws Exception {
         String signUpJson = "{\"name\":\"TestUser\", \"email\":\"test@test.com\", \"password\":\"123456\"}";
-        mockMVC.perform(post("/api/signup")
+        mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestUser"))
+                .andExpect(jsonPath("$.email").value("test@test.com"))
+                .andExpect(jsonPath("$.password").value("123456"))
+                .andExpect(jsonPath("$.gamerScore").value(0))
+                .andExpect(jsonPath("$.attackScore").value(0))
+                .andExpect(jsonPath("$.defenseScore").value(0))
+                .andExpect(jsonPath("$.magicScore").value(0))
+                .andExpect(jsonPath("$.friends").isEmpty());
     }
 
     @Test
     void SignUpTestUser2() throws Exception {
         String signUpJson = "{\"name\":\"TestUser2\", \"email\":\"test2@test.com\", \"password\":\"123456\"}";
-        mockMVC.perform(post("/api/signup")
+        mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(2));
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.name").value("TestUser2"))
+                .andExpect(jsonPath("$.email").value("test2@test.com"))
+                .andExpect(jsonPath("$.password").value("123456"))
+                .andExpect(jsonPath("$.gamerScore").value(0))
+                .andExpect(jsonPath("$.attackScore").value(0))
+                .andExpect(jsonPath("$.defenseScore").value(0))
+                .andExpect(jsonPath("$.magicScore").value(0))
+                .andExpect(jsonPath("$.friends").isEmpty())
+                ;
     }
 
     @Test
     void SignUpTestUser3() throws Exception {
         String signUpJson = "{\"name\":\"TestUser3\", \"email\":\"test3@test.com\", \"password\":\"123456\"}";
-        mockMVC.perform(post("/api/signup")
+        mockMVC.perform(post("/api/users")
                 .contentType("application/json")
                 .content(signUpJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(3));
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.name").value("TestUser3"))
+                .andExpect(jsonPath("$.email").value("test3@test.com"))
+                .andExpect(jsonPath("$.password").value("123456"))
+                .andExpect(jsonPath("$.gamerScore").value(0))
+                .andExpect(jsonPath("$.attackScore").value(0))
+                .andExpect(jsonPath("$.defenseScore").value(0))
+                .andExpect(jsonPath("$.magicScore").value(0))
+                .andExpect(jsonPath("$.friends").isEmpty())
+                ;
     }
 
     @Test
