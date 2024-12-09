@@ -97,7 +97,7 @@ public class User {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
         this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
-        this.gameSessions = Collections.emptyList();
+        this.gameSessions = Collections.<FightGame>emptyList();
     }
 
 }
