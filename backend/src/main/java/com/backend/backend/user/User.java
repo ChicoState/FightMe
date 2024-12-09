@@ -82,7 +82,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"), // Current entity's column
         inverseJoinColumns = @JoinColumn(name = "game_id") // Friend entity's column
     )
-    private List<FightGame> gameSessions = new ArrayList<FightGame>();
+    private List<FightGame> gameSessions;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -98,6 +98,7 @@ public class User {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
         this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
+        this.gameSessions = new ArrayList<FightGame>();
     }
 
 }

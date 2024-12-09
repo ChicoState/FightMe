@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.ArrayList;
 
 
 @Getter
@@ -28,7 +29,7 @@ public class UserDto {
     private Long theme;
     private List<Long> unlockedThemes;
     private List<Long> friends; //changed to list long
-    private List<FightGameDto> gameSessions;
+    private List<FightGameDto> gameSessions = new ArrayList<FightGameDto>();
     private String email;
     private String password;
     
