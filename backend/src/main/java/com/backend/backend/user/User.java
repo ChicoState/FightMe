@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class User {
     private Integer magicScore;
 
     @Column(name = "profilePicture")
-    private Long profilePicture;
+    private Long profilePicture = Long.valueOf(0);
 
     @ElementCollection
     @CollectionTable(name = "user_unlocked_profile_pictures", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "profile_picture_id"}))
@@ -63,7 +64,7 @@ public class User {
     private List<Long> unlockedProfilePictures;
 
     @Column(name = "theme")
-    private Long theme;
+    private Long theme = Long.valueOf(0);
 
     @ElementCollection
     @CollectionTable(name = "user_unlocked_themes", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "theme_id"}))
@@ -81,7 +82,7 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"), // Current entity's column
         inverseJoinColumns = @JoinColumn(name = "game_id") // Friend entity's column
     )
-    private List<FightGame> gameSessions;
+    private List<FightGame> gameSessions = new ArrayList<FightGame>();
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -97,7 +98,6 @@ public class User {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
         this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
-        this.gameSessions = Collections.<FightGame>emptyList();
     }
 
 }
