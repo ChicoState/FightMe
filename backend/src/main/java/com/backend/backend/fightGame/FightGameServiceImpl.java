@@ -69,6 +69,9 @@ public class FightGameServiceImpl implements FightGameService{
         FightGame fightGame = fightGameRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game not found " + id));
         Map<Long, List<Move>> moves = fightGame.getMoves();
+        if (moves.size() == 0) {
+            throw new ResourceNotFoundException("Game moves was not established " + id);
+        }
         moves.get(userMove.getUserID()).set(moves.get(userMove.getUserID()).size() - 1, userMove.getMove());
         fightGame.setMoves(moves);
         FightGame savedGame = fightGameRepository.save(fightGame);
