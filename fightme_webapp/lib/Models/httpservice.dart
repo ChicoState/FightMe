@@ -14,6 +14,7 @@ class HttpService {
       "http://localhost:8080/api/friendrequests";
   final String springbootLoginURL = "http://localhost:8080/api/login";
   final String springbootSignupURL = "http://localhost:8080/api/signup";
+  final String springbootFightGamesURL = "http://localhost:8080/api/fightgames";
 
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
@@ -297,4 +298,17 @@ class HttpService {
       throw "Unable to add user theme.";
     }
   }
+
+  Future<void> postFightGame(User user1, User user2, int requesterID) async {
+    Response res = await post(Uri.parse(springbootFightGamesURL),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"user1": user1.toJson(), "user2": user2.toJson(), "requesterID": requesterID}));
+    print(res.body);
+    if (res.statusCode == 201) {
+      print("User created successfully.");
+    } else {
+      throw "Unable to create user.";
+    }
+  }
 }
+

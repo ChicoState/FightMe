@@ -78,7 +78,7 @@ public class User {
     @JoinTable(
         name = "user_fight_game_sessions", // Name of the join table
         joinColumns = @JoinColumn(name = "user_id"), // Current entity's column
-        inverseJoinColumns = @JoinColumn(name = "fight_game_id") // Friend entity's column
+        inverseJoinColumns = @JoinColumn(name = "game_id") // Friend entity's column
     )
     private List<FightGame> gameSessions;
 

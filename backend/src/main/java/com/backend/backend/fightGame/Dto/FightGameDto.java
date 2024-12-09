@@ -1,7 +1,7 @@
 package com.backend.backend.fightGame.Dto;
 
 import com.backend.backend.fightGame.FightGame.Move;
-import com.backend.backend.user.User;
+import com.backend.backend.user.Dto.UserDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FightGameDto {
-    private long id;
+    private Long id;
     private Integer winnerID;
-    private User user1;
-    private User user2;
+    private Long requesterID;
+    private UserDto user1;
+    private UserDto user2;
     private Integer user1HP;
     private Integer user2HP;
-    private Map<Integer, List<Move>> moves;
+    private Map<Long, List<Move>> moves;
 }

@@ -2,7 +2,7 @@ package com.backend.backend.user.Dto;
 
 import java.util.List;
 
-import com.backend.backend.fightGame.FightGame;
+import com.backend.backend.fightGame.Dto.FightGameDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class UserDto {
     private Long theme;
     private List<Long> unlockedThemes;
     private List<Long> friends; //changed to list long
-    private List<FightGame> gameSessions;
+    private List<FightGameDto> gameSessions;
     private String email;
     private String password;
     

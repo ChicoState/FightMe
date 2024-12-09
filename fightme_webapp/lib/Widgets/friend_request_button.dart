@@ -44,6 +44,9 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
           http.acceptFriendRequest(incoming.id).then((result){
             // final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
             // friendsProvider.addFriend(otherUser);
+            http.postFightGame(curUser, otherUser, otherUser.id).then((result){
+              return;
+            });
             return;
           });
           http.updateUserGamerScore(curUser.id, curUser.gamerScore + 1).then((result){    //this could be an issue because of the curUser id

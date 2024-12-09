@@ -3,14 +3,15 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.List;
 
@@ -48,10 +48,23 @@ public class FightGame {
     @Column(name = "winner_id")
     private Integer winnerID;
 
-    @Column(name = "user_1")
+    @Column(name = "requester_id")
+    private Long requesterID;
+
+    @ManyToOne
+    @JoinTable(
+        name = "fight_game_session_user_1", // Name of the join table
+        joinColumns = @JoinColumn(name = "game_id"), // Current entity's column
+        inverseJoinColumns = @JoinColumn(name = "user_id") // Friend entity's column
+    )
     private User user1;
 
-    @Column(name = "user_2")
+    @ManyToOne
+    @JoinTable(
+        name = "fight_game_session_user_2", // Name of the join table
+        joinColumns = @JoinColumn(name = "game_id"), // Current entity's column
+        inverseJoinColumns = @JoinColumn(name = "user_id") // Friend entity's column
+    )
     private User user2;
 
     // Starts at 5?
@@ -66,7 +79,8 @@ public class FightGame {
     @Column(name="user_move") //value
     @CollectionTable(name="game_user_moves",
     joinColumns=@JoinColumn(name="game_id"))//fk from Areas->contacts.id
-    private Map<Integer, List<Move>> moves;
+    @Enumerated(EnumType.STRING)
+    private Map<Long, List<Move>> moves;
 
     @PrePersist
     protected void onCreate() {

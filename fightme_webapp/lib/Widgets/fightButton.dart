@@ -69,22 +69,21 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
       builder: (BuildContext context) =>
           StatefulBuilder(
             builder: (context, setState) {
-              if (game.user1move != Move.none) {
+              if (game.user1moves.last != Move.none) {
                 if (game.user2.id == 0) {
-                  game.user2move = randomMove[random.nextInt(randomMove.length)];
+                  game.user2moves.last = randomMove[random.nextInt(randomMove.length)];
                 }
-                if (game.user2move != Move.none) {
-                  if (doesUserHit(game.user1move, game.user2move)) {
+                if (game.user2moves.last != Move.none) {
+                  if (doesUserHit(game.user1moves.last, game.user2moves.last)) {
                     game.user2hp--;
                   }
-                  if (doesUserHit(game.user2move, game.user1move)) {
+                  if (doesUserHit(game.user2moves.last, game.user1moves.last)) {
                     game.user1hp--;
                   }
-                  whatUser1Did = move(game.user1move);
-                  whatUser2Did = move(game.user2move);
-                  game.turn++;
-                  game.user1move = Move.none;
-                  game.user2move = Move.none;
+                  whatUser1Did = move(game.user1moves.last);
+                  whatUser2Did = move(game.user2moves.last);
+                  game.user1moves.add(Move.none);
+                  game.user2moves.add(Move.none);
                 }
               }
               if (game.user1hp == 0 || game.user2hp == 0) {
@@ -115,7 +114,7 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const CloseButton(),
-                      Text("Turn ${game.turn}"),
+                      Text("Turn ${game.user1moves.length}"),
                       IconButton(
                           onPressed: () =>
                               showDialog<String>(
@@ -269,13 +268,13 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                 ),
                 actionsAlignment: MainAxisAlignment.center,
                 actions: <Widget>[
-                  game.user1move == Move.none ? Row(
+                  game.user1moves.last == Move.none ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FloatingActionButton(
                           onPressed: () {
                             setState(() {
-                              game.user1move = Move.attack;
+                              game.user1moves.last = Move.attack;
                             });
                           },
                           backgroundColor: Colors.red,
@@ -290,7 +289,7 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                         FloatingActionButton(
                           onPressed: () {
                             setState(() {
-                              game.user1move = Move.defense;
+                              game.user1moves.last = Move.defense;
                             });
                           },
                           backgroundColor: Colors.blue,
@@ -306,7 +305,7 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                         FloatingActionButton(
                           onPressed: () {
                             setState(() {
-                              game.user1move = Move.magic;
+                              game.user1moves.last = Move.magic;
                             });
                           },
                           backgroundColor: Colors.yellow,

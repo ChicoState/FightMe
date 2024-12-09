@@ -1,9 +1,16 @@
 package com.backend.backend.user;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.backend.backend.user.Dto.UserDto;
+import com.backend.backend.fightGame.FightGameMapper;
+import com.backend.backend.fightGame.FightGame;
+import com.backend.backend.fightGame.Dto.FightGameDto;
 
 public class UserMapper {
     public static UserDto mapToUserDto(User user) {
+        List<FightGameDto> gameSessions = user.getGameSessions().stream().map((fightGame) -> FightGameMapper.mapToFightGameDto(fightGame)).collect(Collectors.toList());
         return new UserDto(
             user.getId(), 
             user.getName(),
@@ -17,13 +24,14 @@ public class UserMapper {
             user.getTheme(),
             user.getUnlockedThemes(),
             user.getFriends(),
-            user.getGameSessions(),
+            gameSessions,
             user.getEmail(), 
             user.getPassword()
             );
     }
 
     public static User mapToUser(UserDto userDto) {
+        List<FightGame> gameSessions = userDto.getGameSessions().stream().map((fightGame) -> FightGameMapper.mapToFightGame(fightGame)).collect(Collectors.toList());
         return new User(
             userDto.getId(), 
             userDto.getName(),
@@ -37,7 +45,7 @@ public class UserMapper {
             userDto.getTheme(),
             userDto.getUnlockedThemes(),
             userDto.getFriends(),
-            userDto.getGameSessions(),
+            gameSessions,
             userDto.getEmail(), 
             userDto.getPassword()
             );
