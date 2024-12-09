@@ -12,8 +12,6 @@ import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.chatroom.ChatroomRepository;
 import com.backend.backend.chatroom.ChatroomService;
 import com.backend.backend.fightGame.FightGame;
-import com.backend.backend.fightGame.FightGameRepository;
-import com.backend.backend.fightGame.FightGameService;
 import com.backend.backend.user.UserMapper;
 import com.backend.backend.user.UserRepository;
 import com.backend.backend.user.UserService;
@@ -43,23 +41,24 @@ public class FightGameServiceImpl implements FightGameService{
     // START OF ALL CREATE
 
     @Override
-    public FightGameDto createFightGame(long user1ID, long user2ID, long requestID) {
+    public FightGameDto createFightGame(long user1ID, long user2ID, long requesterID) {
         User user1 = userRepository.findById(user1ID)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + user1ID));
         User user2 = userRepository.findById(user2ID)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + user2ID));
-        if (requestID != 0 && requestID != user1ID && requestID != user2ID) {
+        if (requesterID != 0 && requesterID != user1ID && requesterID != user2ID) {
             throw new ResourceNotFoundException("A faulty request id was given");
         }
         FightGame fightGame = new FightGame();
         fightGame.setUser1(user1);
         fightGame.setUser2(user2);
-        fightGame.setRequesterID(requestID);
+        fightGame.setRequesterID(requesterID);
         Map<Long, List<Move>> initMoves = new HashMap<>();
         initMoves.put(user1.getId(), Arrays.asList(Move.NONE));
         initMoves.put(user2.getId(), Arrays.asList(Move.NONE));
         fightGame.setMoves(initMoves);
         FightGame savedGame = fightGameRepository.save(fightGame);
+        userService.addGameSession(user1ID, user2ID, FightGameMapper.mapToFightGameDto(fightGame));
         return FightGameMapper
         .mapToFightGameDto(savedGame);
     }
@@ -69,9 +68,6 @@ public class FightGameServiceImpl implements FightGameService{
         FightGame fightGame = fightGameRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game not found " + id));
         Map<Long, List<Move>> moves = fightGame.getMoves();
-        if (moves.size() == 0) {
-            throw new ResourceNotFoundException("Game moves was not established " + id);
-        }
         moves.get(userMove.getUserID()).set(moves.get(userMove.getUserID()).size() - 1, userMove.getMove());
         fightGame.setMoves(moves);
         FightGame savedGame = fightGameRepository.save(fightGame);
@@ -83,8 +79,8 @@ public class FightGameServiceImpl implements FightGameService{
     public FightGameDto setNewTurn(long id) {
         FightGame fightGame = fightGameRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game not found " + id));
-        Move user1Move = fightGame.getMoves().get(fightGame.getUser1().getId()).getLast();
-        Move user2Move = fightGame.getMoves().get(fightGame.getUser2().getId()).getLast();
+        Move user1Move = fightGame.getMoves().get(fightGame.getUser1().getId()).get(fightGame.getMoves().get(fightGame.getUser1().getId()).size()-1);
+        Move user2Move = fightGame.getMoves().get(fightGame.getUser2().getId()).get(fightGame.getMoves().get(fightGame.getUser2().getId()).size()-1);
         if (user1Move == Move.NONE || user2Move == Move.NONE) {
             throw new ResourceNotFoundException("The turn is not over");
         }

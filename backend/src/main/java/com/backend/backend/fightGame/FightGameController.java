@@ -34,8 +34,8 @@ public class FightGameController {
     public ResponseEntity<FightGameDto> createFightGame(@RequestBody FightGameDto fightGameDto) {
         Long user1 = fightGameDto.getUser1().getId();
         Long user2 = fightGameDto.getUser2().getId();
-        Long requestID = fightGameDto.getRequesterID();
-        FightGameDto savedFightGame = fightGameService.createFightGame(user1, user2, requestID);
+        Long requesterID = fightGameDto.getRequesterID();
+        FightGameDto savedFightGame = fightGameService.createFightGame(user1, user2, requesterID);
         return new ResponseEntity<>(savedFightGame, HttpStatus.CREATED);
     }
 

@@ -12,6 +12,9 @@ import com.backend.backend.user.Dto.ProfilePictureDto;
 import com.backend.backend.user.Dto.StatsDto;
 import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
+import com.backend.backend.fightGame.Dto.FightGameDto;
+import com.backend.backend.fightGame.FightGame;
+import com.backend.backend.fightGame.FightGameRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -20,6 +23,7 @@ import lombok.AllArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private FightGameRepository fightGameRepository;
 
     // START OF ALL CREATE
 
@@ -128,6 +132,21 @@ public class UserServiceImpl implements UserService {
         friend.getFriends().add(user.getId());
         User savedUser = userRepository.save(user);
         userRepository.save(friend);
+        return UserMapper.mapToUserDto(savedUser);
+    }
+
+    @Override
+    public UserDto addGameSession(Long user1ID, Long user2ID, FightGameDto fightGameDto){
+        User user1 = userRepository.findById(user1ID)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + user1ID));
+        User user2 = userRepository.findById(user2ID)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + user2ID));
+        FightGame fightGame = fightGameRepository.findById(fightGameDto.getId())
+        .orElseThrow(() -> new ResourceNotFoundException("Game not found" + fightGameDto.getId()));
+        user1.getGameSessions().add(fightGame);
+        user2.getGameSessions().add(fightGame);
+        User savedUser = userRepository.save(user1);
+        userRepository.save(user2);
         return UserMapper.mapToUserDto(savedUser);
     }
 
