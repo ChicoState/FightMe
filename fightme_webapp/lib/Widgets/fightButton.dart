@@ -1,7 +1,9 @@
 
 import 'package:fightme_webapp/Cosmetics/profile_pictures.dart';
+import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:fightme_webapp/Models/friend_request.dart';
 import 'package:fightme_webapp/Models/fight_game_session.dart';
 
 List<Move> randomMove = [Move.attack, Move.defense, Move.magic];
@@ -57,7 +59,7 @@ bool doesUserHit(Move move1, Move move2) {
   return false;
 }
 
-void buildFightButton(BuildContext context, FightGameSession game) {
+Future<void> buildFightButton(BuildContext context, FightGameSession game) async {
   final random = Random();
   String whatUser1Did = "";
   String whatUser2Did = "";
@@ -86,6 +88,16 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                 }
               }
               if (game.user1hp == 0 || game.user2hp == 0) {
+                if (game.id != 0) {
+                  if (game.forRequest) {
+                    if (game.user1hp == 0) {
+                      // FriendRequest myRequest = await HttpService().getFriendRequest(fromUserID, toUserID);
+                    }
+                    else {
+
+                    }
+                  }
+                }
                 return AlertDialog(
                     title: Text(endMessage(game.user1hp, game.user2hp)),
                     actionsAlignment: MainAxisAlignment.center,

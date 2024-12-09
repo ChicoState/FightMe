@@ -23,7 +23,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
 
     @Override
-    public FriendRequestDto sendFriendRequest(Long fromUserID, Long toUserID) {//in the future add implementation for checking dupes
+    public FriendRequestDto sendFriendRequest(Long fromUserID, Long toUserID) {
         User fromUser = userRepository.findById(fromUserID)
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + fromUserID));
         User toUser = userRepository.findById(toUserID)
@@ -59,13 +59,12 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         FriendRequest friendRequest = friendRequestRepository.findById(requestID)
         .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found" + requestID));
         friendRequest.setStatus(FriendRequest.Status.ACCEPTED);
-        List<FriendRequest> friendRequestViceVersa = friendRequestRepository.findByFromUserID(friendRequest.getToUserID());
-        if(friendRequestViceVersa.size() != 0) {
-            friendRequestViceVersa.get(0).setStatus(FriendRequest.Status.ACCEPTED);
-            friendRequestRepository.save(friendRequestViceVersa.get(0));
-        }
+        /* List<FriendRequest> friendRequestViceVersa = friendRequestRepository.findByFromUserID(friendRequest.getToUserID());
+        if(friendRequestViceVersa.size() == 0) {
+            sendFriendRequest(friendRequest.getToUserID(), friendRequest.getFromUserID());
+        } */
         friendRequestRepository.save(friendRequest);
-        userService.addFriend(friendRequest.getFromUserID(), new FriendDto(friendRequest.getToUserID()));
+        // userService.addFriend(friendRequest.getFromUserID(), new FriendDto(friendRequest.getToUserID()));
         return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
     }
 
@@ -82,5 +81,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         friendRequestRepository.save(friendRequest);
         return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
     }
-    
+
+    @Override
+    public FriendRequestDto getFriendRequestBetween(Long fromUserID, Long toUserID) {//in the future add implementation for checking dupes
+        FriendRequest friendRequest = friendRequestRepository.findByFromUserIDAndToUserID(fromUserID, toUserID)
+        .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + fromUserID + " " + toUserID));
+        return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
+    }
 }

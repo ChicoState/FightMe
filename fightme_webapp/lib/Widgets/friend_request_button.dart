@@ -8,10 +8,8 @@ import 'package:fightme_webapp/Models/chatroom.dart';
 
 Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User otherUser, User curUser) async {
   HttpService http = HttpService();
-  List<FriendRequest> myRequests = await http.getAllFriendRequests(curUser.id);
-  List<FriendRequest> otherRequests = await http.getAllFriendRequests(otherUser.id);
-  FriendRequest? outgoing = otherRequests.firstWhere((element) => element.fromUserID == curUser.id, orElse: () => FriendRequest.empty());
-  FriendRequest? incoming = myRequests.firstWhere((element) => element.fromUserID == otherUser.id, orElse: () => FriendRequest.empty());
+  FriendRequest incoming = await http.getFriendRequest(otherUser.id, curUser.id);
+  FriendRequest outgoing = await http.getFriendRequest(curUser.id, otherUser.id);
   // TODO: Figure out how to get this value initialized only when accepted conditions are met.
   late Chatroom chat;
   http.getChatroomsByUserId(curUser.id).then((result) {

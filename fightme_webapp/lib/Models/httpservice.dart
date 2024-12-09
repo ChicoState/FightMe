@@ -177,7 +177,20 @@ class HttpService {
           body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
       return friendRequests;
     } else {
-      throw "Unable to retrieve friend request data for user $userID";
+      print("Unable to retrieve friend request data for user $userID");
+      return List.empty();
+    }
+  }
+
+  Future<FriendRequest> getFriendRequest(int fromUserID, int toUserID) async {
+    Response res = await get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
+    if (res.statusCode == 200) {
+      dynamic body = jsonDecode(res.body);
+      FriendRequest friendRequest = FriendRequest.fromJson(body);
+      return friendRequest;
+    } else {
+      print("Unable to retrieve friend request.");
+      return FriendRequest.empty();
     }
   }
 

@@ -27,61 +27,65 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
     List<FriendRequest> myRequests = await http.getAllFriendRequests(globals.uid);
     myRequests.removeWhere((element) => element.status == Status.rejected);
     for (var request in myRequests) {
-      User user = await http.getUserByID(request.fromUserID);
-      list.add(
-          TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<ProfilePage>(
-                        builder: (context) => ProfilePage(
-                            curUser: curUser,
-                            userViewed: user)));
-              },
-              child: ListTile(
+      FriendRequest otherRequest = await http.getFriendRequest(request.toUserID, request.fromUserID);
+      if (otherRequest.isEmpty() || (otherRequest.id != 0 && otherRequest.status == Status.pending)) {
+        User user = await http.getUserByID(request.fromUserID);
+        list.add(
+            TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<ProfilePage>(
+                          builder: (context) =>
+                              ProfilePage(
+                                  curUser: curUser,
+                                  userViewed: user)));
+                },
+                child: ListTile(
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(60.0),
-                    child: Image.asset(profilePictures[user.pfp], fit: BoxFit.cover, width: 60, height: 60),
+                    child: Image.asset(
+                        profilePictures[user.pfp], fit: BoxFit.cover,
+                        width: 60,
+                        height: 60),
                   ),
-                title: user.id != 0 ? Text(user.name) : const Text("Group"),
-                trailing: request.status == Status.pending ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FilledButton.tonal(
-                        onPressed: () {
-                          http.acceptFriendRequest(request.id).then((result){
-                            return;
-                          });
-                          List<int> userIDs = [curUser.id, user.id];
-                          http.postChatroom(userIDs).then((result){
-                            return;
-                          });
-                          setState(() {
-                            _list = _buildList();
-                          });
-                        },
-                        child: const Text("accept"),
-                      ),
-                      FilledButton.tonal(
-                        onPressed: () {
-                          http.rejectFriendRequest(request.id).then((result){
-                            return;
-                          });
-                          setState(() {
-                            _list = _buildList();
-                          });
-                        },
-                        child: const Text("reject"),
-                      )
-                    ]
-                ) : ElevatedButton(
-                    onPressed: () =>
-                        buildFightButton(context, FightGameSession(curUser, user)),
-                    child: const Text('Fight!')
-                ),
-              )
-          )
-      );
+                  title: user.id != 0 ? Text(user.name) : const Text("Group"),
+                  trailing: request.status == Status.pending ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FilledButton.tonal(
+                          onPressed: () {
+                            http.acceptFriendRequest(request.id).then((result) {
+                              return;
+                            });
+                            setState(() {
+                              _list = _buildList();
+                            });
+                          },
+                          child: const Text("accept"),
+                        ),
+                        FilledButton.tonal(
+                          onPressed: () {
+                            http.rejectFriendRequest(request.id).then((result) {
+                              return;
+                            });
+                            setState(() {
+                              _list = _buildList();
+                            });
+                          },
+                          child: const Text("reject"),
+                        )
+                      ]
+                  ) : FilledButton.tonal(
+                      onPressed: () =>
+                          buildFightButton(
+                              context, FightGameSession(curUser, user)),
+                      child: const Text('Fight!')
+                  ),
+                )
+            )
+        );
+      }
     }
     return list;
   }
@@ -100,6 +104,11 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pending Requests"),
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
+        centerTitle: true,
       ),
       body: Center(
         child: Column(

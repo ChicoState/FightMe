@@ -16,7 +16,8 @@ public class UserMapper {
             user.getUnlockedProfilePictures(),
             user.getTheme(),
             user.getUnlockedThemes(),
-            user.getFriends(), 
+            user.getFriends(),
+            user.getGameSessions(),
             user.getEmail(), 
             user.getPassword()
             );
@@ -35,7 +36,8 @@ public class UserMapper {
             userDto.getUnlockedProfilePictures(),
             userDto.getTheme(),
             userDto.getUnlockedThemes(),
-            userDto.getFriends(), 
+            userDto.getFriends(),
+            userDto.getGameSessions(),
             userDto.getEmail(), 
             userDto.getPassword()
             );

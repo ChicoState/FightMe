@@ -7,6 +7,7 @@ class FightGameSession {
   int id = 0;
   int winnerID = 0;
   User user1 = User("");
+  bool forRequest = false;
   int user1hp = 5;
   Move user1move = Move.none;
   User user2 = User("");
@@ -18,6 +19,7 @@ class FightGameSession {
     id = 0;
     winnerID = 0;
     user1 = curUser;
+    forRequest = false;
     user1hp = 5;
     user1move = Move.none;
     user2 = otherUser;
@@ -32,6 +34,7 @@ class FightGameSession {
     user1 = curUser;
     user1hp = 5;
     user1move = Move.none;
+    forRequest = false;
     user2 = User("Dummy");
     user2.pfp = 1;
     user2.attackScore = curUser.attackScore;

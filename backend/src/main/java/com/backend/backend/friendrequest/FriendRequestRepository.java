@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.backend.backend.friendrequest.FriendRequest.Status;
 
+import java.util.Optional;
+
 import java.util.List;
 
 
@@ -13,4 +15,5 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
     List<FriendRequest> findByFromUserID(Long fromUserID);
     List<FriendRequest> findByToUserID(Long toUserID);
     List<FriendRequest> findByFromUserIDAndToUserIDAndStatus(Long fromUserID, Long toUserID, Status rejected);
+    Optional<FriendRequest> findByFromUserIDAndToUserID(Long fromUserID, Long toUserID);
 }
