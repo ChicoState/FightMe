@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -96,6 +97,7 @@ public class User {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
         this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
+        this.gameSessions = Collections.emptyList();
     }
 
 }
