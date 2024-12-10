@@ -143,8 +143,8 @@ public class UserServiceImpl implements UserService {
         .orElseThrow(() -> new ResourceNotFoundException("User not found" + user2ID));
         FightGame fightGame = fightGameRepository.findById(fightGameDto.getId())
         .orElseThrow(() -> new ResourceNotFoundException("Game not found" + fightGameDto.getId()));
-        user1.getGameSessions().add(fightGame);
-        user2.getGameSessions().add(fightGame);
+        user1.getGameSessions().add(fightGame.getId());
+        user2.getGameSessions().add(fightGame.getId());
         User savedUser = userRepository.save(user1);
         userRepository.save(user2);
         return UserMapper.mapToUserDto(savedUser);

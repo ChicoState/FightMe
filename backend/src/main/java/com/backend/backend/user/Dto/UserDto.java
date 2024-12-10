@@ -29,7 +29,7 @@ public class UserDto {
     private Long theme;
     private List<Long> unlockedThemes;
     private List<Long> friends; //changed to list long
-    private List<FightGameDto> gameSessions = new ArrayList<FightGameDto>();
+    private List<Long> gameSessions = new ArrayList<>();
     private String email;
     private String password;
     

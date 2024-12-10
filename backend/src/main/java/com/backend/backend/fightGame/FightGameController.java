@@ -2,11 +2,15 @@ package com.backend.backend.fightGame;
 
 import com.backend.backend.fightGame.Dto.FightGameDto;
 import com.backend.backend.friendrequest.FriendRequestDto;
+import com.backend.backend.fightGame.FightGame.Move;
 import com.backend.backend.fightGame.FightGameService;
 import com.backend.backend.user.User;
 import com.backend.backend.user.UserMapper;
 import com.backend.backend.user.Dto.UserDto;
 import com.backend.backend.fightGame.Dto.UserMoveDto;
+
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +24,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/fightgames")
@@ -37,6 +39,12 @@ public class FightGameController {
         Long requesterID = fightGameDto.getRequesterID();
         FightGameDto savedFightGame = fightGameService.createFightGame(user1, user2, requesterID);
         return new ResponseEntity<>(savedFightGame, HttpStatus.CREATED);
+    }
+
+    @GetMapping("{user1ID}/{user2ID}")
+    public ResponseEntity<FightGameDto> getFightGame(@PathVariable("user1ID") Long user1ID, @PathVariable("user2ID") Long user2ID) {
+        FightGameDto fightGameDto = fightGameService.getFightGame(user1ID, user2ID);
+        return new ResponseEntity<>(fightGameDto, HttpStatus.OK);
     }
 
     @PutMapping("{id}/setMove")

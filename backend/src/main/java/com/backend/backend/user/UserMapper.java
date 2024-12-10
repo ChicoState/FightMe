@@ -10,7 +10,6 @@ import com.backend.backend.fightGame.Dto.FightGameDto;
 
 public class UserMapper {
     public static UserDto mapToUserDto(User user) {
-        List<FightGameDto> gameSessions = user.getGameSessions().stream().map((fightGame) -> FightGameMapper.mapToFightGameDto(fightGame)).collect(Collectors.toList());
         return new UserDto(
             user.getId(), 
             user.getName(),
@@ -24,14 +23,13 @@ public class UserMapper {
             user.getTheme(),
             user.getUnlockedThemes(),
             user.getFriends(),
-            gameSessions,
+            user.getGameSessions(),
             user.getEmail(), 
             user.getPassword()
             );
     }
 
     public static User mapToUser(UserDto userDto) {
-        List<FightGame> gameSessions = userDto.getGameSessions().stream().map((fightGame) -> FightGameMapper.mapToFightGame(fightGame)).collect(Collectors.toList());
         return new User(
             userDto.getId(), 
             userDto.getName(),
@@ -45,7 +43,7 @@ public class UserMapper {
             userDto.getTheme(),
             userDto.getUnlockedThemes(),
             userDto.getFriends(),
-            gameSessions,
+            userDto.getGameSessions(),
             userDto.getEmail(), 
             userDto.getPassword()
             );

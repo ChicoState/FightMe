@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -22,5 +24,6 @@ public class FightGameDto {
     private UserDto user2;
     private Integer user1HP;
     private Integer user2HP;
-    private Map<Long, List<Move>> moves;
+    private List<Move> user1Moves;
+    private List<Move> user2Moves;
 }

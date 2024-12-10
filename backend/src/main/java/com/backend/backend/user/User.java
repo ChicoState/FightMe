@@ -64,7 +64,7 @@ public class User {
     private List<Long> unlockedProfilePictures;
 
     @Column(name = "theme")
-    private Long theme = Long.valueOf(0);
+    private Long theme;
 
     @ElementCollection
     @CollectionTable(name = "user_unlocked_themes", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "theme_id"}))
@@ -76,13 +76,10 @@ public class User {
     @Column(name = "friend_id")
     private List<Long> friends; //storing just the id of the friends not the user
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_fight_game_sessions", // Name of the join table
-        joinColumns = @JoinColumn(name = "user_id"), // Current entity's column
-        inverseJoinColumns = @JoinColumn(name = "game_id") // Friend entity's column
-    )
-    private List<FightGame> gameSessions;
+    @ElementCollection
+    @CollectionTable(name = "user_game_sessions", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "game_id")
+    private List<Long> gameSessions;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -98,7 +95,9 @@ public class User {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
         this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
-        this.gameSessions = new ArrayList<FightGame>();
+        this.gameSessions = new ArrayList<>();
+        this.theme = Long.valueOf(0);
+        this.profilePicture = Long.valueOf(0);
     }
 
 }

@@ -1,9 +1,13 @@
 package com.backend.backend.fightGame;
 
+import java.util.stream.Collectors;
+
 import com.backend.backend.fightGame.Dto.FightGameDto;
+import com.backend.backend.fightGame.Dto.UserMoveDto;
 import com.backend.backend.user.UserMapper;
 import com.backend.backend.user.Dto.UserDto;
 import com.backend.backend.user.User;
+import java.util.List;
 
 public class FightGameMapper {
     public static FightGameDto mapToFightGameDto(FightGame fightGame) {
@@ -17,7 +21,8 @@ public class FightGameMapper {
             user2,
             fightGame.getUser1HP(),
             fightGame.getUser2HP(),
-            fightGame.getMoves()
+            fightGame.getUser1Moves(),
+            fightGame.getUser2Moves()
         );
     }
 
@@ -32,7 +37,8 @@ public class FightGameMapper {
             user2,
             fightGameDto.getUser1HP(),
             fightGameDto.getUser2HP(),
-            fightGameDto.getMoves()
+            fightGameDto.getUser1Moves(),
+            fightGameDto.getUser2Moves()
         );
     }
 }
