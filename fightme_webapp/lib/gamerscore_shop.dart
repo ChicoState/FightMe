@@ -252,7 +252,7 @@ class _GamerscoreShopState extends State<GamerscoreShop> {
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("${buyableProfilePictures[index][1]}", style: const TextStyle(
+                                      Text("${buyableThemes[index][1]}", style: const TextStyle(
                                           fontSize: 30)),
                                       const Icon(Icons.monetization_on, color: Colors.yellow, size: 30,),
                                     ]
