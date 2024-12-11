@@ -56,7 +56,7 @@ public class User {
     private Integer magicScore;
 
     @Column(name = "profilePicture")
-    private Long profilePicture = Long.valueOf(0);
+    private Long profilePicture;
 
     @ElementCollection
     @CollectionTable(name = "user_unlocked_profile_pictures", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "profile_picture_id"}))

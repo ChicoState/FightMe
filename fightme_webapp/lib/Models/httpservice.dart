@@ -5,6 +5,8 @@ import 'chatroom.dart';
 import 'user.dart';
 import 'message.dart';
 import 'friend_request.dart';
+import 'package:fightme_webapp/globals.dart' as globals;
+import 'fight_game_session.dart';
 
 class HttpService {
   final String springbootUserURL = "http://localhost:8080/api/users/";
@@ -299,15 +301,67 @@ class HttpService {
     }
   }
 
-  Future<void> postFightGame(User user1, User user2, int requesterID) async {
+  Future<FightGameSession> postFightGame(User user1, User user2, int requesterID) async {
     Response res = await post(Uri.parse(springbootFightGamesURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"user1": user1.toJson(), "user2": user2.toJson(), "requesterID": requesterID}));
     print(res.body);
     if (res.statusCode == 201) {
-      print("User created successfully.");
+      print("Game created successfully.");
+      dynamic body = jsonDecode(res.body);
+      FightGameSession fightGameSession = FightGameSession.fromJson(body);
+      return fightGameSession;
     } else {
-      throw "Unable to create user.";
+      print("Unable to create game session.");
+      return FightGameSession.practice(globals.curUser);
+    }
+  }
+
+  Future<FightGameSession> getFightGame(int user1ID, int user2ID) async {
+    Response res = await get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
+    if (res.statusCode == 200) {
+      print(res.body);
+      dynamic body = jsonDecode(res.body);
+      FightGameSession fightGameSession = FightGameSession.fromJson(body);
+      print("${fightGameSession.id}");
+      return fightGameSession;
+    } else {
+      print("Unable to retrieve game session.");
+      return FightGameSession.practice(globals.curUser);
+    }
+  }
+
+  Future<void> setMove(int gameID, int userID, Move move) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userID": userID, "move": move.name.toString().toUpperCase()}));
+    if (res.statusCode == 200) {
+      print("Move set successfully.");
+    } else {
+      print(move.name.toString());
+      print("$userID");
+      throw "Unable to set move.";
+    }
+  }
+
+  Future<void> setNewTurn(FightGameSession game) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/newTurn"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(game.toJson()));
+    if (res.statusCode == 200) {
+      print("New turn set successfully.");
+    } else {
+      throw "Unable to set new turn.";
+    }
+  }
+
+  Future<void> declareWinner(int gameID) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/winner"),
+        headers: {"Content-Type": "application/json"});
+    if (res.statusCode == 200) {
+      print("Winner set successfully.");
+    } else {
+      throw "Unable to set a winner.";
     }
   }
 }

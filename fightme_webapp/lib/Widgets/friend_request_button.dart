@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/chat_page.dart';
 import 'package:fightme_webapp/Models/friend_request.dart';
+import 'package:fightme_webapp/Models/fight_game_session.dart';
 import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/Models/chatroom.dart';
+import 'fightButton.dart';
 
 
 Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User otherUser, User curUser) async {
@@ -49,13 +51,6 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
             });
             return;
           });
-          http.updateUserGamerScore(curUser.id, curUser.gamerScore + 1).then((result){    //this could be an issue because of the curUser id
-            return;
-          });
-          List<int> userIDs = [curUser.id, otherUser.id];
-          http.postChatroom(userIDs).then((result){
-            return;
-          });
           update();
         },
         child: const Text("accept"),
@@ -82,11 +77,31 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
     child: const Text('rejected'),
   );
 
+  FightGameSession fightGame = FightGameSession(curUser, otherUser);
+  http.getFightGame(curUser.id, otherUser.id).then((result) {
+    fightGame = result;
+  });
+  Widget fight = FilledButton.tonal(
+      onPressed: () {
+        if (fightGame.id != 0) {
+          buildFightButton(
+              context, fightGame);
+        }
+      },
+      child: const Text('Fight!')
+  );
+
   // isEmpty is the closest I can get to is null.
   // The bulk of the case section is based not on accessing when there isn't a friend request.
   if (!incoming.isEmpty() && !outgoing.isEmpty()) {
     if (incoming.status == Status.accepted && outgoing.status == Status.accepted) {
       return friends;
+    }
+    else if (incoming.status == Status.accepted && outgoing.status == Status.pending) {
+      return fight;
+    }
+    else if (incoming.status == Status.pending && outgoing.status == Status.accepted) {
+      return fight;
     }
     else if (incoming.status == Status.rejected && outgoing.status == Status.pending) {
       return pending;

@@ -2,10 +2,7 @@ package com.backend.backend.fightGame;
 
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +23,7 @@ import lombok.AllArgsConstructor;
 
 import com.backend.backend.fightGame.Dto.FightGameDto;
 import com.backend.backend.fightGame.Dto.UserMoveDto;
+import com.backend.backend.user.Dto.GamerScoreDto;
 import com.backend.backend.friendrequest.FriendRequestRepository;
 import com.backend.backend.friendrequest.FriendRequestService;
 import com.backend.backend.fightGame.FightGame.Move;
@@ -108,6 +106,22 @@ public class FightGameServiceImpl implements FightGameService{
     }
 
     @Override
+    public Boolean doesMoveHit(Move user1Move, Move user2Move) {
+        if (user1Move != Move.DEFENSE) {
+            if (user1Move == user2Move) {
+              return true;
+            }
+            if (user1Move == Move.ATTACK && user2Move == Move.MAGIC) {
+              return true;
+            }
+            if (user1Move == Move.MAGIC && user2Move == Move.DEFENSE) {
+              return true;
+            }
+          }
+          return false;
+    }
+
+    @Override
     public FightGameDto setNewTurn(long id) {
         FightGame fightGame = fightGameRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game not found " + id));
@@ -117,6 +131,12 @@ public class FightGameServiceImpl implements FightGameService{
             throw new ResourceNotFoundException("The turn is not over");
         }
         else {
+            if (user1Move != Move.DEFENSE && fightGame.doesMoveHit(user1Move, user2Move)) {
+                fightGame.setUser2HP(fightGame.getUser2HP() - 1);
+            }
+            if (user2Move != Move.DEFENSE && fightGame.doesMoveHit(user2Move, user1Move)) {
+                fightGame.setUser1HP(fightGame.getUser1HP() - 1);
+            }
             List<Move> user1Moves = fightGame.getUser1Moves();
             List<Move> user2Moves = fightGame.getUser2Moves();
             user1Moves.add(Move.NONE);
@@ -133,6 +153,9 @@ public class FightGameServiceImpl implements FightGameService{
     public FightGameDto declareWinner(long id) {
         FightGame fightGame = fightGameRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Game not found" + id));
+        if (fightGame.getWinnerID() != 0) {
+            throw new ResourceNotFoundException("Winner was already declared for game " + id);
+        }
         if (fightGame.getUser1HP() == 0 || fightGame.getUser2HP() == 0) {
             if (fightGame.getUser1HP() == 0 && fightGame.getUser2HP() != 0) {
                 fightGame.setWinnerID(fightGame.getUser2().getId().intValue());
@@ -154,6 +177,11 @@ public class FightGameServiceImpl implements FightGameService{
                     .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + fightGame.getRequesterID() + " " + Long.valueOf(fightGame.getWinnerID())));
                     friendRequestService.rejectFriendRequest(incoming.getId());
                 }
+            }
+            if (fightGame.getWinnerID() != -1) {
+                User winnerUser = userRepository.findById(Long.valueOf(fightGame.getWinnerID()))
+                .orElseThrow(() -> new ResourceNotFoundException("User not found" + fightGame.getWinnerID()));
+                userService.updateGamerScore(Long.valueOf(fightGame.getWinnerID()), new GamerScoreDto(winnerUser.getGamerScore()+ 1));
             }
             FightGame savedGame = fightGameRepository.save(fightGame);
             return FightGameMapper.mapToFightGameDto(savedGame);

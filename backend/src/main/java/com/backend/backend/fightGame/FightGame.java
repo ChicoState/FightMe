@@ -74,8 +74,8 @@ public class FightGame {
 
     @ElementCollection(targetClass = Move.class)
     @CollectionTable(name = "game_user_1_moves", joinColumns = @JoinColumn(name = "game_id"))
-    @Enumerated(EnumType.STRING)
     @Column(name = "user_1_move")
+    @Enumerated(EnumType.STRING)
     private List<Move> user1Moves;
 
     @ElementCollection(targetClass = Move.class)
@@ -91,5 +91,20 @@ public class FightGame {
         this.user2HP = 5;
         this.user1Moves  = Arrays.asList(Move.NONE);
         this.user2Moves  = Arrays.asList(Move.NONE);
+    }
+
+    public Boolean doesMoveHit(Move user1Move, Move user2Move) {
+        if (user1Move != Move.DEFENSE) {
+            if (user1Move == user2Move) {
+              return true;
+            }
+            if (user1Move == Move.ATTACK && user2Move == Move.MAGIC) {
+              return true;
+            }
+            if (user1Move == Move.MAGIC && user2Move == Move.DEFENSE) {
+              return true;
+            }
+          }
+          return false;
     }
 }

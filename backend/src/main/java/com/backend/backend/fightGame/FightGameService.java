@@ -12,5 +12,6 @@ public interface FightGameService {
     FightGameDto getFightGame(long user1ID, long user2ID);
     FightGameDto declareWinner(long id);
     FightGameDto setMove(long id, UserMoveDto userMoveDto);
+    Boolean doesMoveHit(Move user1Move, Move user2Move);
     FightGameDto setNewTurn(long id);
 }
