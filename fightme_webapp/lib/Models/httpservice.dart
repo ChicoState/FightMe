@@ -5,6 +5,8 @@ import 'chatroom.dart';
 import 'user.dart';
 import 'message.dart';
 import 'friend_request.dart';
+import 'package:fightme_webapp/globals.dart' as globals;
+import 'fight_game_session.dart';
 
 class HttpService {
   final String springbootUserURL = "http://localhost:8080/api/users/";
@@ -14,6 +16,7 @@ class HttpService {
       "http://localhost:8080/api/friendrequests";
   final String springbootLoginURL = "http://localhost:8080/api/login";
   final String springbootSignupURL = "http://localhost:8080/api/signup";
+  final String springbootFightGamesURL = "http://localhost:8080/api/fightgames";
 
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
@@ -55,6 +58,30 @@ class HttpService {
     }
   }
 
+  Future<List<FightGameSession>> getDoneGames(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id/games"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FightGameSession> doneGames =
+      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+      return doneGames;
+    } else {
+      throw "Unable to retrieve user data.";
+    }
+  }
+
+  Future<List<FightGameSession>> getActiveGames(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id/vs"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FightGameSession> activeGames =
+      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+      return activeGames;
+    } else {
+      throw "Unable to retrieve user data.";
+    }
+  }
+
   Future<int> signupUser(String username, String email, String password) async {
     Map<String, dynamic> input = {
       'name': username,
@@ -67,7 +94,7 @@ class HttpService {
       body: jsonEncode(input),
     );
     print(res.body);
-    if (res.statusCode == 200) {
+    if (res.statusCode == 201) {
       print("User registered.");
       return int.parse(res.body);
     } else {
@@ -177,7 +204,33 @@ class HttpService {
           body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
       return friendRequests;
     } else {
-      throw "Unable to retrieve friend request data for user $userID";
+      print("Unable to retrieve friend request data for user $userID");
+      return List.empty();
+    }
+  }
+
+  Future<List<FriendRequest>> getAllSentRequests(int userID) async {
+    Response res = await get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FriendRequest> friendRequests =
+      body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
+      return friendRequests;
+    } else {
+      print("Unable to retrieve friend request data for user $userID");
+      return List.empty();
+    }
+  }
+
+  Future<FriendRequest> getFriendRequest(int fromUserID, int toUserID) async {
+    Response res = await get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
+    if (res.statusCode == 200) {
+      dynamic body = jsonDecode(res.body);
+      FriendRequest friendRequest = FriendRequest.fromJson(body);
+      return friendRequest;
+    } else {
+      print("Unable to retrieve friend request.");
+      return FriendRequest.empty();
     }
   }
 
@@ -284,4 +337,69 @@ class HttpService {
       throw "Unable to add user theme.";
     }
   }
+
+  Future<FightGameSession> postFightGame(User user1, User user2, int requesterID) async {
+    Response res = await post(Uri.parse(springbootFightGamesURL),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"user1": user1.toJson(), "user2": user2.toJson(), "requesterID": requesterID}));
+    print(res.body);
+    if (res.statusCode == 201) {
+      print("Game created successfully.");
+      dynamic body = jsonDecode(res.body);
+      FightGameSession fightGameSession = FightGameSession.fromJson(body);
+      return fightGameSession;
+    } else {
+      print("Unable to create game session.");
+      return FightGameSession.practice(globals.curUser);
+    }
+  }
+
+  Future<FightGameSession> getFightGame(int user1ID, int user2ID) async {
+    Response res = await get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
+    if (res.statusCode == 200) {
+      print(res.body);
+      dynamic body = jsonDecode(res.body);
+      FightGameSession fightGameSession = FightGameSession.fromJson(body);
+      print("${fightGameSession.id}");
+      return fightGameSession;
+    } else {
+      print("Unable to retrieve game session.");
+      return FightGameSession.practice(globals.curUser);
+    }
+  }
+
+  Future<void> setMove(int gameID, int userID, Move move) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"userID": userID, "move": move.name.toString().toUpperCase()}));
+    if (res.statusCode == 200) {
+      print("Move set successfully.");
+    } else {
+      print(move.name.toString());
+      print("$userID");
+      throw "Unable to set move.";
+    }
+  }
+
+  Future<void> setNewTurn(FightGameSession game) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/newTurn"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(game.toJson()));
+    if (res.statusCode == 200) {
+      print("New turn set successfully.");
+    } else {
+      throw "Unable to set new turn.";
+    }
+  }
+
+  Future<void> declareWinner(int gameID) async {
+    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/winner"),
+        headers: {"Content-Type": "application/json"});
+    if (res.statusCode == 200) {
+      print("Winner set successfully.");
+    } else {
+      throw "Unable to set a winner.";
+    }
+  }
 }
+

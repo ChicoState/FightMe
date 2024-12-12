@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:fightme_webapp/chat_page.dart';
 import 'package:fightme_webapp/Models/friend_request.dart';
+import 'package:fightme_webapp/Models/fight_game_session.dart';
 import 'package:fightme_webapp/Models/user.dart';
 import 'package:fightme_webapp/Models/chatroom.dart';
+import 'fightButton.dart';
 
 
 Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User otherUser, User curUser) async {
   HttpService http = HttpService();
-  List<FriendRequest> myRequests = await http.getAllFriendRequests(curUser.id);
-  List<FriendRequest> otherRequests = await http.getAllFriendRequests(otherUser.id);
-  FriendRequest? outgoing = otherRequests.firstWhere((element) => element.fromUserID == curUser.id, orElse: () => FriendRequest.empty());
-  FriendRequest? incoming = myRequests.firstWhere((element) => element.fromUserID == otherUser.id, orElse: () => FriendRequest.empty());
+  FriendRequest incoming = await http.getFriendRequest(otherUser.id, curUser.id);
+  FriendRequest outgoing = await http.getFriendRequest(curUser.id, otherUser.id);
   // TODO: Figure out how to get this value initialized only when accepted conditions are met.
   late Chatroom chat;
   http.getChatroomsByUserId(curUser.id).then((result) {
@@ -46,13 +46,9 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
           http.acceptFriendRequest(incoming.id).then((result){
             // final FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
             // friendsProvider.addFriend(otherUser);
-            return;
-          });
-          http.updateUserGamerScore(curUser.id, curUser.gamerScore + 1).then((result){    //this could be an issue because of the curUser id
-            return;
-          });
-          List<int> userIDs = [curUser.id, otherUser.id];
-          http.postChatroom(userIDs).then((result){
+            http.postFightGame(curUser, otherUser, otherUser.id).then((result){
+              return;
+            });
             return;
           });
           update();
@@ -81,11 +77,31 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
     child: const Text('rejected'),
   );
 
+  FightGameSession fightGame = FightGameSession(curUser, otherUser);
+  http.getFightGame(curUser.id, otherUser.id).then((result) {
+    fightGame = result;
+  });
+  Widget fight = FilledButton.tonal(
+      onPressed: () {
+        if (fightGame.id != 0) {
+          buildFightButton(
+              context, fightGame);
+        }
+      },
+      child: const Text('Fight!')
+  );
+
   // isEmpty is the closest I can get to is null.
   // The bulk of the case section is based not on accessing when there isn't a friend request.
   if (!incoming.isEmpty() && !outgoing.isEmpty()) {
     if (incoming.status == Status.accepted && outgoing.status == Status.accepted) {
       return friends;
+    }
+    else if (incoming.status == Status.accepted && outgoing.status == Status.pending) {
+      return fight;
+    }
+    else if (incoming.status == Status.pending && outgoing.status == Status.accepted) {
+      return fight;
     }
     else if (incoming.status == Status.rejected && outgoing.status == Status.pending) {
       return pending;

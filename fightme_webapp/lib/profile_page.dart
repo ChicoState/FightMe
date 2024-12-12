@@ -4,9 +4,12 @@ import 'package:fightme_webapp/settings_page.dart';
 import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'pending_requests.dart';
 import 'Models/user.dart';
 import 'Widgets/friend_request_button.dart';
 import 'Models/httpservice.dart';
+import 'Models/fight_game_session.dart';
+import 'game_history_page.dart';
 import 'Cosmetics/profile_pictures.dart';
 import 'Models/auth_clear.dart';
 
@@ -23,6 +26,7 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   late Future<List<User>> _friends;
+  late Future<List<FightGameSession>> _games;
 
   void _update() {
     setState(() {
@@ -34,12 +38,42 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _friends = HttpService().getFriends(widget.userViewed.id);
+    _games = HttpService().getDoneGames(widget.userViewed.id);
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final statsProvider = Provider.of<StatsProvider>(context, listen: false);
       statsProvider.initializeStats(widget.userViewed);
     });
 }
+
+  int getWonGames(List<FightGameSession> games) {
+    int count = 0;
+    for (var game in games) {
+      if (game.winnerID == widget.userViewed.id) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  double getGameRatio(List<FightGameSession> games) {
+    int winCount = 0; // |  ||
+    int lossCount = 0;// || |_
+    for (var game in games) {
+      if (game.winnerID == widget.userViewed.id) {
+        winCount++;
+      }
+      else {
+        lossCount++;
+      }
+    }
+    if (lossCount == 0) {
+      return winCount.toDouble();
+    }
+    else {
+      return winCount / lossCount;
+    }
+  }
 
   friendsListView(list) => ListView.builder(
       scrollDirection: Axis.vertical,
@@ -247,7 +281,7 @@ class ProfilePageState extends State<ProfilePage> {
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.symmetric(horizontal:  30.0),
                       decoration: BoxDecoration(border: Border.all()),
-                      child:FutureBuilder(future: _friends, builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+                      child: FutureBuilder(future: _friends, builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data!.isEmpty) {
                             return const Text(
@@ -264,19 +298,48 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    const Text("Placeholder"),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2.5,
-                      width: MediaQuery.of(context).size.width / 2 - 60.0,
-                      alignment: Alignment.topLeft,
-                      margin: const EdgeInsets.symmetric(horizontal:  30.0),
-                      decoration: BoxDecoration(border: Border.all()),
-                      child: const Text("What would you like to see here?", style: TextStyle(
-                        fontSize: 40, )),
-                    ),
-                  ],
+                FutureBuilder(future: _games, builder: (BuildContext context, AsyncSnapshot<List<FightGameSession>> snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        const Text("Games won"),
+                        Text("${getWonGames(snapshot.data!)}"),
+                        const Text("Win/loss ratio"),
+                        Text(getGameRatio(snapshot.data!).toStringAsFixed(2)),
+                        if (widget.userViewed.id == widget.curUser.id) ...[
+                          FilledButton.tonal(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute<GameHistoryPage>(
+                                      builder: (context) => const GameHistoryPage()));
+                            },
+                            child: const Text("Game history"),
+                          ),
+                          FilledButton.tonal(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute<PendingRequestsPage>(
+                                      builder: (context) => const PendingRequestsPage()));
+                            },
+                            child: const Text("Pending Requests"),
+                          ),
+                        ],
+                      ],
+                    );
+                  }
+                  else {
+                    return const Column(
+                      children: [
+                        Text("Games won"),
+                        CircularProgressIndicator(),
+                        Text("Win/loss ratio"),
+                        CircularProgressIndicator(),
+                      ],
+                    );
+                  }
+                }
                 ),
               ],
             ),

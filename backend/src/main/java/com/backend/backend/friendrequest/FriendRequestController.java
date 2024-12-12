@@ -1,5 +1,6 @@
 package com.backend.backend.friendrequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -33,10 +34,12 @@ public class FriendRequestController {
     }
 
     @PutMapping("accept")
-    public ResponseEntity<FriendRequestDto> acceptFriendRequest(@RequestBody FriendRequestDto friendRequestDto) {
+    public ResponseEntity<List<FriendRequestDto>> acceptFriendRequest(@RequestBody FriendRequestDto friendRequestDto) {
         Long friendRequestID = friendRequestDto.getId();
-        FriendRequestDto friendRequest = friendRequestService.acceptFriendRequest(friendRequestID);
-        return new ResponseEntity<>(friendRequest, HttpStatus.OK);
+        List<FriendRequestDto> requestPair = new ArrayList<>();
+        requestPair.add(friendRequestService.acceptFriendRequest(friendRequestID));
+        requestPair.add(friendRequestService.sendFriendRequest(requestPair.get(0).getToUserID(), requestPair.get(0).getFromUserID()));
+        return new ResponseEntity<>(requestPair, HttpStatus.OK);
     }
 
     @PutMapping("reject")
@@ -50,6 +53,18 @@ public class FriendRequestController {
     public ResponseEntity<List<FriendRequestDto>> getAllFriendRequestForUser(@PathVariable("userID") Long userID) {
         List<FriendRequestDto> friendRequests = friendRequestService.getAllFriendRequestForUser(userID);
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
+    }
+
+    @GetMapping("{userID}/sent")
+    public ResponseEntity<List<FriendRequestDto>> getAllFriendRequestFromUser(@PathVariable("userID") Long userID) {
+        List<FriendRequestDto> friendRequests = friendRequestService.getAllFriendRequestFromUser(userID);
+        return new ResponseEntity<>(friendRequests, HttpStatus.OK);
+    }
+
+    @GetMapping("{fromUserID}/{toUserID}")
+    public ResponseEntity<FriendRequestDto> getFriendRequestBetween(@PathVariable("fromUserID") Long fromUserID, @PathVariable("toUserID") Long toUserID) {
+        FriendRequestDto friendRequest = friendRequestService.getFriendRequestBetween(fromUserID, toUserID);
+        return new ResponseEntity<>(friendRequest, HttpStatus.OK);
     }
 
 }

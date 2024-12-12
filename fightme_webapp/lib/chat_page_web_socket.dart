@@ -36,6 +36,7 @@ class ChatPageState extends State<ChatPage> {
   late TextEditingController textEditControl;
   late List<Message> messages = [];
   late int randomNumber;
+  late Future<FightGameSession> game;
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class ChatPageState extends State<ChatPage> {
         messages = value;
       });
     });
+    game = HttpService().getFightGame(widget.currentUID, widget.otherUID);
 
     textEditControl = TextEditingController();
 
@@ -123,13 +125,44 @@ class ChatPageState extends State<ChatPage> {
       body: Center(
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () => buildFightButton(
-                context,
-                FightGameSession(widget.currentUser, widget.otherUser),
-              ),
-              child: const Text('Fight!'),
-            ),
+            FutureBuilder(future: game, builder: (BuildContext context, AsyncSnapshot<FightGameSession> wid) {
+              if (wid.hasData) {
+                if (wid.data!.id == 0 || (wid.data!.id != 0 && wid.data!.winnerID != 0)) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      FightGameSession game = await HttpService().postFightGame(widget.currentUser, widget.otherUser, 0);
+                      if (game.id == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              duration: Duration(seconds: 3),
+                              content: Text('The game could not be created.'),
+                            )
+                        );
+                      }
+                      else {
+                        await buildFightButton(
+                          context,
+                          game,
+                        );
+                      }
+                    },
+                    child: const Text('Fight!'),
+                  );
+                }
+                else {
+                  return FilledButton.tonal(
+                    onPressed: () async {
+                      await buildFightButton(
+                        context,
+                        wid.data!,
+                      );
+                    },
+                    child: const Text('Fight!'),
+                  );
+                }
+              }
+              return const CircularProgressIndicator();
+            }),
             Expanded(
               child: ListView.builder(
                 itemCount: messages.length,
