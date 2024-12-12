@@ -1,16 +1,19 @@
 
 import 'package:fightme_webapp/Cosmetics/profile_pictures.dart';
+import 'package:fightme_webapp/Models/httpservice.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:fightme_webapp/Models/friend_request.dart';
+import 'package:fightme_webapp/globals.dart' as globals;
 import 'package:fightme_webapp/Models/fight_game_session.dart';
 
 List<Move> randomMove = [Move.attack, Move.defense, Move.magic];
 
-Color moveColor(String move) {
-  if (move == "assets/images/attack.png") {
+Color moveColor(Move move) {
+  if (move == Move.attack) {
     return Colors.red;
   }
-  else if (move == "assets/images/defense.png") {
+  else if (move == Move.defense) {
     return Colors.blue;
   }
   else {
@@ -57,37 +60,81 @@ bool doesUserHit(Move move1, Move move2) {
   return false;
 }
 
-void buildFightButton(BuildContext context, FightGameSession game) {
+Future<void> buildFightButton(BuildContext context, FightGameSession game) async {
+  if (globals.uid != game.user1.id && globals.uid != game.user2.id) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) =>
+          AlertDialog(
+            title: const Text(
+                "There was an error."),
+            content: const Text(
+              "You are not a part of this game."
+            ),
+            actionsAlignment: MainAxisAlignment.center,
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(
+                        context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    );
+  }
   final random = Random();
-  String whatUser1Did = "";
-  String whatUser2Did = "";
   List<Color> colors = [Colors.red, Colors.orangeAccent, Colors.amberAccent, Colors.yellowAccent[100]!, Colors.lightGreenAccent[400]!/*Why in God's name would this be Color? ?*/];
   showDialog<String>(
       context: context,
       builder: (BuildContext context) =>
           StatefulBuilder(
             builder: (context, setState) {
-              if (game.user1move != Move.none) {
+              if (game.user1moves.last != Move.none) {
                 if (game.user2.id == 0) {
-                  game.user2move = randomMove[random.nextInt(randomMove.length)];
+                  game.user2moves.last = randomMove[random.nextInt(randomMove.length)];
                 }
-                if (game.user2move != Move.none) {
-                  if (doesUserHit(game.user1move, game.user2move)) {
-                    game.user2hp--;
+                if (game.user2moves.last != Move.none) {
+                  if (game.id != 0) {
+                    HttpService().setNewTurn(game).then((result) {
+                      setState(() {
+                        if (doesUserHit(
+                            game.user1moves.last, game.user2moves.last)) {
+                          game.user2hp--;
+                        }
+                        if (doesUserHit(
+                            game.user2moves.last, game.user1moves.last)) {
+                          game.user1hp--;
+                        }
+                        game.user1moves.add(Move.none);
+                        game.user2moves.add(Move.none);
+                      });
+                      return;
+                    });
                   }
-                  if (doesUserHit(game.user2move, game.user1move)) {
-                    game.user1hp--;
+                  else {
+                    if (doesUserHit(
+                        game.user1moves.last, game.user2moves.last)) {
+                      game.user2hp--;
+                    }
+                    if (doesUserHit(
+                        game.user2moves.last, game.user1moves.last)) {
+                      game.user1hp--;
+                    }
+                    game.user1moves.add(Move.none);
+                    game.user2moves.add(Move.none);
                   }
-                  whatUser1Did = move(game.user1move);
-                  whatUser2Did = move(game.user2move);
-                  game.turn++;
-                  game.user1move = Move.none;
-                  game.user2move = Move.none;
                 }
               }
               if (game.user1hp == 0 || game.user2hp == 0) {
+                if (game.id != 0) {
+                  HttpService().declareWinner(game.id).then((
+                      result) { //this could be an issue because of the curUser id
+                    return;
+                  });
+                }
                 return AlertDialog(
-                    title: Text(endMessage(game.user1hp, game.user2hp)),
+                    title: Text(endMessage(game.getUserHp(globals.uid), game.getOtherUserHp(globals.uid))),
                     actionsAlignment: MainAxisAlignment.center,
                     content: Image.asset(game.user1hp != 0  ? profilePictures[game.user1.pfp] : profilePictures[game.user2.pfp], width: 60, height: 60),
                     actions: <Widget>[
@@ -103,7 +150,7 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const CloseButton(),
-                      Text("Turn ${game.turn}"),
+                      Text("Turn ${game.user1moves.length}"),
                       IconButton(
                           onPressed: () =>
                               showDialog<String>(
@@ -141,7 +188,7 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                 content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(game.user2.name,
+                      Text(game.getOtherUser(globals.uid).name,
                           style: const TextStyle(fontSize: 20)),
                       Row(
                           mainAxisAlignment: MainAxisAlignment
@@ -151,14 +198,14 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                                 children: [
                                   const Text("ATK", style: TextStyle(
                                       backgroundColor: Colors.red)),
-                                  Text("${game.user2.attackScore}"),
+                                  Text("${game.getOtherUser(globals.uid).attackScore}"),
                                 ]
                             ),
                             Column(
                                 children: [
                                   const Text("DEF", style: TextStyle(
                                       backgroundColor: Colors.blue)),
-                                  Text("${game.user2.defenseScore}"),
+                                  Text("${game.getOtherUser(globals.uid).defenseScore}"),
                                 ]
                             ),
                             Column(
@@ -166,7 +213,7 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                                   const Text("MP", style: TextStyle(
                                       backgroundColor: Colors
                                           .yellow)),
-                                  Text("${game.user2.magicScore}"),
+                                  Text("${game.getOtherUser(globals.uid).magicScore}"),
                                 ]
                             ),
                           ]
@@ -177,11 +224,11 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                       Row(
                           children: [
                             for (int i = 1; i <= 5; i++)
-                              i > 5 - game.user2hp ? Expanded(
+                              i > 5 - game.getOtherUserHp(globals.uid) ? Expanded(
                                 child: Container(
                                     height: 15.0,
                                     decoration: BoxDecoration(
-                                      color: colors[game.user2hp - 1],
+                                      color: colors[game.getOtherUserHp(globals.uid) - 1],
                                       border: Border.all(
                                           color: Colors.black,
                                           width: 0.0),
@@ -204,14 +251,21 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                       ),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: Image.asset(profilePictures[game.user2.pfp], width: 60, height: 60),
+                        child: Image.asset(profilePictures[game.getOtherUser(globals.uid).pfp], width: 60, height: 60),
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (whatUser1Did != "" && whatUser2Did != "")...[
-                              Image.asset(whatUser1Did, width: 30, height: 30, color: moveColor(whatUser1Did)),
-                              Image.asset(whatUser2Did, width: 30, height: 30, color: moveColor(whatUser2Did)),
+                            if (game.user1moves.length > 1  && game.user2moves.length > 1)...[
+                              Image.asset(move(game.getUserMoves(globals.uid).elementAt(game.getUserMoves(globals.uid).length - 2)),
+                                  width: 30, height: 30,
+                                  color: moveColor(game.getUserMoves(globals.uid).elementAt(game.getUserMoves(globals.uid).length - 2))),
+                              Image.asset(move(game.getOtherUserMoves(globals.uid).elementAt(game.getOtherUserMoves(globals.uid).length - 2)),
+                                  width: 30, height: 30,
+                                  color: moveColor(game.getOtherUserMoves(globals.uid).elementAt(game.getOtherUserMoves(globals.uid).length - 2))),
                             ]
                             else...[
                               const SizedBox(
@@ -220,13 +274,19 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                             ]
                           ]
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Transform(
                           alignment: Alignment.center,
                           transform: Matrix4.rotationY(pi),
-                          child: Image.asset(profilePictures[game.user1.pfp], width: 60, height: 60),
+                          child: Image.asset(profilePictures[globals.curUser.pfp], width: 60, height: 60),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       Row(
                           children: [
@@ -235,11 +295,11 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                               width: 5,
                             ),
                             for (int i = 1; i <= 5; i++)
-                              i <= game.user1hp ? Expanded(
+                              i <= game.getUserHp(globals.uid) ? Expanded(
                                 child: Container(
                                     height: 15.0,
                                     decoration: BoxDecoration(
-                                      color: colors[game.user1hp - 1],
+                                      color: colors[game.getUserHp(globals.uid) - 1],
                                       border: Border.all(
                                           color: Colors.black,
                                           width: 0.0),
@@ -257,13 +317,17 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                 ),
                 actionsAlignment: MainAxisAlignment.center,
                 actions: <Widget>[
-                  game.user1move == Move.none ? Row(
+                  game.getUserMoves(globals.uid).last == Move.none ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            if (game.id != 0) {
+                              await HttpService().setMove(
+                                  game.id, globals.uid, Move.attack);
+                            }
                             setState(() {
-                              game.user1move = Move.attack;
+                              game.getUserMoves(globals.uid).last = Move.attack;
                             });
                           },
                           backgroundColor: Colors.red,
@@ -271,14 +335,18 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text('Attack'),
-                                Text("${game.user1.attackScore}"),
+                                Text("${globals.curUser.attackScore}"),
                               ]
                           ),
                         ),
                         FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            if (game.id != 0) {
+                              await HttpService().setMove(
+                                  game.id, globals.uid, Move.defense);
+                            }
                             setState(() {
-                              game.user1move = Move.defense;
+                              game.getUserMoves(globals.uid).last = Move.defense;
                             });
                           },
                           backgroundColor: Colors.blue,
@@ -287,14 +355,18 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                                   .center,
                               children: [
                                 const Text('Defense'),
-                                Text("${game.user1.defenseScore}"),
+                                Text("${globals.curUser.defenseScore}"),
                               ]
                           ),
                         ),
                         FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            if (game.id != 0) {
+                              await HttpService().setMove(
+                                  game.id, globals.uid, Move.magic);
+                            }
                             setState(() {
-                              game.user1move = Move.magic;
+                              game.getUserMoves(globals.uid).last = Move.magic;
                             });
                           },
                           backgroundColor: Colors.yellow,
@@ -303,7 +375,7 @@ void buildFightButton(BuildContext context, FightGameSession game) {
                                   .center,
                               children: [
                                 const Text('Magic'),
-                                Text("${game.user1.magicScore}"),
+                                Text("${globals.curUser.magicScore}"),
                               ]
                           ),
                         ),

@@ -8,16 +8,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.backend.backend.fightGame.FightGame;
 
 
 @Getter
@@ -70,6 +76,11 @@ public class User {
     @Column(name = "friend_id")
     private List<Long> friends; //storing just the id of the friends not the user
 
+    @ElementCollection
+    @CollectionTable(name = "user_game_sessions", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "game_id")
+    private List<Long> gameSessions;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -83,7 +94,10 @@ public class User {
     protected void onCreate() {
         this.dateCreated = System.currentTimeMillis();
         this.unlockedProfilePictures = Arrays.asList(Long.valueOf(0));
-        this.unlockedThemes = Arrays.asList(Long.valueOf(0));
+        this.unlockedThemes = Arrays.asList(Long.valueOf(0), Long.valueOf(1));
+        this.gameSessions = new ArrayList<>();
+        this.theme = Long.valueOf(0);
+        this.profilePicture = Long.valueOf(0);
     }
 
 }
