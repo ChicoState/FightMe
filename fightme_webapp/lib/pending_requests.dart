@@ -60,6 +60,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                             http.acceptFriendRequest(request.id).then((result) {
                               return;
                             });
+                            http.postFightGame(curUser, user, user.id).then((result){
+                              return;
+                            });
                             setState(() {
                               _recvlist = _buildReceivedList();
                             });
@@ -185,56 +188,56 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
           children: [
             const Text("Received Requests", style: TextStyle(
                 fontSize: 40)),
-            FutureBuilder(future: _recvlist, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmpty) {
-                  return const Text(
-                      "No pending requests.");
+            Expanded(
+              child:  FutureBuilder(future: _recvlist, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isEmpty) {
+                    return const Text(
+                        "No pending requests.");
+                  }
+                  else {
+                    return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Column(children: <Widget>[
+                            snapshot.data![index]
+                          ]);
+                        });
+                  }
                 }
                 else {
-                  return Expanded(
-                      child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return Column(children: <Widget>[
-                          snapshot.data![index]
-                        ]);
-                      })
-                  );
+                  return const CircularProgressIndicator();
                 }
-              }
-              else {
-                return const CircularProgressIndicator();
-              }
-            }),
+              }),
+            ),
             const Text("Outgoing Requests", style: TextStyle(
                 fontSize: 40)),
             SizedBox(
-            height: MediaQuery.of(context).size.height / 2.25,
-            child: FutureBuilder(future: _sentlist, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmpty) {
-                  return const Text(
-                      "No outgoing requests.");
+              height: MediaQuery.of(context).size.height / 2.25,
+              child: FutureBuilder(future: _sentlist, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isEmpty) {
+                    return const Text(
+                        "No outgoing requests.");
+                  }
+                  else {
+                    return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Column(children: <Widget>[
+                            snapshot.data![index]
+                          ]);
+                        });
+                  }
                 }
                 else {
-                  return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        return Column(children: <Widget>[
-                          snapshot.data![index]
-                        ]);
-                      });
+                  return const CircularProgressIndicator();
                 }
-              }
-              else {
-                return const CircularProgressIndicator();
-              }
-            }),
+              }),
             ),
           ],
         ),
