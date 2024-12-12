@@ -253,6 +253,9 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                         alignment: Alignment.centerRight,
                         child: Image.asset(profilePictures[game.getOtherUser(globals.uid).pfp], width: 60, height: 60),
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -271,6 +274,9 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                             ]
                           ]
                       ),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Transform(
@@ -278,6 +284,9 @@ Future<void> buildFightButton(BuildContext context, FightGameSession game) async
                           transform: Matrix4.rotationY(pi),
                           child: Image.asset(profilePictures[globals.curUser.pfp], width: 60, height: 60),
                         ),
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       Row(
                           children: [
