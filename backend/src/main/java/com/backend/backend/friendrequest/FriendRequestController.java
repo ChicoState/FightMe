@@ -55,6 +55,12 @@ public class FriendRequestController {
         return new ResponseEntity<>(friendRequests, HttpStatus.OK);
     }
 
+    @GetMapping("{userID}/sent")
+    public ResponseEntity<List<FriendRequestDto>> getAllFriendRequestFromUser(@PathVariable("userID") Long userID) {
+        List<FriendRequestDto> friendRequests = friendRequestService.getAllFriendRequestFromUser(userID);
+        return new ResponseEntity<>(friendRequests, HttpStatus.OK);
+    }
+
     @GetMapping("{fromUserID}/{toUserID}")
     public ResponseEntity<FriendRequestDto> getFriendRequestBetween(@PathVariable("fromUserID") Long fromUserID, @PathVariable("toUserID") Long toUserID) {
         FriendRequestDto friendRequest = friendRequestService.getFriendRequestBetween(fromUserID, toUserID);

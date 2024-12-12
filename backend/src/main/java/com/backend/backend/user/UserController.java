@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.backend.user.Dto.FriendDto;
 import com.backend.backend.user.Dto.GamerScoreDto;
 import com.backend.backend.user.Dto.StatsDto;
+import com.backend.backend.fightGame.Dto.FightGameDto;
 import com.backend.backend.user.Dto.ProfilePictureDto;
 import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
@@ -110,6 +111,18 @@ public class UserController {
     public ResponseEntity<List<Long>> getFriends(@PathVariable("id") Long id) {
         List<Long> friends = userService.getFriends(id);
         return new ResponseEntity<>(friends, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/games")
+    public ResponseEntity<List<FightGameDto>> getDoneGames(@PathVariable("id") Long id) {
+        List<FightGameDto> doneGames = userService.getDoneGames(id);
+        return new ResponseEntity<>(doneGames, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/vs")
+    public ResponseEntity<List<FightGameDto>> getActiveGames(@PathVariable("id") Long id) {
+        List<FightGameDto> activeGames = userService.getActiveGames(id);
+        return new ResponseEntity<>(activeGames, HttpStatus.OK);
     }
 
     @GetMapping("{id}/suggestedFriends")

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.chatroom.ChatroomRepository;
 import com.backend.backend.chatroom.ChatroomService;
+import com.backend.backend.chatroom.Dto.ChatroomDto;
 import com.backend.backend.fightGame.FightGame;
 import com.backend.backend.user.UserMapper;
 import com.backend.backend.user.UserRepository;
@@ -170,7 +171,16 @@ public class FightGameServiceImpl implements FightGameService{
                 if (fightGame.getWinnerID() == fightGame.getRequesterID().intValue()) {
                     
                     userService.addFriend(fightGame.getRequesterID(), new FriendDto(fightGame.getUser1().getId().intValue() == fightGame.getWinnerID() ? fightGame.getUser2().getId() : fightGame.getUser1().getId()));
-                    chatroomService.createChatroom(null);
+                    List<UserDto> users = Arrays.asList(UserMapper.mapToUserDto(fightGame.getUser1()), UserMapper.mapToUserDto(fightGame.getUser2()));
+                    ChatroomDto chatroom = new ChatroomDto();
+                    FriendRequest incoming = friendRequestRepository.findByFromUserIDAndToUserID(Long.valueOf(fightGame.getWinnerID()) == fightGame.getUser1().getId() ? 
+                    fightGame.getUser2().getId() : fightGame.getUser1().getId(), fightGame.getRequesterID())
+                    .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + 
+                    (Long.valueOf(fightGame.getWinnerID()) == fightGame.getUser1().getId() ? fightGame.getUser2().getId() : fightGame.getUser1().getId())
+                      + " " + fightGame.getRequesterID()));
+                    friendRequestService.acceptFriendRequest(incoming.getId());
+                    chatroom.setUsers(users);
+                    chatroomService.createChatroom(chatroom);
                 }
                 else {
                     FriendRequest incoming = friendRequestRepository.findByFromUserIDAndToUserID(fightGame.getRequesterID(), Long.valueOf(fightGame.getWinnerID()))

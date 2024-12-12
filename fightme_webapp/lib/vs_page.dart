@@ -7,9 +7,8 @@ import 'Cosmetics/profile_pictures.dart';
 import 'globals.dart' as globals;
 
 class VsPage extends StatefulWidget {
-  final User curUser;
 
-  const VsPage({super.key, required this.curUser});
+  const VsPage({super.key});
 
   @override
   State<VsPage> createState() => VsPageState();
@@ -23,10 +22,9 @@ class VsPageState extends State<VsPage> {
     List<Color> colors = [Colors.red, Colors.orangeAccent, Colors.amberAccent, Colors.yellowAccent[100]!, Colors.lightGreenAccent[400]!];
     HttpService http = HttpService();
     List<Widget> list = List.empty(growable: true);
-    List<FightGameSession> myFights = List.empty(growable: true); // TODO: Write the fighting game session in the backend then write a function in HttpService.
-    myFights.removeWhere((element) => element.winnerID != 0);
+    List<FightGameSession> myFights = await http.getActiveGames(globals.uid);
     for (var fight in myFights) {
-      User user = fight.user2;
+      User user = fight.getOtherUser(globals.uid);
       list.add(
           TextButton(
               onPressed: () {
@@ -38,16 +36,27 @@ class VsPageState extends State<VsPage> {
                     child: Image.asset(profilePictures[user.pfp], fit: BoxFit.cover, width: 60, height: 60),
                   ),
                   title: user.id != 0 ? Text(user.name) : const Text("Group"),
-                  trailing: Column(
+                  subtitle: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                           children: [
+                            const Visibility(
+                              maintainSize: true,
+                              visible: false,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: Text("HP"),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
                             for (int i = 1; i <= 5; i++)
-                              i > 5 - fight.user2hp ? Expanded(
+                              i > 5 - fight.getOtherUserHp(globals.uid) ? Expanded(
                                 child: Container(
                                     height: 15.0,
                                     decoration: BoxDecoration(
-                                      color: colors[fight.user2hp - 1],
+                                      color: colors[fight.getOtherUserHp(globals.uid) - 1],
                                       border: Border.all(
                                           color: Colors.black,
                                           width: 0.0),
@@ -72,11 +81,11 @@ class VsPageState extends State<VsPage> {
                               width: 5,
                             ),
                             for (int i = 1; i <= 5; i++)
-                              i <= fight.user1hp ? Expanded(
+                              i <= fight.getUserHp(globals.uid) ? Expanded(
                                 child: Container(
                                     height: 15.0,
                                     decoration: BoxDecoration(
-                                      color: colors[fight.user1hp - 1],
+                                      color: colors[fight.getUserHp(globals.uid) - 1],
                                       border: Border.all(
                                           color: Colors.black,
                                           width: 0.0),
@@ -88,6 +97,16 @@ class VsPageState extends State<VsPage> {
                                   height: 15.0,
                                 ),
                               ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Visibility(
+                              maintainSize: true,
+                              visible: false,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              child: Text("HP"),
+                            ),
                           ]
                       ),
                     ],

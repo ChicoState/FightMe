@@ -55,6 +55,14 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
+    public List<FriendRequestDto> getAllFriendRequestFromUser(Long userID) {
+        userRepository.findById(userID)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + userID));
+        List<FriendRequest> friendRequests = friendRequestRepository.findByFromUserID(userID);
+        return friendRequests.stream().map((friendRequest) -> FriendRequestMapper.mapToFriendRequestDto(friendRequest)).collect(Collectors.toList());
+    }
+
+    @Override
     public FriendRequestDto acceptFriendRequest(Long requestID) {
         FriendRequest friendRequest = friendRequestRepository.findById(requestID)
         .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found" + requestID));

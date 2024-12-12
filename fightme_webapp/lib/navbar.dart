@@ -1,4 +1,4 @@
-import 'package:fightme_webapp/gamerscore_shop.dart';
+import 'package:fightme_webapp/dashboard.dart';
 import 'package:fightme_webapp/chats_master_page.dart';
 import 'package:fightme_webapp/training_area_page.dart';
 import 'package:fightme_webapp/profile_page.dart';
@@ -33,7 +33,7 @@ class _BottomNavigationBarExampleState extends State<navbar> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _widgetOptions = <Widget>[
-      GamerscoreShop(curUser: widget.curUser),
+      DashboardPage(curUser: widget.curUser),
       ChatsMasterPage(curUser: widget.curUser),
       TrainingAreaPage(curUser: widget.curUser),
       ProfilePage(curUser: widget.curUser, userViewed: widget.curUser),
@@ -47,8 +47,8 @@ class _BottomNavigationBarExampleState extends State<navbar> {
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined),
-            label: 'Shop',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),

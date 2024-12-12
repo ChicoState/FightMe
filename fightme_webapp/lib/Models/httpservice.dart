@@ -58,6 +58,30 @@ class HttpService {
     }
   }
 
+  Future<List<FightGameSession>> getDoneGames(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id/games"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FightGameSession> doneGames =
+      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+      return doneGames;
+    } else {
+      throw "Unable to retrieve user data.";
+    }
+  }
+
+  Future<List<FightGameSession>> getActiveGames(int id) async {
+    Response res = await get(Uri.parse("$springbootUserURL$id/vs"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FightGameSession> activeGames =
+      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+      return activeGames;
+    } else {
+      throw "Unable to retrieve user data.";
+    }
+  }
+
   Future<int> signupUser(String username, String email, String password) async {
     Map<String, dynamic> input = {
       'name': username,
@@ -70,7 +94,7 @@ class HttpService {
       body: jsonEncode(input),
     );
     print(res.body);
-    if (res.statusCode == 200) {
+    if (res.statusCode == 201) {
       print("User registered.");
       return int.parse(res.body);
     } else {
@@ -178,6 +202,19 @@ class HttpService {
       List<dynamic> body = jsonDecode(res.body);
       List<FriendRequest> friendRequests =
           body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
+      return friendRequests;
+    } else {
+      print("Unable to retrieve friend request data for user $userID");
+      return List.empty();
+    }
+  }
+
+  Future<List<FriendRequest>> getAllSentRequests(int userID) async {
+    Response res = await get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<FriendRequest> friendRequests =
+      body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
       return friendRequests;
     } else {
       print("Unable to retrieve friend request data for user $userID");

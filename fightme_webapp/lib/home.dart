@@ -259,6 +259,7 @@ class _SignUpState extends State<SignUp> {
     if (userId > 0) {
       globals.curUser = await HttpService().getUserByID(userId);
       globals.loggedIn = true;
+      globals.uid = userId;
       await _saveUserData(userId);
       Navigator.pushAndRemoveUntil(
         context,
@@ -357,7 +358,19 @@ class _SignUpState extends State<SignUp> {
                           ),
                           const SizedBox(height: 16.0),
                           ElevatedButton(
-                            onPressed: signUpUser,
+                            onPressed: ( () {
+                              if (_passwordController.text.length < 8) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      duration: Duration(seconds: 3),
+                                      content: Text('Password must be 8 characters or longer.'),
+                                    )
+                                );
+                              }
+                              else {
+                                signUpUser();
+                              }
+                            }),
                             style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 40),
                               shape: RoundedRectangleBorder(

@@ -15,6 +15,8 @@ import com.backend.backend.user.Dto.UserDto;
 import com.backend.backend.fightGame.Dto.FightGameDto;
 import com.backend.backend.fightGame.FightGame;
 import com.backend.backend.fightGame.FightGameRepository;
+import com.backend.backend.fightGame.FightGameMapper;
+
 
 import lombok.AllArgsConstructor;
 
@@ -72,6 +74,34 @@ public class UserServiceImpl implements UserService {
             }
         }        
         return suggestedFriends;
+    }
+
+    @Override
+    public List<FightGameDto> getDoneGames(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        List<FightGame> gameHistory = user.getGameSessions().stream().map((game) -> fightGameRepository.findById(game).orElseThrow(() -> new ResourceNotFoundException("User not found" + game))).collect(Collectors.toList());
+        List<FightGameDto> doneGames = new ArrayList<>();
+        for(FightGame game : gameHistory){
+            if(game.getWinnerID() != 0){
+                doneGames.add(FightGameMapper.mapToFightGameDto(game));
+            }
+        }   
+        return doneGames;
+    }
+
+    @Override
+    public List<FightGameDto> getActiveGames(Long id) {
+        User user = userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + id));
+        List<FightGame> gameHistory = user.getGameSessions().stream().map((game) -> fightGameRepository.findById(game).orElseThrow(() -> new ResourceNotFoundException("User not found" + game))).collect(Collectors.toList());
+        List<FightGameDto> doneGames = new ArrayList<>();
+        for(FightGame game : gameHistory){
+            if(game.getWinnerID() == 0){
+                doneGames.add(FightGameMapper.mapToFightGameDto(game));
+            }
+        }   
+        return doneGames;
     }
 
     // END OF ALL GET 

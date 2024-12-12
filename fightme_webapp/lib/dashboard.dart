@@ -1,7 +1,9 @@
+import 'package:fightme_webapp/vs_page.dart';
 import 'package:flutter/material.dart';
 import 'Models/chatroom.dart';
 import 'Models/user.dart';
 import 'package:fightme_webapp/Models/httpservice.dart';
+import 'package:fightme_webapp/gamerscore_shop.dart';
 import 'pending_requests.dart';
 import 'globals.dart' as globals;
 
@@ -30,7 +32,24 @@ class DashboardPageState extends State<DashboardPage> {
       body: Center(
         child: Column(
           children: [
-
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<VsPage>(
+                        builder: (context) => const VsPage()));
+              },
+              child: const Text("VS"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<VsPage>(
+                        builder: (context) => GamerscoreShop(curUser: widget.curUser),));
+              },
+              child: const Icon(Icons.shopping_bag_outlined),
+            )
           ],
         ),
       ),
