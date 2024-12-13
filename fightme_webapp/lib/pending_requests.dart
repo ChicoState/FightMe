@@ -84,7 +84,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                   ) : FilledButton.tonal(
                       onPressed: () {
                         if (game.id != 0) {
-                          FightButton(game: game);
+                          showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => FightButton(game: game));
                         }
                         else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -139,7 +141,9 @@ class PendingRequestsPageState extends State<PendingRequestsPage> {
                       : FilledButton.tonal(
                       onPressed: () {
                         if (game.id != 0) {
-                          FightButton(game: game);
+                          showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => FightButton(game: game));
                         }
                         else {
                           ScaffoldMessenger.of(context).showSnackBar(
