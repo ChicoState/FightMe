@@ -66,11 +66,7 @@ class ChatPageState extends State<ChatPage> {
       body: Center(
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () =>
-                  buildFightButton(context, FightGameSession(widget.currentUser, widget.otherUser)),
-                child: const Text('Fight!')
-            ),
+            FightButton(game: FightGameSession(widget.currentUser, widget.otherUser)),
             Expanded(
               child: messagesView(),
             ),

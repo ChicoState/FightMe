@@ -27,7 +27,10 @@ class GameHistoryPageState extends State<GameHistoryPage> {
       list.add(
           TextButton(
               onPressed: () {
-                buildFightButton(context, fight);
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => FightButton(game: fight)
+                );
               },
               child: ListTile(
                   leading: ClipRRect(

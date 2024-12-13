@@ -334,11 +334,12 @@ class _SignUpState extends State<SignUp> {
                                                   onPressed: () {
                                                     Navigator.pop(
                                                         context, 'OK');
-                                                    buildFightButton(
-                                                        context,
-                                                        FightGameSession
+                                                    showDialog<String>(
+                                                        context: context,
+                                                        builder: (BuildContext context) => FightButton(game: FightGameSession
                                                             .practice(
-                                                            globals.curUser));
+                                                            globals.curUser)))
+                                                    ;
                                                   },
                                                   child: const Text('OK'),
                                                 ),
