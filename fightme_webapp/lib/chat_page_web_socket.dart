@@ -140,9 +140,10 @@ class ChatPageState extends State<ChatPage> {
                         );
                       }
                       else {
-                        await buildFightButton(
-                          context,
-                          game,
+                        showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) =>
+                            FightButton(game: game)
                         );
                       }
                     },
@@ -152,9 +153,12 @@ class ChatPageState extends State<ChatPage> {
                 else {
                   return FilledButton.tonal(
                     onPressed: () async {
-                      await buildFightButton(
-                        context,
-                        wid.data!,
+                      showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) =>
+                          FightButton(
+                        game: wid.data!,
+                      )
                       );
                     },
                     child: const Text('Fight!'),

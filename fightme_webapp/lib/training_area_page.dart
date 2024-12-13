@@ -49,8 +49,11 @@ class TrainingAreaPageState extends State<TrainingAreaPage> {
               children: [
             ElevatedButton(
                 onPressed: () {
-                  buildFightButton(
-                      context, FightGameSession.practice(widget.curUser));
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) =>
+                      FightButton(game: FightGameSession.practice(widget.curUser))
+                  );
                 },
                 child: const Text('Practice against a dummy')),
             ElevatedButton(

@@ -28,7 +28,11 @@ class VsPageState extends State<VsPage> {
       list.add(
           TextButton(
               onPressed: () {
-                buildFightButton(context, fight);
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                    FightButton(game: fight)
+                );
               },
               child: ListTile(
                   leading: ClipRRect(
@@ -133,7 +137,7 @@ class VsPageState extends State<VsPage> {
             .colorScheme
             .primary,
         centerTitle: true,
-        title: const Text("Home"),
+        title: const Text("Active Games"),
       ),
       body: Center(
         child: Column(

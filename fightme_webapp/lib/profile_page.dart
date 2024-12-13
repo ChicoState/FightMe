@@ -28,12 +28,6 @@ class ProfilePageState extends State<ProfilePage> {
   late Future<List<User>> _friends;
   late Future<List<FightGameSession>> _games;
 
-  void _update() {
-    setState(() {
-
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -223,12 +217,7 @@ class ProfilePageState extends State<ProfilePage> {
                 .textTheme
                 .headlineMedium),
             if (widget.userViewed.id != widget.curUser.id)...[
-              FutureBuilder(future: buildFriendButton(context, _update, widget.userViewed, widget.curUser), builder: (BuildContext context, AsyncSnapshot<Widget> wid) {
-                if (wid.hasData) {
-                  return wid.data!;
-                }
-                return const CircularProgressIndicator();
-              }),
+              FriendButton(curUser: widget.curUser, otherUser: widget.userViewed),
             ],
             Consumer<StatsProvider>(
                 builder: (context, statsProvider, child) {

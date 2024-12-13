@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.backend.backend.ResourceNotFoundException;
 import com.backend.backend.user.User;
 import com.backend.backend.user.UserRepository;
-import com.backend.backend.user.UserService;
-import com.backend.backend.user.Dto.FriendDto;
 
 import lombok.AllArgsConstructor;
 
@@ -18,7 +16,6 @@ import lombok.AllArgsConstructor;
 public class FriendRequestServiceImpl implements FriendRequestService {
 
     private FriendRequestRepository friendRequestRepository;
-    private UserService userService;
     private UserRepository userRepository;
 
 
@@ -95,5 +92,12 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         FriendRequest friendRequest = friendRequestRepository.findByFromUserIDAndToUserID(fromUserID, toUserID)
         .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + fromUserID + " " + toUserID));
         return FriendRequestMapper.mapToFriendRequestDto(friendRequest);
+    }
+
+    @Override
+    public void deleteFriendRequest(Long requestId) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found" + requestId));
+        friendRequestRepository.delete(friendRequest);
     }
 }
