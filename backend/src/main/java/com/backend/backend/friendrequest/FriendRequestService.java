@@ -9,4 +9,5 @@ public interface FriendRequestService {
     FriendRequestDto getFriendRequestBetween(Long fromUserID, Long toUserID);
     FriendRequestDto acceptFriendRequest(Long requestID);
     FriendRequestDto rejectFriendRequest(Long requestID);
+    void deleteFriendRequest(Long requestId);
 }

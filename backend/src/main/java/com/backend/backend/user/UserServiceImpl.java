@@ -13,6 +13,9 @@ import com.backend.backend.user.Dto.StatsDto;
 import com.backend.backend.user.Dto.ThemeDto;
 import com.backend.backend.user.Dto.UserDto;
 import com.backend.backend.fightGame.Dto.FightGameDto;
+import com.backend.backend.friendrequest.FriendRequest;
+import com.backend.backend.friendrequest.FriendRequestService;
+import com.backend.backend.friendrequest.FriendRequestRepository;
 import com.backend.backend.fightGame.FightGame;
 import com.backend.backend.fightGame.FightGameRepository;
 import com.backend.backend.fightGame.FightGameMapper;
@@ -26,6 +29,8 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private FightGameRepository fightGameRepository;
+    private FriendRequestRepository friendRequestRepository;
+    private FriendRequestService friendRequestService;
 
     // START OF ALL CREATE
 
@@ -219,5 +224,15 @@ public class UserServiceImpl implements UserService {
         friend.getFriends().remove(user.getId());
         userRepository.save(user);
         userRepository.save(friend);
+        FriendRequest toRequest = friendRequestRepository.findByFromUserIDAndToUserID(user.getId(), friend.getId())
+        .orElseGet(() -> new FriendRequest());
+        if (toRequest.getFromUserID() != null) {
+            friendRequestService.deleteFriendRequest(toRequest.getId());
+        }
+        FriendRequest fromRequest = friendRequestRepository.findByFromUserIDAndToUserID(friend.getId(), user.getId())
+        .orElseGet(() -> new FriendRequest());
+        if (fromRequest.getToUserID() != null) {
+            friendRequestService.deleteFriendRequest(fromRequest.getId());
+        }
     }
 }

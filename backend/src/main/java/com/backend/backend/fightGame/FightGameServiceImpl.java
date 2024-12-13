@@ -185,7 +185,10 @@ public class FightGameServiceImpl implements FightGameService{
                 else {
                     FriendRequest incoming = friendRequestRepository.findByFromUserIDAndToUserID(fightGame.getRequesterID(), Long.valueOf(fightGame.getWinnerID()))
                     .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + fightGame.getRequesterID() + " " + Long.valueOf(fightGame.getWinnerID())));
-                    friendRequestService.rejectFriendRequest(incoming.getId());
+                    friendRequestService.deleteFriendRequest(incoming.getId());
+                    FriendRequest outgoing = friendRequestRepository.findByFromUserIDAndToUserID( Long.valueOf(fightGame.getWinnerID()), fightGame.getRequesterID())
+                    .orElseThrow(() -> new ResourceNotFoundException("FriendRequest not found " + Long.valueOf(fightGame.getWinnerID()) + fightGame.getRequesterID() + " "));
+                    friendRequestService.deleteFriendRequest(outgoing.getId());
                 }
             }
             if (fightGame.getWinnerID() != -1) {

@@ -72,7 +72,7 @@ public class User {
     private List<Long> unlockedThemes;
 
     @ElementCollection
-    @CollectionTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "friend_id"}))
     @Column(name = "friend_id")
     private List<Long> friends; //storing just the id of the friends not the user
 
