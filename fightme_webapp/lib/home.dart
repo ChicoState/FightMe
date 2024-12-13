@@ -4,6 +4,8 @@ import 'package:fightme_webapp/Providers/stats_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Models/fight_game_session.dart';
+import 'Widgets/fightButton.dart';
 import 'navbar.dart'; // Assuming this is your main app page after login
 import 'globals.dart' as globals;
 
@@ -266,10 +268,94 @@ class _SignUpState extends State<SignUp> {
         MaterialPageRoute(
           builder: (context) => navbar(
             curUser: globals.curUser!,
-            initialIndex: 1,
+            initialIndex: 0,
           ),
         ),
         (route) => false,
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) =>
+            AlertDialog(
+              title: const Text('Welcome to Fight Me!'),
+              content: const Text('Would you like a tutorial?'),
+              actionsAlignment: MainAxisAlignment.spaceBetween,
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'No'),
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => navbar(
+                          curUser: globals.curUser!,
+                          initialIndex: 2,
+                        ),
+                      ),
+                          (route) => false,
+                    );
+                    showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            AlertDialog(
+                                title: const SizedBox(
+                                  width: 100,
+                                  child: Text("In order to become friends with someone, you must defeat them in a fight.", textAlign: TextAlign.center,),
+                                ),
+                              actionsAlignment: MainAxisAlignment.center,
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context, 'OK');
+                                      showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: const Text(
+                                                  "Rules of the game"),
+                                              content: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Image.asset("assets/images/fight_game_rules.png", width: 200, height: 200),
+                                                    const SizedBox(
+                                                        width: 200,
+                                                        child: Text("A poorly matched move is not always a failure. Train your skills to increase your chances of a successful counter.", textAlign: TextAlign.center,)
+                                                    ),
+                                                  ]
+                                              ),
+                                              actionsAlignment: MainAxisAlignment.center,
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                        context, 'OK');
+                                                    buildFightButton(
+                                                        context,
+                                                        FightGameSession
+                                                            .practice(
+                                                            globals.curUser));
+                                                  },
+                                                  child: const Text('OK'),
+                                                ),
+                                              ],
+                                            ),
+                                      );
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ]
+                            )
+                    );
+                  },
+                  child: const Text('Yes'),
+                ),
+              ],
+            ),
       );
     } else {
       globals.loggedIn = false;

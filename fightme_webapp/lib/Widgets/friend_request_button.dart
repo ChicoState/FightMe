@@ -116,7 +116,16 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
   else if (!outgoing.isEmpty() && incoming.isEmpty()) {
     switch(outgoing.status) {
       case Status.accepted:
-        return friends;
+        http.sendFriendRequest(otherUser.id, curUser.id).then((result){
+          if (fightGame.id == 0) {
+            http.postFightGame(curUser, otherUser, curUser.id).then((result){
+              return;
+            });
+          }
+          return;
+        });
+        update();
+        return fight;
       case Status.pending:
         return pending;
       default:
@@ -126,7 +135,16 @@ Future<Widget> buildFriendButton(BuildContext context, VoidCallback update, User
   else if (outgoing.isEmpty() && !incoming.isEmpty()) {
     switch(incoming.status) {
       case Status.accepted:
-        return friends;
+        http.sendFriendRequest(curUser.id, otherUser.id).then((result){
+          if (fightGame.id == 0) {
+            http.postFightGame(curUser, otherUser, otherUser.id).then((result){
+              return;
+            });
+          }
+          return;
+        });
+        update();
+        return fight;
       case Status.pending:
         return waitingResponse;
       default:
