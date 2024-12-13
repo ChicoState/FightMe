@@ -300,33 +300,50 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 FutureBuilder(future: _games, builder: (BuildContext context, AsyncSnapshot<List<FightGameSession>> snapshot) {
                   if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        const Text("Games won"),
-                        Text("${getWonGames(snapshot.data!)}"),
-                        const Text("Win/loss ratio"),
-                        Text(getGameRatio(snapshot.data!).toStringAsFixed(2)),
-                        if (widget.userViewed.id == widget.curUser.id) ...[
-                          FilledButton.tonal(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute<GameHistoryPage>(
-                                      builder: (context) => const GameHistoryPage()));
-                            },
-                            child: const Text("Game history"),
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                      padding: const EdgeInsets.all(60.0), 
+
+                      child: Column(
+                        children: [
+                          const Text("Games won",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),                          
                           ),
-                          FilledButton.tonal(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute<PendingRequestsPage>(
-                                      builder: (context) => const PendingRequestsPage()));
-                            },
-                            child: const Text("Pending Requests"),
+                          Text("${getWonGames(snapshot.data!)}"),
+                          const Text("Win/loss ratio",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
                           ),
+                          Text(getGameRatio(snapshot.data!).toStringAsFixed(2)),
+                          if (widget.userViewed.id == widget.curUser.id) ...[
+                            FilledButton.tonal(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute<GameHistoryPage>(
+                                        builder: (context) => const GameHistoryPage()));
+                              },
+                              child: const Text("Game history"),
+                            ),
+                            FilledButton.tonal(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute<PendingRequestsPage>(
+                                        builder: (context) => const PendingRequestsPage()));
+                              },
+                              child: const Text("Pending Requests"),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     );
                   }
                   else {
