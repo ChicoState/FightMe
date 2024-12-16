@@ -29,6 +29,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
         child: Column(
           children: [
             FutureBuilder(future: _list, builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+              if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                  }
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
                   return const Text(
