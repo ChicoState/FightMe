@@ -34,13 +34,20 @@ class DashboardPageState extends State<DashboardPage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<VsPage>(
-                        builder: (context) => const VsPage()));
+                try {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute<VsPage>(
+                          builder: (context) => const VsPage()));
+                } catch (e) {
+                  //log the error, handle it, or show a user friendly error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to open VS Page: ${e.toString()}'))
+                  );
+                }
               },
               child: const Text("VS"),
-            ),
+              ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
