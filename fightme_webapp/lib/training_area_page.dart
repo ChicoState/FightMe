@@ -62,18 +62,27 @@ class TrainingAreaPageState extends State<TrainingAreaPage> {
                 child: const Text('Practice against a dummy')),
             ElevatedButton(
               onPressed: () {
+                try {
                 String pfp = settingsProvider.profilePicture.split('/').last;
-
                 if (pfp.isEmpty) {
-                  pfp = 'default-avatar.png';
+                  pfp = 'default-avatar.png'; //default value if profile picture is not set
                 }
+                //ensures any other necessary data or conditions are met before navigating
                 Navigator.push(
-                      context,
-                      MaterialPageRoute<DungeonLobby>(
-                          builder: (context) => const DungeonLobby()));
-              },
-              child: const Text("Enter the Dungeon Lobby"),
-            ),
+                  context,
+                  MaterialPageRoute<DungeonLobby>(
+                    builder: (context) => const DungeonLobby()
+                  )
+                );
+              } catch (e) {
+                //handles any errors that might occur during navigation or data processing
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to enter Dungeon Lobby: ${e.toString()}'))
+                );
+              }
+            },
+            child: const Text("Enter the Dungeon Lobby"),
+          ),
           ])),
     );
   }
