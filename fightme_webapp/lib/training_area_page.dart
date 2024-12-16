@@ -49,11 +49,15 @@ class TrainingAreaPageState extends State<TrainingAreaPage> {
               children: [
             ElevatedButton(
                 onPressed: () {
-                  showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) =>
-                      FightButton(game: FightGameSession.practice(widget.curUser))
-                  );
+                  try {
+                    showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => FightButton(game: FightGameSession.practice(widget.curUser))
+                    );
+                  } catch (e) {
+                    final snackBar = SnackBar(content: Text('Failed to start practice session: ${e.toString()}'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
                 },
                 child: const Text('Practice against a dummy')),
             ElevatedButton(
