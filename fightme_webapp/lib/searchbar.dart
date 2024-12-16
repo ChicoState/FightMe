@@ -13,7 +13,11 @@ class CustomSearchDelegate extends SearchDelegate {
     return[
       IconButton(
         onPressed: () {
-          query = "";
+          try {
+            query = "";
+          } catch (e) {
+            print("Error clearing search query: $e");
+          }
         },
         icon: const Icon(Icons.clear),
       ),
