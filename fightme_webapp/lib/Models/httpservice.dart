@@ -66,11 +66,12 @@ class HttpService {
   }
 
   Future<List<FightGameSession>> getDoneGames(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id/games"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id/games"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FightGameSession> doneGames =
-      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+          body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
       return doneGames;
     } else {
       throw "Unable to retrieve user data.";
@@ -78,11 +79,12 @@ class HttpService {
   }
 
   Future<List<FightGameSession>> getActiveGames(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id/vs"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id/vs"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FightGameSession> activeGames =
-      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+          body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
       return activeGames;
     } else {
       throw "Unable to retrieve user data.";
@@ -222,11 +224,12 @@ class HttpService {
   }
 
   Future<List<FriendRequest>> getAllSentRequests(int userID) async {
-    Response res = await get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FriendRequest> friendRequests =
-      body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
+          body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
       return friendRequests;
     } else {
       print("Unable to retrieve friend request data for user $userID");
@@ -235,7 +238,8 @@ class HttpService {
   }
 
   Future<FriendRequest> getFriendRequest(int fromUserID, int toUserID) async {
-    Response res = await get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
     if (res.statusCode == 200) {
       dynamic body = jsonDecode(res.body);
       FriendRequest friendRequest = FriendRequest.fromJson(body);
@@ -312,7 +316,8 @@ class HttpService {
   }
 
   Future<void> updateUserProfilePicture(int userID, int profilePicture) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/profilePicture"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/profilePicture"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"profilePicture": profilePicture}));
     if (res.statusCode == 200) {
@@ -323,7 +328,8 @@ class HttpService {
   }
 
   Future<void> addUserProfilePicture(int userID, int profilePicture) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/addProfilePicture"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/addProfilePicture"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"profilePicture": profilePicture}));
     if (res.statusCode == 200) {
@@ -334,7 +340,8 @@ class HttpService {
   }
 
   Future<void> updateUserTheme(int userID, int theme) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/theme"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/theme"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"theme": theme}));
     if (res.statusCode == 200) {
@@ -345,7 +352,8 @@ class HttpService {
   }
 
   Future<void> addUserTheme(int userID, int theme) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/addTheme"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/addTheme"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"theme": theme}));
     if (res.statusCode == 200) {
@@ -355,10 +363,16 @@ class HttpService {
     }
   }
 
-  Future<FightGameSession> postFightGame(User user1, User user2, int requesterID) async {
-    Response res = await post(Uri.parse(springbootFightGamesURL),
+  Future<FightGameSession> postFightGame(
+      User user1, User user2, int requesterID) async {
+    http.Response res = await _httpClient.post(
+        Uri.parse(springbootFightGamesURL),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user1": user1.toJson(), "user2": user2.toJson(), "requesterID": requesterID}));
+        body: jsonEncode({
+          "user1": user1.toJson(),
+          "user2": user2.toJson(),
+          "requesterID": requesterID
+        }));
     print(res.body);
     if (res.statusCode == 201) {
       print("Game created successfully.");
@@ -372,7 +386,8 @@ class HttpService {
   }
 
   Future<FightGameSession> getFightGame(int user1ID, int user2ID) async {
-    Response res = await get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
     if (res.statusCode == 200) {
       print(res.body);
       dynamic body = jsonDecode(res.body);
@@ -386,9 +401,11 @@ class HttpService {
   }
 
   Future<void> setMove(int gameID, int userID, Move move) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"userID": userID, "move": move.name.toString().toUpperCase()}));
+        body: jsonEncode(
+            {"userID": userID, "move": move.name.toString().toUpperCase()}));
     if (res.statusCode == 200) {
       print("Move set successfully.");
     } else {
@@ -399,7 +416,8 @@ class HttpService {
   }
 
   Future<void> setNewTurn(FightGameSession game) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/newTurn"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/newTurn"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(game.toJson()));
     if (res.statusCode == 200) {
@@ -410,7 +428,8 @@ class HttpService {
   }
 
   Future<void> declareWinner(int gameID) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/winner"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/$gameID/winner"),
         headers: {"Content-Type": "application/json"});
     if (res.statusCode == 200) {
       print("Winner set successfully.");
@@ -419,4 +438,3 @@ class HttpService {
     }
   }
 }
-

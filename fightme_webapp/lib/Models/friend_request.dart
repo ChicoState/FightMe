@@ -1,7 +1,6 @@
+enum Status { pending, accepted, rejected }
 
-enum Status {pending, accepted, rejected }
-
-class FriendRequest{
+class FriendRequest {
   int id = 0;
   int fromUserID = 0;
   int toUserID = 0;
@@ -15,14 +14,21 @@ class FriendRequest{
   }
 
   bool isEmpty() {
-    return id == 0 && fromUserID == 0 && toUserID == 0 && status == Status.pending;
+    return id == 0 &&
+        fromUserID == 0 &&
+        toUserID == 0 &&
+        status == Status.pending;
   }
 
   FriendRequest.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     fromUserID = json['fromUserID'];
     toUserID = json['toUserID'];
-    status = (json['status'] == 'PENDING') ? Status.pending : (json['status'] == 'ACCEPTED') ? Status.accepted : Status.rejected;
+    status = (json['status'] == 'STATUS.PENDING')
+        ? Status.pending
+        : (json['status'] == 'STATUS.ACCEPTED')
+            ? Status.accepted
+            : Status.rejected;
   }
 
   Map<String, dynamic> toJson() => {
