@@ -11,6 +11,13 @@ import 'globals.dart' as globals;
 User curUser = User("placeholder");
 
 Future<void> main() async {
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    //log to console or send to an error tracking service
+    FlutterError.dumpErrorToConsole(details);
+  };
+
+
   WidgetsFlutterBinding.ensureInitialized();
 
   final settingsProvider = SettingsProvider();
