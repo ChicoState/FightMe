@@ -49,27 +49,40 @@ class TrainingAreaPageState extends State<TrainingAreaPage> {
               children: [
             ElevatedButton(
                 onPressed: () {
-                  showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) =>
-                      FightButton(game: FightGameSession.practice(widget.curUser))
-                  );
+                  try {
+                    showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => FightButton(game: FightGameSession.practice(widget.curUser))
+                    );
+                  } catch (e) {
+                    final snackBar = SnackBar(content: Text('Failed to start practice session: ${e.toString()}'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
                 },
                 child: const Text('Practice against a dummy')),
             ElevatedButton(
               onPressed: () {
+                try {
                 String pfp = settingsProvider.profilePicture.split('/').last;
-
                 if (pfp.isEmpty) {
-                  pfp = 'default-avatar.png';
+                  pfp = 'default-avatar.png'; //default value if profile picture is not set
                 }
+                //ensures any other necessary data or conditions are met before navigating
                 Navigator.push(
-                      context,
-                      MaterialPageRoute<DungeonLobby>(
-                          builder: (context) => const DungeonLobby()));
-              },
-              child: const Text("Enter the Dungeon Lobby"),
-            ),
+                  context,
+                  MaterialPageRoute<DungeonLobby>(
+                    builder: (context) => const DungeonLobby()
+                  )
+                );
+              } catch (e) {
+                //handles any errors that might occur during navigation or data processing
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to enter Dungeon Lobby: ${e.toString()}'))
+                );
+              }
+            },
+            child: const Text("Enter the Dungeon Lobby"),
+          ),
           ])),
     );
   }
