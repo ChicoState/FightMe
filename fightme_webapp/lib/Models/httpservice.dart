@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'chatroom.dart';
 import 'user.dart';
 import 'message.dart';
@@ -9,6 +9,11 @@ import 'package:fightme_webapp/globals.dart' as globals;
 import 'fight_game_session.dart';
 
 class HttpService {
+  HttpService({http.Client? httpClient})
+      : _httpClient = httpClient ?? http.Client();
+
+  final http.Client _httpClient;
+
   final String springbootUserURL = "http://localhost:8080/api/users/";
   final String springbootChatroomURL = "http://localhost:8080/api/chatroom/";
   final String springbootMessageURL = "http://localhost:8080/api/messages";
@@ -20,8 +25,8 @@ class HttpService {
 
   //retrieve a list of users from springboot
   Future<List<User>> getUsers() async {
-    Response res = await get(Uri.parse(springbootUserURL));
-    print(res.body);
+    http.Response res = await _httpClient.get(Uri.parse(springbootUserURL));
+    //print(res.body);
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<User> users =
@@ -33,7 +38,8 @@ class HttpService {
   }
 
   Future<User> getUserByID(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id"));
     if (res.statusCode == 200) {
       dynamic body = jsonDecode(res.body);
       User lookup = User.fromJson(body);
@@ -44,7 +50,8 @@ class HttpService {
   }
 
   Future<List<User>> getFriends(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id/friends"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id/friends"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<int> ids = List.from(body);
@@ -59,11 +66,12 @@ class HttpService {
   }
 
   Future<List<FightGameSession>> getDoneGames(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id/games"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id/games"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FightGameSession> doneGames =
-      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+          body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
       return doneGames;
     } else {
       throw "Unable to retrieve user data.";
@@ -71,11 +79,12 @@ class HttpService {
   }
 
   Future<List<FightGameSession>> getActiveGames(int id) async {
-    Response res = await get(Uri.parse("$springbootUserURL$id/vs"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootUserURL$id/vs"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FightGameSession> activeGames =
-      body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
+          body.map((dynamic item) => FightGameSession.fromJson(item)).toList();
       return activeGames;
     } else {
       throw "Unable to retrieve user data.";
@@ -88,7 +97,7 @@ class HttpService {
       'email': email,
       'password': password,
     };
-    Response res = await post(
+    http.Response res = await _httpClient.post(
       Uri.parse(springbootSignupURL),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(input),
@@ -108,7 +117,7 @@ class HttpService {
       'email': email,
       'password': password,
     };
-    Response res = await post(Uri.parse(springbootLoginURL),
+    http.Response res = await _httpClient.post(Uri.parse(springbootLoginURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(input) //{"email": email, "password": password},
         );
@@ -123,7 +132,7 @@ class HttpService {
   }
 
   void postUser(User user) async {
-    Response res = await post(Uri.parse(springbootUserURL),
+    http.Response res = await _httpClient.post(Uri.parse(springbootUserURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(user.toJson()));
     print(res.body);
@@ -135,7 +144,8 @@ class HttpService {
   }
 
   Future<List<Message>> getChatroomMessages(int chatroomID) async {
-    Response res = await get(Uri.parse("${springbootMessageURL}/$chatroomID"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootMessageURL/$chatroomID"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<Message> messages =
@@ -147,7 +157,8 @@ class HttpService {
   }
 
   Future<List<Chatroom>> getChatroomsByUserId(int userID) async {
-    Response res = await get(Uri.parse("${springbootChatroomURL}user/$userID"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("${springbootChatroomURL}user/$userID"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<Chatroom> chatrooms =
@@ -160,7 +171,8 @@ class HttpService {
   }
 
   Future<void> postChatroom(List<int> userIDs) async {
-    Response res = await post(Uri.parse("${springbootChatroomURL}create"),
+    http.Response res = await _httpClient.post(
+        Uri.parse("${springbootChatroomURL}create"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"userIds": userIDs}));
     print(res.body);
@@ -172,7 +184,7 @@ class HttpService {
   }
 
   Future<void> postMessage(Message message) async {
-    Response res = await post(Uri.parse(springbootMessageURL),
+    http.Response res = await _httpClient.post(Uri.parse(springbootMessageURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(message.toJson()));
     if (res.statusCode == 201) {
@@ -185,7 +197,8 @@ class HttpService {
 
   //send a friend request to a user
   Future<void> sendFriendRequest(int fromUserID, int toUserID) async {
-    Response res = await post(Uri.parse(springbootFriendRequestURL),
+    http.Response res = await _httpClient.post(
+        Uri.parse(springbootFriendRequestURL),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"fromUserID": fromUserID, "toUserID": toUserID}));
     if (res.statusCode == 201) {
@@ -197,7 +210,8 @@ class HttpService {
 
   //get all friend requests from a user
   Future<List<FriendRequest>> getAllFriendRequests(int userID) async {
-    Response res = await get(Uri.parse("$springbootFriendRequestURL/$userID"));
+    http.Response res =
+        await _httpClient.get(Uri.parse("$springbootFriendRequestURL/$userID"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FriendRequest> friendRequests =
@@ -210,11 +224,12 @@ class HttpService {
   }
 
   Future<List<FriendRequest>> getAllSentRequests(int userID) async {
-    Response res = await get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFriendRequestURL/$userID/sent"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<FriendRequest> friendRequests =
-      body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
+          body.map((dynamic item) => FriendRequest.fromJson(item)).toList();
       return friendRequests;
     } else {
       print("Unable to retrieve friend request data for user $userID");
@@ -223,7 +238,8 @@ class HttpService {
   }
 
   Future<FriendRequest> getFriendRequest(int fromUserID, int toUserID) async {
-    Response res = await get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFriendRequestURL/$fromUserID/$toUserID"));
     if (res.statusCode == 200) {
       dynamic body = jsonDecode(res.body);
       FriendRequest friendRequest = FriendRequest.fromJson(body);
@@ -236,7 +252,8 @@ class HttpService {
 
   //accept a friend request from a user
   Future<void> acceptFriendRequest(int friendRequestID) async {
-    Response res = await put(Uri.parse("$springbootFriendRequestURL/accept"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFriendRequestURL/accept"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"id": friendRequestID}));
     if (res.statusCode == 200) {
@@ -248,7 +265,8 @@ class HttpService {
 
   // reject a friend request from a user
   Future<void> rejectFriendRequest(int friendRequestID) async {
-    Response res = await put(Uri.parse("$springbootFriendRequestURL/reject"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFriendRequestURL/reject"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"id": friendRequestID}));
     if (res.statusCode == 200) {
@@ -260,8 +278,8 @@ class HttpService {
 
   //Get suggested list of users to add as friends
   Future<List<User>> getSuggestedFriends(int userID) async {
-    Response res =
-        await get(Uri.parse("$springbootUserURL$userID/suggestedFriends"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootUserURL$userID/suggestedFriends"));
     if (res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
       List<User> suggestedFriends =
@@ -274,8 +292,10 @@ class HttpService {
 
   //Update the user's stats
   Future<void> updateUserStats(int userID, Map<String, int> stats) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/stats"),
-        headers: {"Content-Type": "application/json"}, body: jsonEncode(stats));
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/stats"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(stats));
     if (res.statusCode == 200) {
       print("Stats updated successfully.");
     } else {
@@ -284,7 +304,8 @@ class HttpService {
   }
 
   Future<void> updateUserGamerScore(int userID, int gamerScore) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/gamerScore"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/gamerScore"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"gamerScore": gamerScore}));
     if (res.statusCode == 200) {
@@ -295,7 +316,8 @@ class HttpService {
   }
 
   Future<void> updateUserProfilePicture(int userID, int profilePicture) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/profilePicture"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/profilePicture"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"profilePicture": profilePicture}));
     if (res.statusCode == 200) {
@@ -306,7 +328,8 @@ class HttpService {
   }
 
   Future<void> addUserProfilePicture(int userID, int profilePicture) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/addProfilePicture"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/addProfilePicture"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"profilePicture": profilePicture}));
     if (res.statusCode == 200) {
@@ -317,7 +340,8 @@ class HttpService {
   }
 
   Future<void> updateUserTheme(int userID, int theme) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/theme"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/theme"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"theme": theme}));
     if (res.statusCode == 200) {
@@ -328,7 +352,8 @@ class HttpService {
   }
 
   Future<void> addUserTheme(int userID, int theme) async {
-    Response res = await put(Uri.parse("$springbootUserURL$userID/addTheme"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootUserURL$userID/addTheme"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"theme": theme}));
     if (res.statusCode == 200) {
@@ -338,10 +363,16 @@ class HttpService {
     }
   }
 
-  Future<FightGameSession> postFightGame(User user1, User user2, int requesterID) async {
-    Response res = await post(Uri.parse(springbootFightGamesURL),
+  Future<FightGameSession> postFightGame(
+      User user1, User user2, int requesterID) async {
+    http.Response res = await _httpClient.post(
+        Uri.parse(springbootFightGamesURL),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user1": user1.toJson(), "user2": user2.toJson(), "requesterID": requesterID}));
+        body: jsonEncode({
+          "user1": user1.toJson(),
+          "user2": user2.toJson(),
+          "requesterID": requesterID
+        }));
     print(res.body);
     if (res.statusCode == 201) {
       print("Game created successfully.");
@@ -355,7 +386,8 @@ class HttpService {
   }
 
   Future<FightGameSession> getFightGame(int user1ID, int user2ID) async {
-    Response res = await get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
+    http.Response res = await _httpClient
+        .get(Uri.parse("$springbootFightGamesURL/$user1ID/$user2ID"));
     if (res.statusCode == 200) {
       print(res.body);
       dynamic body = jsonDecode(res.body);
@@ -369,9 +401,11 @@ class HttpService {
   }
 
   Future<void> setMove(int gameID, int userID, Move move) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/$gameID/setMove"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"userID": userID, "move": move.name.toString().toUpperCase()}));
+        body: jsonEncode(
+            {"userID": userID, "move": move.name.toString().toUpperCase()}));
     if (res.statusCode == 200) {
       print("Move set successfully.");
     } else {
@@ -382,7 +416,8 @@ class HttpService {
   }
 
   Future<void> setNewTurn(FightGameSession game) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/newTurn"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/newTurn"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(game.toJson()));
     if (res.statusCode == 200) {
@@ -393,7 +428,8 @@ class HttpService {
   }
 
   Future<void> declareWinner(int gameID) async {
-    Response res = await put(Uri.parse("$springbootFightGamesURL/$gameID/winner"),
+    http.Response res = await _httpClient.put(
+        Uri.parse("$springbootFightGamesURL/$gameID/winner"),
         headers: {"Content-Type": "application/json"});
     if (res.statusCode == 200) {
       print("Winner set successfully.");
@@ -402,4 +438,3 @@ class HttpService {
     }
   }
 }
-

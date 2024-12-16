@@ -20,7 +20,8 @@ class Message {
         'fromId': fromId,
         'content': content,
         'isRead': false,
-        'chatroomId': chatroomId
+        'chatroomId': chatroomId,
+        'timeStamp': timeStamp
       };
 
   Message(int to, int from, String text, int chatId) {
