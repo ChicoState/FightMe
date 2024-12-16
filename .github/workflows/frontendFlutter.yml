@@ -15,8 +15,8 @@ on:
       - main
 
 jobs:
-  Build:
-  #Build-and-Test:
+  # Build:
+  Build-and-Test:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         working-directory: fightme_webapp
         run: flutter pub get
       # Testing part but since we have no test, i comment out 
-      #- run: flutter test
-      #  working-directory: fightme_webapp
-      - run: flutter build web
+      - run: flutter test
         working-directory: fightme_webapp
+      # - run: flutter build web
+      #   working-directory: fightme_webapp
